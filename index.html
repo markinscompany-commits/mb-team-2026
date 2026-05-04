@@ -3,592 +3,922 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#0F0F12">
     <title>МБ ИИ 3.0 — Рабочий контур команды</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Commissioner:wght@300;400;500;600;700&family=Unbounded:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
+        /* ==================== ROOT ==================== */
         :root {
+            /* Neutral */
             --bg-0: #FFFFFF;
-            --bg-1: #F7F7F8;
-            --bg-2: #F0F0F2;
+            --bg-1: #FAFAFB;
+            --bg-2: #F2F2F4;
             --bg-3: #E8E8EC;
-            --accent: #1A1A1A;
-            --fg-100: rgba(0,0,0, 0.92);
-            --fg-70: rgba(0,0,0, 0.6);
-            --fg-45: rgba(0,0,0, 0.42);
-            --fg-25: rgba(0,0,0, 0.18);
-            --fg-10: rgba(0,0,0, 0.08);
-            --green: #2E7D32;
-            --green-bg: rgba(46,125,50,0.08);
-            --amber: #B8860B;
-            --amber-bg: rgba(184,134,11,0.08);
-            --red: #B91C1C;
-            --red-bg: rgba(185,28,28,0.06);
-            --blue: #1E40AF;
-            --blue-bg: rgba(30,64,175,0.06);
+            --bg-4: #DDDDE2;
+            --ink-100: #0E0E11;
+            --ink-80:  rgba(14,14,17,0.78);
+            --ink-60:  rgba(14,14,17,0.58);
+            --ink-40:  rgba(14,14,17,0.38);
+            --ink-20:  rgba(14,14,17,0.16);
+            --ink-08:  rgba(14,14,17,0.08);
+            --ink-04:  rgba(14,14,17,0.04);
+
+            /* Phases */
+            --p-prep:    #2563EB;  /* blue */
+            --p-prep-bg: #EFF4FF;
+            --p-record:  #9333EA;  /* purple */
+            --p-record-bg: #F7EEFE;
+            --p-run:     #16A34A;  /* green */
+            --p-run-bg:  #ECFAEF;
+            --p-wrap:    #D97706;  /* amber */
+            --p-wrap-bg: #FEF3E0;
+            --p-deliver: #0E0E11;  /* black */
+            --p-deliver-bg: #F2F2F4;
+
+            /* Roles (avatar + bar colors) */
+            --r-mark:    #0E0E11;
+            --r-serj:    #2563EB;
+            --r-ali:     #9333EA;
+            --r-magomed: #16A34A;
+            --r-eva:     #D97706;
+            --r-ilya:    #DC2626;
+            --r-ruslan:  #0891B2;
+
+            /* Date urgency */
+            --d-overdue: #DC2626;
+            --d-overdue-bg: #FEECEC;
+            --d-week:    #D97706;
+            --d-week-bg: #FEF3E0;
+            --d-soon:    #2563EB;
+            --d-soon-bg: #EFF4FF;
+            --d-later:   rgba(14,14,17,0.5);
+            --d-later-bg: #F2F2F4;
+            --d-ongoing: #16A34A;
+            --d-ongoing-bg: #ECFAEF;
+
+            /* Geometry */
+            --rad-sm: 6px;
+            --rad-md: 10px;
+            --rad-lg: 14px;
+            --rad-xl: 20px;
+            --shadow-sm: 0 1px 2px rgba(14,14,17,0.04), 0 1px 1px rgba(14,14,17,0.03);
+            --shadow-md: 0 4px 12px rgba(14,14,17,0.06), 0 2px 4px rgba(14,14,17,0.04);
+            --shadow-lg: 0 12px 32px rgba(14,14,17,0.10), 0 4px 8px rgba(14,14,17,0.04);
+
+            --bottom-nav-h: 64px;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
-
         html, body {
             font-family: 'Commissioner', sans-serif;
-            font-size: 14px;
-            color: var(--fg-100);
+            font-size: 15px;
+            line-height: 1.55;
+            color: var(--ink-100);
             background: var(--bg-1);
-            line-height: 1.6;
-            min-height: 100vh;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
         }
+        body { min-height: 100vh; min-height: 100svh; }
+        a { color: var(--ink-100); text-decoration: none; }
+        a:hover { opacity: 0.7; }
+        button { font-family: inherit; cursor: pointer; }
+        code { font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 0.92em; background: var(--bg-2); padding: 1px 5px; border-radius: 4px; }
 
-        a { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; }
-        a:hover { color: var(--fg-70); }
-
-        /* ==================== Login overlay ==================== */
+        /* ==================== LOGIN ==================== */
         .login-screen {
             position: fixed; inset: 0;
-            background: var(--bg-0);
+            background: linear-gradient(180deg, #FFFFFF 0%, #FAFAFB 100%);
             display: flex; align-items: center; justify-content: center;
-            z-index: 100;
-            padding: 24px;
+            z-index: 100; padding: 24px;
         }
         .login-card {
-            max-width: 420px; width: 100%;
-            display: flex; flex-direction: column; gap: 20px;
+            max-width: 440px; width: 100%;
+            display: flex; flex-direction: column; gap: 24px;
         }
         .login-logo svg { height: 28px; width: auto; }
-        .login-title { font-family: 'Unbounded', sans-serif; font-size: 18px; font-weight: 500; margin-top: 32px; line-height: 1.4; }
-        .login-sub { font-size: 13px; color: var(--fg-70); line-height: 1.7; }
-        .login-form { display: flex; flex-direction: column; gap: 10px; margin-top: 8px; }
+        .login-title {
+            font-family: 'Unbounded', sans-serif;
+            font-size: clamp(20px, 4vw, 26px);
+            font-weight: 500; line-height: 1.3;
+            margin-top: 28px;
+        }
+        .login-sub { font-size: 14px; color: var(--ink-60); line-height: 1.65; }
+        .login-form { display: flex; flex-direction: column; gap: 12px; margin-top: 8px; }
         .login-form input {
             font-family: 'Commissioner', sans-serif;
-            font-size: 14px;
-            padding: 12px 14px;
-            border: 1px solid var(--fg-25);
-            border-radius: 8px;
-            outline: none;
-            background: var(--bg-0);
-            color: var(--fg-100);
+            font-size: 16px;
+            padding: 14px 16px;
+            border: 1.5px solid var(--ink-20);
+            border-radius: var(--rad-md);
+            outline: none; background: var(--bg-0);
+            color: var(--ink-100);
+            transition: border-color 0.15s;
         }
-        .login-form input:focus { border-color: var(--accent); }
+        .login-form input:focus { border-color: var(--ink-100); }
         .login-form button {
             font-family: 'Unbounded', sans-serif;
-            font-size: 12px; font-weight: 500;
+            font-size: 13px; font-weight: 500;
             text-transform: uppercase; letter-spacing: 1.5px;
-            padding: 12px 14px;
-            background: var(--accent);
-            color: #FFFFFF;
-            border: none; border-radius: 8px;
-            cursor: pointer;
+            padding: 14px 16px;
+            background: var(--ink-100); color: #FFF;
+            border: none; border-radius: var(--rad-md);
+            transition: opacity 0.15s, transform 0.05s;
         }
-        .login-form button:hover { background: #333; }
-        .login-error { font-size: 12px; color: var(--red); min-height: 16px; }
-        .login-help { font-size: 11px; color: var(--fg-45); line-height: 1.7; padding-top: 12px; border-top: 1px solid var(--fg-10); }
+        .login-form button:hover { opacity: 0.85; }
+        .login-form button:active { transform: scale(0.99); }
+        .login-error { font-size: 13px; color: var(--d-overdue); min-height: 18px; }
+        .login-help { font-size: 13px; color: var(--ink-60); line-height: 1.7; padding-top: 16px; border-top: 1px solid var(--ink-08); }
+        .login-help a { color: var(--ink-100); border-bottom: 1px solid var(--ink-20); }
 
-        /* ==================== App layout ==================== */
-        .app { display: none; min-height: 100vh; }
+        /* ==================== APP LAYOUT ==================== */
+        .app { display: none; min-height: 100vh; min-height: 100svh; padding-bottom: 0; }
         .app.active { display: block; }
 
         .topbar {
-            position: sticky; top: 0; z-index: 10;
-            background: var(--bg-0);
-            border-bottom: 1px solid var(--fg-10);
-            padding: 14px 32px;
-            display: flex; align-items: center; justify-content: space-between; gap: 24px;
+            position: sticky; top: 0; z-index: 50;
+            background: rgba(255,255,255,0.85);
+            backdrop-filter: saturate(180%) blur(12px);
+            -webkit-backdrop-filter: saturate(180%) blur(12px);
+            border-bottom: 1px solid var(--ink-08);
+            padding: 12px 28px;
+            display: flex; align-items: center; justify-content: space-between; gap: 20px;
         }
-        .topbar-left { display: flex; align-items: center; gap: 16px; }
-        .topbar-logo svg { height: 22px; width: auto; }
-        .topbar-divider { width: 1px; height: 22px; background: var(--fg-10); }
-        .topbar-title { font-family: 'Unbounded', sans-serif; font-size: 12px; font-weight: 500; letter-spacing: 0.5px; }
-        .topbar-title-sub { font-size: 11px; color: var(--fg-45); }
-        .topbar-right { display: flex; align-items: center; gap: 14px; }
-        .topbar-user { font-size: 12px; }
-        .topbar-user-name { font-weight: 600; color: var(--fg-100); }
-        .topbar-user-role { color: var(--fg-45); font-size: 11px; }
+        .topbar-left { display: flex; align-items: center; gap: 14px; }
+        .topbar-logo svg { height: 22px; width: auto; display: block; }
+        .topbar-divider { width: 1px; height: 22px; background: var(--ink-08); }
+        .topbar-title { font-family: 'Unbounded', sans-serif; font-size: 13px; font-weight: 500; line-height: 1.2; }
+        .topbar-title-sub { font-size: 11px; color: var(--ink-40); margin-top: 2px; }
+        .topbar-right { display: flex; align-items: center; gap: 12px; }
+        .topbar-user { display: flex; align-items: center; gap: 10px; font-size: 13px; }
+        .topbar-user-name { font-weight: 600; color: var(--ink-100); line-height: 1.2; }
+        .topbar-user-role { color: var(--ink-40); font-size: 11px; line-height: 1.2; margin-top: 2px; }
         .logout-btn {
-            font-family: 'Commissioner', sans-serif;
-            font-size: 11px; font-weight: 500;
-            padding: 6px 12px;
-            background: var(--bg-1);
-            border: 1px solid var(--fg-10);
-            border-radius: 6px;
-            cursor: pointer;
-            color: var(--fg-70);
+            font-size: 12px; font-weight: 500;
+            padding: 8px 12px;
+            background: var(--bg-2); color: var(--ink-60);
+            border: none; border-radius: var(--rad-sm);
+            transition: background 0.15s, color 0.15s;
         }
-        .logout-btn:hover { background: var(--bg-2); color: var(--fg-100); }
+        .logout-btn:hover { background: var(--bg-3); color: var(--ink-100); }
 
-        /* ==================== Tabs ==================== */
+        /* Avatar / role chip */
+        .avatar {
+            display: inline-flex; align-items: center; justify-content: center;
+            width: 32px; height: 32px;
+            border-radius: 50%;
+            font-family: 'Unbounded', sans-serif;
+            font-size: 12px; font-weight: 600;
+            color: #FFF;
+            flex-shrink: 0;
+        }
+        .avatar--xs { width: 22px; height: 22px; font-size: 9px; }
+        .avatar--sm { width: 26px; height: 26px; font-size: 10px; }
+        .avatar--mark { background: var(--r-mark); }
+        .avatar--serj { background: var(--r-serj); }
+        .avatar--ali { background: var(--r-ali); }
+        .avatar--magomed { background: var(--r-magomed); }
+        .avatar--eva { background: var(--r-eva); }
+        .avatar--ilya { background: var(--r-ilya); }
+        .avatar--ruslan { background: var(--r-ruslan); }
+
+        /* ==================== TABS (desktop) ==================== */
         .tabs {
             background: var(--bg-0);
-            border-bottom: 1px solid var(--fg-10);
-            padding: 0 32px;
-            display: flex; gap: 4px;
+            border-bottom: 1px solid var(--ink-08);
+            padding: 0 28px;
+            display: flex; gap: 2px;
             overflow-x: auto;
+            scrollbar-width: none;
         }
+        .tabs::-webkit-scrollbar { display: none; }
         .tab {
-            font-family: 'Commissioner', sans-serif;
-            font-size: 13px; font-weight: 500;
+            font-size: 14px; font-weight: 500;
             padding: 14px 16px;
             background: transparent;
             border: none;
             border-bottom: 2px solid transparent;
-            cursor: pointer;
-            color: var(--fg-70);
+            color: var(--ink-60);
             white-space: nowrap;
+            display: flex; align-items: center; gap: 8px;
+            transition: color 0.15s, border-color 0.15s;
         }
-        .tab.active { color: var(--accent); border-bottom-color: var(--accent); }
-        .tab:hover:not(.active) { color: var(--fg-100); }
-        .tab--admin { color: var(--blue); }
-        .tab--admin.active { color: var(--blue); border-bottom-color: var(--blue); }
+        .tab:hover { color: var(--ink-100); }
+        .tab.active { color: var(--ink-100); border-bottom-color: var(--ink-100); }
+        .tab svg { width: 16px; height: 16px; opacity: 0.6; }
+        .tab.active svg { opacity: 1; }
+        .tab--admin.active { color: var(--p-prep); border-bottom-color: var(--p-prep); }
+        .tab--admin.active svg { color: var(--p-prep); opacity: 1; }
 
-        .tab-content { display: none; padding: 32px; max-width: 1280px; margin: 0 auto; }
-        .tab-content.active { display: block; }
+        .tab-content { display: none; padding: 28px; max-width: 1280px; margin: 0 auto; }
+        .tab-content.active { display: block; animation: fadeIn 0.2s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* ==================== Section heading ==================== */
+        /* ==================== SECTIONS ==================== */
         .section-eyebrow {
             font-family: 'Unbounded', sans-serif;
             font-size: 10px; font-weight: 600;
             text-transform: uppercase; letter-spacing: 2.5px;
-            color: var(--accent);
-            margin-bottom: 8px;
+            color: var(--ink-60); margin-bottom: 8px;
         }
         .section-title {
             font-family: 'Unbounded', sans-serif;
-            font-size: 24px; font-weight: 500;
+            font-size: clamp(22px, 4vw, 28px);
+            font-weight: 500;
+            line-height: 1.25;
             margin-bottom: 8px;
-            line-height: 1.3;
         }
         .section-sub {
-            font-size: 14px; color: var(--fg-70); line-height: 1.7;
-            max-width: 720px; margin-bottom: 28px;
+            font-size: 14px; color: var(--ink-60); line-height: 1.7;
+            max-width: 720px;
+            margin-bottom: 24px;
         }
 
-        /* ==================== Task cards ==================== */
-        .phase-block { margin-bottom: 36px; }
-        .phase-head {
-            display: flex; align-items: baseline; gap: 14px;
-            padding-bottom: 10px;
-            border-bottom: 1px solid var(--fg-10);
-            margin-bottom: 16px;
+        /* ==================== DASHBOARD STRIP (Mark) ==================== */
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            margin-bottom: 28px;
         }
-        .phase-num {
+        .dash-card {
+            background: var(--bg-0);
+            border: 1px solid var(--ink-08);
+            border-radius: var(--rad-lg);
+            padding: 16px 18px;
+            display: flex; flex-direction: column; gap: 4px;
+        }
+        .dash-card__num {
             font-family: 'Unbounded', sans-serif;
-            font-size: 11px; font-weight: 600;
-            color: var(--accent); letter-spacing: 1.5px;
+            font-size: 28px; font-weight: 500;
+            line-height: 1; letter-spacing: -0.02em;
         }
+        .dash-card__label {
+            font-size: 11px; font-weight: 600;
+            text-transform: uppercase; letter-spacing: 1px;
+            color: var(--ink-40);
+        }
+        .dash-card--alert .dash-card__num { color: var(--d-overdue); }
+        .dash-card--warn .dash-card__num { color: var(--d-week); }
+        .dash-card--info .dash-card__num { color: var(--d-soon); }
+
+        /* ==================== FILTER BAR ==================== */
+        .filterbar {
+            display: flex; gap: 8px; flex-wrap: wrap;
+            margin-bottom: 18px;
+        }
+        .chip {
+            display: inline-flex; align-items: center; gap: 6px;
+            font-size: 12px; font-weight: 500;
+            padding: 7px 12px;
+            background: var(--bg-0);
+            border: 1px solid var(--ink-08);
+            border-radius: 999px;
+            color: var(--ink-60);
+            transition: all 0.15s;
+            white-space: nowrap;
+        }
+        .chip:hover { color: var(--ink-100); border-color: var(--ink-20); }
+        .chip.active { background: var(--ink-100); color: #FFF; border-color: var(--ink-100); }
+        .chip__count {
+            font-size: 10px; font-weight: 600;
+            padding: 1px 6px;
+            background: var(--bg-2);
+            border-radius: 999px;
+            color: var(--ink-60);
+        }
+        .chip.active .chip__count { background: rgba(255,255,255,0.18); color: #FFF; }
+        .chip--prep.active { background: var(--p-prep); border-color: var(--p-prep); }
+        .chip--record.active { background: var(--p-record); border-color: var(--p-record); }
+        .chip--run.active { background: var(--p-run); border-color: var(--p-run); }
+        .chip--wrap.active { background: var(--p-wrap); border-color: var(--p-wrap); }
+        .chip--deliver.active { background: var(--p-deliver); border-color: var(--p-deliver); }
+        .chip__dot { width: 8px; height: 8px; border-radius: 50%; }
+        .chip__dot--prep { background: var(--p-prep); }
+        .chip__dot--record { background: var(--p-record); }
+        .chip__dot--run { background: var(--p-run); }
+        .chip__dot--wrap { background: var(--p-wrap); }
+        .chip__dot--deliver { background: var(--p-deliver); }
+
+        /* ==================== PHASE GROUPS ==================== */
+        .phase-block { margin-bottom: 28px; }
+        .phase-head {
+            display: flex; align-items: center; gap: 12px;
+            margin-bottom: 14px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--ink-08);
+        }
+        .phase-marker {
+            width: 32px; height: 32px;
+            border-radius: 8px;
+            display: flex; align-items: center; justify-content: center;
+            font-family: 'Unbounded', sans-serif;
+            font-size: 12px; font-weight: 600;
+            color: #FFF;
+            flex-shrink: 0;
+        }
+        .phase-marker--prep { background: var(--p-prep); }
+        .phase-marker--record { background: var(--p-record); }
+        .phase-marker--run { background: var(--p-run); }
+        .phase-marker--wrap { background: var(--p-wrap); }
+        .phase-marker--deliver { background: var(--p-deliver); }
         .phase-name {
             font-family: 'Unbounded', sans-serif;
-            font-size: 15px; font-weight: 500;
+            font-size: 16px; font-weight: 500;
         }
-        .phase-dates { font-size: 12px; color: var(--fg-45); margin-left: auto; }
+        .phase-dates { font-size: 12px; color: var(--ink-40); margin-left: auto; }
 
+        /* ==================== TASK CARDS ==================== */
         .task-card {
             background: var(--bg-0);
-            border: 1px solid var(--fg-10);
-            border-radius: 12px;
-            padding: 20px 22px;
-            margin-bottom: 12px;
+            border: 1px solid var(--ink-08);
+            border-radius: var(--rad-lg);
+            margin-bottom: 8px;
+            overflow: hidden;
+            transition: border-color 0.15s, box-shadow 0.15s;
+            position: relative;
         }
-        .task-card__top { display: flex; gap: 14px; align-items: flex-start; margin-bottom: 8px; }
-        .task-card__num {
+        .task-card::before {
+            content: '';
+            position: absolute; left: 0; top: 0; bottom: 0;
+            width: 4px;
+            background: var(--phase-color, var(--ink-20));
+        }
+        .task-card[data-phase="prep"]    { --phase-color: var(--p-prep); }
+        .task-card[data-phase="record"]  { --phase-color: var(--p-record); }
+        .task-card[data-phase="run"]     { --phase-color: var(--p-run); }
+        .task-card[data-phase="wrap"]    { --phase-color: var(--p-wrap); }
+        .task-card[data-phase="deliver"] { --phase-color: var(--p-deliver); }
+        .task-card:hover { border-color: var(--ink-20); box-shadow: var(--shadow-sm); }
+        .task-card.expanded { box-shadow: var(--shadow-md); border-color: var(--ink-20); }
+
+        .task-head {
+            display: flex; align-items: center; gap: 12px;
+            padding: 14px 18px 14px 22px;
+            cursor: pointer;
+            user-select: none;
+        }
+        .task-head__main {
+            flex: 1; min-width: 0;
+            display: flex; flex-direction: column; gap: 4px;
+        }
+        .task-head__title-row {
+            display: flex; align-items: center; gap: 8px;
+            flex-wrap: wrap;
+        }
+        .task-head__title {
+            font-size: 15px; font-weight: 500;
+            color: var(--ink-100);
+            line-height: 1.4;
+        }
+        .task-head__num {
             font-family: 'Unbounded', sans-serif;
+            font-size: 10px; font-weight: 600;
+            color: var(--ink-40);
+            letter-spacing: 0.5px;
+        }
+        .task-head__meta {
+            display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+            font-size: 12px;
+        }
+        .task-chevron {
+            color: var(--ink-40);
+            transition: transform 0.2s;
+            flex-shrink: 0;
+        }
+        .task-card.expanded .task-chevron { transform: rotate(180deg); }
+
+        /* Date badge */
+        .date-badge {
+            display: inline-flex; align-items: center; gap: 6px;
             font-size: 11px; font-weight: 600;
-            color: var(--fg-45);
-            min-width: 36px;
-            margin-top: 3px;
-        }
-        .task-card__title {
-            font-family: 'Unbounded', sans-serif;
-            font-size: 14px; font-weight: 500;
-            line-height: 1.45;
-            color: var(--fg-100);
-            flex: 1;
-        }
-        .task-card__meta {
-            display: flex; flex-wrap: wrap; gap: 8px;
-            margin-left: 50px; margin-top: 4px; margin-bottom: 12px;
-        }
-        .badge {
-            font-family: 'Unbounded', sans-serif;
-            font-size: 9px; font-weight: 600;
-            text-transform: uppercase; letter-spacing: 1px;
-            padding: 4px 8px;
-            border-radius: 4px;
-            display: inline-block;
+            padding: 4px 9px;
+            border-radius: 999px;
             white-space: nowrap;
-        }
-        .badge--date { background: var(--bg-2); color: var(--fg-70); }
-        .badge--green { background: var(--green-bg); color: var(--green); }
-        .badge--amber { background: var(--amber-bg); color: var(--amber); }
-        .badge--red { background: var(--red-bg); color: var(--red); }
-        .badge--blue { background: var(--blue-bg); color: var(--blue); }
-        .badge--neutral { background: var(--bg-2); color: var(--fg-70); }
-        .badge--role { background: var(--bg-3); color: var(--fg-100); }
-
-        .task-card__body {
-            margin-left: 50px;
-            font-size: 13px; color: var(--fg-100); line-height: 1.7;
-        }
-        .task-card__body p { margin-bottom: 8px; }
-        .task-card__body ul { padding-left: 18px; margin-bottom: 8px; }
-        .task-card__body li { margin-bottom: 4px; }
-
-        .task-section-label {
             font-family: 'Unbounded', sans-serif;
-            font-size: 9px; font-weight: 600;
-            text-transform: uppercase; letter-spacing: 1.5px;
-            color: var(--fg-45);
-            margin-top: 14px; margin-bottom: 4px;
+            letter-spacing: 0.3px;
         }
+        .date-badge svg { width: 12px; height: 12px; flex-shrink: 0; }
+        .date-badge--overdue { background: var(--d-overdue-bg); color: var(--d-overdue); }
+        .date-badge--week    { background: var(--d-week-bg);    color: var(--d-week); }
+        .date-badge--soon    { background: var(--d-soon-bg);    color: var(--d-soon); }
+        .date-badge--later   { background: var(--d-later-bg);   color: var(--d-later); }
+        .date-badge--ongoing { background: var(--d-ongoing-bg); color: var(--d-ongoing); }
+
+        /* Owner chip (visible to admin) */
+        .owner-chip {
+            display: inline-flex; align-items: center; gap: 6px;
+            font-size: 11px; font-weight: 500;
+            color: var(--ink-60);
+            padding-right: 4px;
+        }
+        .owner-chip .avatar { width: 18px; height: 18px; font-size: 8px; }
+
+        /* Body */
+        .task-body {
+            display: none;
+            padding: 0 18px 18px 22px;
+            border-top: 1px solid var(--ink-08);
+            margin-top: 0;
+        }
+        .task-card.expanded .task-body { display: block; animation: slideDown 0.2s ease-out; }
+        @keyframes slideDown { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: translateY(0); } }
+        .task-body__intro {
+            font-size: 14px; color: var(--ink-80); line-height: 1.7;
+            padding-top: 14px;
+        }
+        .task-body__intro p { margin-bottom: 8px; }
+        .task-body__intro ul { padding-left: 20px; margin-bottom: 8px; }
+        .task-body__intro li { margin-bottom: 4px; }
+
+        .task-section {
+            margin-top: 16px;
+        }
+        .task-section__label {
+            display: flex; align-items: center; gap: 6px;
+            font-family: 'Unbounded', sans-serif;
+            font-size: 10px; font-weight: 600;
+            text-transform: uppercase; letter-spacing: 1.5px;
+            color: var(--ink-60);
+            margin-bottom: 8px;
+        }
+        .task-section__label svg { width: 13px; height: 13px; }
+
         .ckp-block {
             background: var(--bg-1);
-            border-left: 3px solid var(--accent);
-            padding: 10px 14px;
-            border-radius: 0 6px 6px 0;
-            font-size: 12px; line-height: 1.7;
-            color: var(--fg-100);
-            margin: 4px 0 4px 0;
+            border-left: 3px solid var(--phase-color, var(--ink-100));
+            padding: 12px 14px;
+            border-radius: 0 var(--rad-sm) var(--rad-sm) 0;
+            font-size: 13px; line-height: 1.6;
+            color: var(--ink-100);
         }
-        .links-list {
-            display: flex; flex-direction: column; gap: 4px;
-            font-size: 12px;
-            margin-top: 4px;
+        .report-block {
+            font-size: 13px;
+            color: var(--ink-60);
+            line-height: 1.6;
         }
-        .links-list a { color: var(--accent); }
-        .links-list a:before { content: '→ '; color: var(--fg-45); }
-        .placeholder-link { color: var(--fg-45); font-style: italic; }
-        .placeholder-link:before { content: '○ '; color: var(--fg-25); }
 
-        /* ==================== Calendar / Gantt ==================== */
+        .links-list {
+            display: flex; flex-direction: column; gap: 6px;
+            font-size: 13px;
+        }
+        .link-item {
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 7px 10px;
+            background: var(--bg-1);
+            border: 1px solid var(--ink-08);
+            border-radius: var(--rad-sm);
+            color: var(--ink-100);
+            transition: background 0.15s, border-color 0.15s;
+        }
+        .link-item:hover { background: var(--bg-2); border-color: var(--ink-20); opacity: 1; }
+        .link-item svg { width: 14px; height: 14px; color: var(--ink-60); flex-shrink: 0; }
+        .link-item--placeholder { color: var(--ink-40); font-style: italic; }
+        .link-item--placeholder:hover { background: var(--bg-1); }
+
+        /* Empty state */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            background: var(--bg-0);
+            border: 1px dashed var(--ink-20);
+            border-radius: var(--rad-lg);
+            color: var(--ink-60);
+        }
+        .empty-state__title { font-family: 'Unbounded', sans-serif; font-size: 16px; font-weight: 500; color: var(--ink-100); margin-bottom: 6px; }
+        .empty-state__sub { font-size: 13px; }
+
+        /* ==================== CALENDAR / GANTT ==================== */
         .gantt-wrap {
             background: var(--bg-0);
-            border: 1px solid var(--fg-10);
-            border-radius: 12px;
+            border: 1px solid var(--ink-08);
+            border-radius: var(--rad-lg);
             padding: 20px;
             overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
         }
-        .gantt-table { width: 100%; border-collapse: collapse; min-width: 880px; }
-        .gantt-table th, .gantt-table td { padding: 0; }
-        .gantt-month-head {
-            font-family: 'Unbounded', sans-serif;
-            font-size: 9px; font-weight: 600;
-            text-transform: uppercase; letter-spacing: 1.5px;
-            color: var(--fg-45);
-            text-align: center;
-            border-bottom: 1px solid var(--fg-10);
-            padding: 6px 0 8px;
-            background: var(--bg-1);
-        }
-        .gantt-row { border-bottom: 1px solid var(--fg-10); }
-        .gantt-row:last-child { border-bottom: none; }
-        .gantt-label {
-            padding: 14px 16px;
-            font-size: 12px; font-weight: 500;
-            color: var(--fg-100);
-            min-width: 220px;
-            white-space: nowrap;
-            position: sticky; left: 0;
-            background: var(--bg-0);
-        }
-        .gantt-cells { position: relative; padding: 14px 0; }
-        .gantt-bar {
-            height: 24px;
-            background: var(--bg-3);
-            border-radius: 4px;
-            color: var(--fg-100);
-            font-size: 10px; font-weight: 500;
-            display: flex; align-items: center; padding: 0 8px;
-            white-space: nowrap;
-            overflow: hidden;
-        }
-        .gantt-bar--mark { background: rgba(26,26,26,0.85); color: #FFF; }
-        .gantt-bar--serj { background: rgba(30,64,175,0.85); color: #FFF; }
-        .gantt-bar--ali { background: rgba(155,89,182,0.85); color: #FFF; }
-        .gantt-bar--magomed { background: rgba(46,125,50,0.85); color: #FFF; }
-        .gantt-bar--eva { background: rgba(184,134,11,0.85); color: #FFF; }
-        .gantt-bar--ilya { background: rgba(185,28,28,0.7); color: #FFF; }
-        .gantt-bar--ruslan { background: rgba(34,139,34,0.7); color: #FFF; }
-        .gantt-bar--milestone { background: var(--accent); color: #FFF; font-weight: 600; }
-
-        /* Compact week-row gantt */
         .week-grid {
             display: grid;
-            grid-template-columns: 240px repeat(18, 1fr);
+            grid-template-columns: 240px repeat(18, minmax(36px, 1fr));
             font-size: 11px;
-            border: 1px solid var(--fg-10);
-            border-radius: 12px;
-            overflow: hidden;
+            min-width: 920px;
+        }
+        .week-grid > div {
+            padding: 9px 8px;
+            min-height: 40px;
+            display: flex; align-items: center;
+            border-right: 1px solid var(--ink-04);
+            border-bottom: 1px solid var(--ink-04);
             background: var(--bg-0);
         }
-        .week-grid > div { padding: 10px 8px; border-right: 1px solid var(--fg-10); border-bottom: 1px solid var(--fg-10); min-height: 36px; display: flex; align-items: center; }
         .week-grid > div:nth-child(19n) { border-right: none; }
         .wg-head {
             font-family: 'Unbounded', sans-serif;
             font-size: 9px; font-weight: 600;
-            color: var(--fg-45);
-            background: var(--bg-1);
+            color: var(--ink-40);
+            background: var(--bg-1) !important;
             justify-content: center;
             text-align: center;
+            position: sticky; top: 0;
+            z-index: 2;
         }
         .wg-task {
             font-weight: 500;
-            background: var(--bg-1);
+            background: var(--bg-1) !important;
             position: sticky; left: 0;
+            z-index: 1;
+            font-size: 12px;
+            color: var(--ink-100);
+            display: flex; align-items: center; gap: 8px !important;
         }
-        .wg-bar { padding: 0 !important; position: relative; }
+        .wg-task .avatar { width: 18px !important; height: 18px !important; font-size: 8px !important; }
+        .wg-bar { padding: 0 !important; position: relative; background: var(--bg-0) !important; }
         .wg-bar::after {
             content: '';
             position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
+            top: 50%; transform: translateY(-50%);
             left: var(--start, 0%);
             width: var(--width, 100%);
-            height: 18px;
-            background: var(--bar-color, var(--accent));
-            border-radius: 3px;
+            height: 16px;
+            background: var(--bar-color, var(--ink-100));
+            border-radius: 4px;
+            opacity: var(--bar-opacity, 1);
         }
+        .gantt-hint { font-size: 12px; color: var(--ink-40); margin-top: 12px; }
+        .gantt-hint .chip__dot { display: inline-block; vertical-align: middle; margin-right: 5px; }
 
-        /* Milestones list */
+        /* Milestones */
         .milestones {
             display: grid; grid-template-columns: repeat(2, 1fr);
-            gap: 12px; margin-top: 24px;
+            gap: 12px; margin-top: 22px;
         }
         .milestone {
             background: var(--bg-0);
-            border: 1px solid var(--fg-10);
-            border-radius: 10px;
-            padding: 14px 18px;
-            display: flex; gap: 12px; align-items: flex-start;
+            border: 1px solid var(--ink-08);
+            border-radius: var(--rad-md);
+            padding: 14px 16px;
+            display: flex; gap: 14px; align-items: flex-start;
         }
-        .milestone--major { border-color: var(--accent); border-width: 2px; background: var(--bg-1); }
+        .milestone--major {
+            background: linear-gradient(135deg, var(--bg-0) 0%, #FFFAF0 100%);
+            border-color: var(--p-wrap);
+        }
         .milestone__date {
             font-family: 'Unbounded', sans-serif;
-            font-size: 11px; font-weight: 600;
-            color: var(--accent);
-            min-width: 78px;
-            letter-spacing: 0.5px;
+            font-size: 12px; font-weight: 600;
+            color: var(--ink-100);
+            min-width: 90px;
+            line-height: 1.4;
         }
-        .milestone__text { font-size: 12px; color: var(--fg-100); line-height: 1.6; flex: 1; }
+        .milestone--major .milestone__date { color: var(--p-wrap); }
+        .milestone__text { font-size: 13px; color: var(--ink-80); line-height: 1.55; flex: 1; }
 
-        /* ==================== Team ==================== */
+        /* ==================== TEAM ==================== */
         .team-grid {
             display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
             gap: 14px;
         }
         .team-card {
             background: var(--bg-0);
-            border: 1px solid var(--fg-10);
-            border-radius: 12px;
+            border: 1px solid var(--ink-08);
+            border-radius: var(--rad-lg);
             padding: 18px 20px;
+            display: flex; flex-direction: column; gap: 12px;
+            transition: box-shadow 0.15s, border-color 0.15s;
         }
-        .team-card__role-badge {
-            font-family: 'Unbounded', sans-serif;
-            font-size: 9px; font-weight: 600;
-            text-transform: uppercase; letter-spacing: 1.5px;
-            padding: 4px 8px;
-            border-radius: 4px;
-            display: inline-block;
-            margin-bottom: 10px;
+        .team-card:hover { box-shadow: var(--shadow-sm); border-color: var(--ink-20); }
+        .team-card--me {
+            background: linear-gradient(135deg, #FFFFFF 0%, var(--bg-1) 100%);
+            border: 2px solid var(--ink-100);
+            box-shadow: var(--shadow-sm);
         }
+        .team-card__top { display: flex; align-items: center; gap: 12px; }
+        .team-card__avatar { width: 44px; height: 44px; font-size: 14px; }
         .team-card__name {
             font-family: 'Unbounded', sans-serif;
-            font-size: 16px; font-weight: 500;
-            margin-bottom: 4px;
+            font-size: 15px; font-weight: 500;
+            line-height: 1.2;
         }
+        .team-card__role-tag {
+            display: inline-block;
+            font-size: 10px; font-weight: 600;
+            padding: 2px 7px;
+            border-radius: 999px;
+            text-transform: uppercase; letter-spacing: 1px;
+            margin-top: 4px;
+            background: var(--bg-2);
+            color: var(--ink-60);
+        }
+        .team-card--me .team-card__role-tag { background: var(--ink-100); color: #FFF; }
         .team-card__title {
-            font-size: 12px; color: var(--fg-70);
-            margin-bottom: 12px;
+            font-size: 13px; color: var(--ink-60);
+            line-height: 1.55;
         }
         .team-card__resp {
-            font-size: 12px; color: var(--fg-100);
-            line-height: 1.7;
-            padding-top: 10px;
-            border-top: 1px solid var(--fg-10);
+            font-size: 13px; color: var(--ink-80);
+            line-height: 1.65;
+            padding-top: 12px;
+            border-top: 1px solid var(--ink-08);
         }
         .team-card__count {
             font-family: 'Unbounded', sans-serif;
             font-size: 10px; font-weight: 600;
-            color: var(--fg-45);
-            margin-top: 10px;
+            color: var(--ink-40);
+            display: flex; align-items: center; gap: 6px;
+            text-transform: uppercase; letter-spacing: 1px;
         }
+        .team-card__count svg { width: 13px; height: 13px; }
 
-        /* ==================== Documents ==================== */
+        /* ==================== DOCS ==================== */
         .docs-list {
-            background: var(--bg-0);
-            border: 1px solid var(--fg-10);
-            border-radius: 12px;
-            overflow: hidden;
+            display: flex; flex-direction: column; gap: 6px;
         }
         .docs-row {
             display: grid;
-            grid-template-columns: 60px 1fr 220px 120px;
-            padding: 14px 18px;
-            border-bottom: 1px solid var(--fg-10);
-            align-items: center;
+            grid-template-columns: 36px 1fr 200px 120px;
             gap: 12px;
-        }
-        .docs-row:last-child { border-bottom: none; }
-        .docs-row--head {
-            background: var(--bg-1);
-            font-family: 'Unbounded', sans-serif;
-            font-size: 9px; font-weight: 600;
-            text-transform: uppercase; letter-spacing: 1.5px;
-            color: var(--fg-45);
-        }
-        .docs-num { font-family: 'Unbounded', sans-serif; font-size: 10px; font-weight: 600; color: var(--accent); }
-        .docs-name { font-size: 13px; font-weight: 500; }
-        .docs-format { font-size: 11px; color: var(--fg-70); }
-        .docs-link a { font-size: 12px; }
-
-        /* ==================== Budget ==================== */
-        .budget-table {
-            width: 100%;
+            padding: 12px 16px;
             background: var(--bg-0);
-            border: 1px solid var(--fg-10);
-            border-radius: 12px;
-            border-collapse: separate;
-            border-spacing: 0;
-            overflow: hidden;
+            border: 1px solid var(--ink-08);
+            border-radius: var(--rad-md);
+            align-items: center;
+            transition: border-color 0.15s, background 0.15s;
         }
-        .budget-table th, .budget-table td {
-            padding: 12px 18px;
-            text-align: left;
-            border-bottom: 1px solid var(--fg-10);
-            font-size: 13px;
-        }
-        .budget-table th {
-            background: var(--bg-1);
+        .docs-row:hover { background: var(--bg-1); border-color: var(--ink-20); }
+        .docs-num {
             font-family: 'Unbounded', sans-serif;
-            font-size: 9px; font-weight: 600;
-            color: var(--fg-45);
-            text-transform: uppercase; letter-spacing: 1.5px;
+            font-size: 11px; font-weight: 600;
+            color: var(--ink-40);
+            text-align: center;
         }
-        .budget-table tr:last-child td { border-bottom: none; }
-        .budget-table td:nth-child(2),
-        .budget-table th:nth-child(2) { text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums; }
-        .budget-table tr.total-row td {
-            font-family: 'Unbounded', sans-serif;
-            font-weight: 600;
-            background: var(--bg-1);
-            font-size: 14px;
+        .docs-name { font-size: 14px; font-weight: 500; line-height: 1.35; }
+        .docs-name__sub { font-size: 12px; color: var(--ink-60); margin-top: 2px; font-weight: 400; }
+        .docs-format {
+            font-size: 11px; font-weight: 500;
+            color: var(--ink-60);
+            text-transform: uppercase; letter-spacing: 0.5px;
         }
-        .budget-comment { font-size: 11px; color: var(--fg-45); margin-top: 4px; }
+        .docs-link a, .docs-link span { font-size: 12px; }
+        .docs-link a {
+            display: inline-flex; align-items: center; gap: 5px;
+            padding: 5px 10px;
+            background: var(--ink-100); color: #FFF;
+            border-radius: var(--rad-sm);
+            font-weight: 500;
+        }
+        .docs-link a:hover { opacity: 0.85; }
+        .docs-link a svg { width: 12px; height: 12px; }
+        .docs-link span { color: var(--ink-40); font-style: italic; }
 
-        /* ==================== Progress ==================== */
+        /* ==================== BUDGET ==================== */
+        .budget-grid {
+            display: flex; flex-direction: column; gap: 8px;
+        }
+        .budget-row {
+            display: grid;
+            grid-template-columns: 1fr 140px;
+            gap: 16px;
+            padding: 14px 18px;
+            background: var(--bg-0);
+            border: 1px solid var(--ink-08);
+            border-radius: var(--rad-md);
+            align-items: center;
+        }
+        .budget-row__name { font-size: 14px; font-weight: 500; }
+        .budget-row__comment { font-size: 12px; color: var(--ink-60); margin-top: 3px; font-weight: 400; }
+        .budget-row__amount {
+            font-family: 'Unbounded', sans-serif;
+            font-size: 16px; font-weight: 500;
+            text-align: right;
+            font-variant-numeric: tabular-nums;
+        }
+        .budget-row--total {
+            background: var(--ink-100);
+            color: #FFF;
+            border-color: var(--ink-100);
+        }
+        .budget-row--total .budget-row__amount { font-size: 20px; }
+        .budget-row--total .budget-row__name {
+            font-family: 'Unbounded', sans-serif;
+            text-transform: uppercase; letter-spacing: 1.5px; font-size: 12px;
+        }
+
+        /* ==================== PROGRESS ==================== */
         .progress-grid {
-            display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px;
-            margin-bottom: 28px;
+            display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px;
+            margin-bottom: 24px;
         }
         .progress-card {
             background: var(--bg-0);
-            border: 1px solid var(--fg-10);
-            border-radius: 12px;
-            padding: 20px;
+            border: 1px solid var(--ink-08);
+            border-radius: var(--rad-lg);
+            padding: 18px 20px;
         }
         .progress-card__num {
             font-family: 'Unbounded', sans-serif;
-            font-size: 28px; font-weight: 500;
-            margin-bottom: 4px;
+            font-size: 32px; font-weight: 500;
+            line-height: 1; letter-spacing: -0.02em;
+            margin-bottom: 6px;
         }
         .progress-card__label {
-            font-size: 11px; color: var(--fg-45);
+            font-size: 11px; font-weight: 600;
             text-transform: uppercase; letter-spacing: 1px;
-            font-weight: 600;
+            color: var(--ink-40);
         }
-        .progress-card--done .progress-card__num { color: var(--green); }
-        .progress-card--inprogress .progress-card__num { color: var(--amber); }
-        .progress-card--blocked .progress-card__num { color: var(--red); }
+        .progress-card--done .progress-card__num { color: var(--p-run); }
+        .progress-card--inprog .progress-card__num { color: var(--p-wrap); }
 
-        .by-role-table {
-            width: 100%;
+        .by-role-list {
+            display: flex; flex-direction: column; gap: 8px;
+        }
+        .by-role-row {
+            display: grid;
+            grid-template-columns: auto 1fr auto auto auto;
+            gap: 16px;
+            padding: 14px 16px;
             background: var(--bg-0);
-            border: 1px solid var(--fg-10);
-            border-radius: 12px;
-            border-collapse: separate;
-            border-spacing: 0;
-            overflow: hidden;
+            border: 1px solid var(--ink-08);
+            border-radius: var(--rad-md);
+            align-items: center;
         }
-        .by-role-table th, .by-role-table td {
-            padding: 12px 18px;
-            text-align: left;
-            border-bottom: 1px solid var(--fg-10);
-            font-size: 13px;
-        }
-        .by-role-table th {
-            background: var(--bg-1);
+        .by-role-row__name { font-weight: 500; font-size: 14px; }
+        .by-role-row__bar { display: flex; height: 8px; background: var(--bg-2); border-radius: 4px; overflow: hidden; min-width: 120px; }
+        .by-role-row__bar > span { display: block; height: 100%; }
+        .by-role-row__bar .b-done { background: var(--p-run); }
+        .by-role-row__bar .b-inprog { background: var(--p-wrap); }
+        .by-role-row__stat {
             font-family: 'Unbounded', sans-serif;
-            font-size: 9px; font-weight: 600;
-            color: var(--fg-45);
-            text-transform: uppercase; letter-spacing: 1.5px;
-        }
-        .by-role-table td:nth-child(n+2) { text-align: center; font-variant-numeric: tabular-nums; }
-        .by-role-table th:nth-child(n+2) { text-align: center; }
-        .by-role-table tr:last-child td { border-bottom: none; }
-        .by-role-bar {
-            display: inline-flex; height: 8px; width: 100%;
-            background: var(--bg-2); border-radius: 4px; overflow: hidden;
-            min-width: 100px;
-        }
-        .by-role-bar__done { background: var(--green); }
-        .by-role-bar__progress { background: var(--amber); }
-
-        /* ==================== Footer ==================== */
-        .app-footer {
-            padding: 28px 32px;
-            border-top: 1px solid var(--fg-10);
-            font-size: 11px; color: var(--fg-45);
+            font-size: 11px; font-weight: 600;
+            color: var(--ink-60);
             text-align: center;
-            margin-top: 24px;
+            min-width: 32px;
         }
-        .app-footer a { color: var(--fg-45); }
 
-        /* ==================== Responsive ==================== */
-        @media (max-width: 768px) {
-            .topbar { padding: 12px 16px; }
+        /* ==================== FOOTER ==================== */
+        .app-footer {
+            padding: 24px 28px;
+            border-top: 1px solid var(--ink-08);
+            font-size: 12px; color: var(--ink-40);
+            text-align: center;
+            margin-top: 32px;
+        }
+        .app-footer a { color: var(--ink-60); border-bottom: 1px solid var(--ink-20); }
+
+        /* ==================== BOTTOM NAV (mobile) ==================== */
+        .bottom-nav {
+            display: none;
+            position: fixed; bottom: 0; left: 0; right: 0;
+            background: rgba(255,255,255,0.94);
+            backdrop-filter: saturate(180%) blur(16px);
+            -webkit-backdrop-filter: saturate(180%) blur(16px);
+            border-top: 1px solid var(--ink-08);
+            padding: 6px 0 calc(6px + env(safe-area-inset-bottom));
+            z-index: 50;
+            width: 100%;
+            justify-content: space-around;
+            scrollbar-width: none;
+        }
+        .bottom-nav::-webkit-scrollbar { display: none; }
+        .bn-item {
+            background: transparent; border: none;
+            display: flex; flex-direction: column; align-items: center; gap: 2px;
+            padding: 6px 4px;
+            color: var(--ink-40);
+            font-size: 10px; font-weight: 500;
+            border-radius: 8px;
+            flex: 1 1 0; min-width: 56px;
+            transition: color 0.15s;
+        }
+        .bn-item span { white-space: nowrap; }
+        .bn-item.active { color: var(--ink-100); }
+        .bn-item.active.bn-item--admin { color: var(--p-prep); }
+        .bn-item svg { width: 20px; height: 20px; flex-shrink: 0; }
+
+        /* ==================== RESPONSIVE ==================== */
+        @media (max-width: 920px) {
+            .topbar { padding: 10px 16px; }
+            .topbar-title-sub { display: none; }
+            .topbar-user-role { display: none; }
+            .tabs { display: none; }
             .tab-content { padding: 20px 16px; }
-            .tabs { padding: 0 16px; }
-            .progress-grid { grid-template-columns: repeat(2, 1fr); }
+            .app.active { padding-bottom: calc(var(--bottom-nav-h) + 16px); }
+            .bottom-nav { display: flex; }
+
+            .dashboard { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+            .dash-card { padding: 14px; }
+            .dash-card__num { font-size: 22px; }
+
+            .progress-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+            .progress-card { padding: 14px; }
+            .progress-card__num { font-size: 26px; }
+
             .milestones { grid-template-columns: 1fr; }
-            .docs-row { grid-template-columns: 40px 1fr; gap: 8px; }
-            .docs-row > .docs-format, .docs-row > .docs-link { grid-column: 2; padding-left: 0; }
-            .docs-row--head .docs-format, .docs-row--head .docs-link { display: none; }
-            .week-grid { font-size: 10px; }
+
+            .docs-row {
+                grid-template-columns: 36px 1fr;
+                gap: 10px;
+                padding: 14px 14px;
+            }
+            .docs-row .docs-format,
+            .docs-row .docs-link { grid-column: 2; padding-left: 0; padding-top: 0; }
+            .docs-row .docs-format { padding-top: 6px; }
+            .docs-row .docs-link { padding-top: 8px; }
+
+            .budget-row { grid-template-columns: 1fr 100px; padding: 12px 14px; }
+            .budget-row__amount { font-size: 14px; }
+            .budget-row--total .budget-row__amount { font-size: 17px; }
+
+            .by-role-row { grid-template-columns: 26px 1fr 32px 32px; gap: 10px; padding: 12px 14px; }
+            .by-role-row__bar { display: none; }
+
+            .task-head { padding: 14px 14px 14px 18px; gap: 10px; }
+            .task-head__title { font-size: 14px; }
+            .task-body { padding: 0 14px 16px 18px; }
+
+            .filterbar { gap: 6px; }
+            .chip { padding: 6px 10px; font-size: 11px; }
+        }
+        @media (max-width: 480px) {
+            .topbar-divider, .topbar-title { display: none; }
+            .logout-btn { padding: 6px 10px; font-size: 11px; }
+
+            .topbar-user-name { display: none; }
+            .topbar-user .avatar { width: 28px; height: 28px; font-size: 11px; }
+
+            .section-eyebrow { font-size: 9px; }
+            .section-title { font-size: 22px; }
+            .section-sub { font-size: 13px; }
+
+            .phase-marker { width: 28px; height: 28px; font-size: 11px; }
+            .phase-name { font-size: 14px; }
+            .phase-dates { display: none; }
+
+            .task-head { padding: 12px 12px 12px 16px; }
+            .task-head__title-row { gap: 6px; }
+            .date-badge { font-size: 10px; padding: 3px 7px; }
+
+            .bottom-nav { padding: 4px 0 calc(4px + env(safe-area-inset-bottom)); flex-wrap: nowrap; }
+            .bn-item { padding: 6px 2px; min-width: 0; flex: 1; font-size: 9px; gap: 1px; }
+            .bn-item svg { width: 18px; height: 18px; }
+        }
+        @media (max-width: 420px) {
+            .bn-item span { display: none; }
+            .bn-item { padding: 10px 4px; min-width: 0; flex: 1; }
+            .bn-item svg { width: 22px; height: 22px; }
         }
     </style>
 </head>
 <body>
 
+<!-- ============= SVG SYMBOLS (logo + icons) ============= -->
 <svg style="display:none" xmlns="http://www.w3.org/2000/svg">
 <defs>
-<symbol id="ml" viewBox="0 0 578 100"><path d="M457.698 69.5985C457.698 70.3159 457.118 70.8973 456.4 70.8973H438.116C437.398 70.8973 436.818 70.3159 436.818 69.5985V67.5455C436.818 66.3429 435.323 65.7864 434.537 66.6959L431.289 70.4484C431.043 70.7334 430.685 70.8973 430.308 70.8973H398.093C397.375 70.8973 396.793 70.3159 396.793 69.5985V62.1954V58.6214V55.203V31.0175C396.793 30.3004 397.375 29.7188 398.093 29.7188H416.378C417.096 29.7188 417.675 30.3004 417.675 31.0175V54.0594C417.675 54.7768 418.258 55.3582 418.976 55.3582H429.891C430.268 55.3582 430.625 55.1949 430.872 54.9104L436.499 48.4211C436.705 48.1848 436.818 47.8828 436.818 47.5701V31.0175C436.818 30.3004 437.398 29.7188 438.116 29.7188H456.4C457.118 29.7188 457.698 30.3004 457.698 31.0175V69.5985Z" fill="#1A1A1A"/><path d="M522.681 69.5985C522.681 70.3159 522.101 70.8973 521.383 70.8973H503.099C502.381 70.8973 501.798 70.3159 501.798 69.5985V64.9179C501.798 64.2007 501.218 63.6193 500.501 63.6193H483.955C483.24 63.6193 482.658 64.2007 482.658 64.9179V69.5985C482.658 70.3159 482.075 70.8973 481.36 70.8973H463.076C462.358 70.8973 461.775 70.3159 461.775 69.5985V62.1954V58.6214V55.203V31.0175C461.775 30.3004 462.358 29.7188 463.076 29.7188H481.36C482.075 29.7188 482.658 30.3004 482.658 31.0175V52.4767C482.658 53.1938 483.24 53.7755 483.955 53.7755H495.464H500.501C501.218 53.7755 501.798 53.1938 501.798 52.4767V31.0175C501.798 30.3004 502.381 29.7188 503.099 29.7188H521.383C522.101 29.7188 522.681 30.3004 522.681 31.0175V69.5985Z" fill="#1A1A1A"/><path fill-rule="evenodd" clip-rule="evenodd" d="M164.562 39.7094C165.062 40.1786 165.84 40.1786 166.34 39.7094L176.605 30.0707C176.846 29.8445 177.164 29.7188 177.494 29.7188H201.032C201.749 29.7188 202.331 30.3001 202.331 31.0173V69.5208C202.331 70.2382 201.749 70.8195 201.032 70.8195H182.793C182.076 70.8195 181.495 70.2382 181.495 69.5208V46.5271C181.495 45.81 180.913 45.2286 180.196 45.2286H177.913C177.582 45.2286 177.263 45.3554 177.022 45.5832L166.343 55.676C165.842 56.149 165.059 56.149 164.559 55.676L153.881 45.5832C153.639 45.3554 153.32 45.2286 152.988 45.2286H150.706C149.989 45.2286 149.407 45.81 149.407 46.5271V69.5208C149.407 70.2382 148.826 70.8195 148.109 70.8195H129.87C129.153 70.8195 128.571 70.2382 128.571 69.5208V31.0173C128.571 30.3001 129.153 29.7188 129.87 29.7188H153.407C153.738 29.7188 154.056 29.8445 154.297 30.0707L164.562 39.7094Z" fill="#1A1A1A"/><path d="M328.936 53.5068C328.936 54.2239 328.353 54.8053 327.635 54.8053H292.4C291.682 54.8053 291.099 55.3869 291.099 56.1041V61.2304V69.5985C291.099 70.3159 290.519 70.8973 289.802 70.8973H271.571C270.855 70.8973 270.273 70.3159 270.273 69.5985V31.0175C270.273 30.3004 270.855 29.7188 271.571 29.7188H291.099H296.515H312.689H320.778H322.889C323.317 29.7188 323.718 29.9301 323.962 30.2831L328.708 37.2056C328.854 37.4218 328.936 37.6778 328.936 37.9398V42.262V53.5068ZM293.006 40.3022C292.289 40.3022 291.709 40.8838 291.709 41.601V45.1541C291.709 45.8715 292.289 46.4529 293.006 46.4529H305.653C306.696 46.4529 307.314 45.2857 306.726 44.4237L304.309 40.8703C304.068 40.5149 303.664 40.3022 303.236 40.3022H293.006Z" fill="#1A1A1A"/><path d="M207.118 47.1093C207.118 46.3919 207.7 45.8105 208.417 45.8105H243.654C244.371 45.8105 244.953 45.2291 244.953 44.512V40.6842C244.953 39.9671 244.371 39.3857 243.654 39.3857H208.417C207.7 39.3857 207.118 38.804 207.118 38.0869V31.0173C207.118 30.3001 207.7 29.7188 208.417 29.7188H264.481C265.198 29.7188 265.779 30.3001 265.779 31.0173V69.5985C265.779 70.3156 265.198 70.897 264.481 70.897H246.252C245.534 70.897 244.953 70.3156 244.953 69.5985V67.7471C244.953 66.5128 243.393 65.9747 242.632 66.9465L239.928 70.3991C239.682 70.7133 239.305 70.897 238.905 70.897H207.188C207.149 70.897 207.118 70.8661 207.118 70.8277V47.1093ZM238.069 60.3136C238.43 60.3136 238.775 60.1632 239.021 59.8985L242.319 56.3452C243.09 55.5143 242.501 54.1632 241.367 54.1632H229.243C228.526 54.1632 227.944 54.7446 227.944 55.4617V59.0151C227.944 59.7322 228.526 60.3136 229.243 60.3136H238.069Z" fill="#1A1A1A"/><path d="M332.084 31.2207C332.084 30.5033 332.664 29.9219 333.382 29.9219H351.642C352.36 29.9219 352.942 30.5033 352.942 31.2207V40.7502C352.942 41.4673 353.522 42.0487 354.24 42.0487H368.038C368.428 42.0487 368.796 41.874 369.043 41.5725L371.836 38.1594C372.026 37.9272 372.131 37.6368 372.131 37.3369V31.2207C372.131 30.5033 372.711 29.9219 373.429 29.9219H391.667C392.393 29.9219 392.978 30.5171 392.965 31.2429L392.791 41.3389C392.786 41.7813 392.553 42.1893 392.176 42.4218L381.697 48.8908C380.974 49.3373 380.868 50.3464 381.483 50.934L392.393 61.3739C392.64 61.6118 392.786 61.9388 392.794 62.2826L392.957 69.5315C392.976 70.2603 392.388 70.8598 391.659 70.8598H373.429C372.711 70.8598 372.131 70.2785 372.131 69.5613V62.2091C372.131 61.9092 372.026 61.6185 371.836 61.3866L369.043 57.9733C368.796 57.6721 368.428 57.4971 368.038 57.4971H354.24C353.522 57.4971 352.942 58.0787 352.942 58.7958V69.4838C352.942 70.2012 352.36 70.7826 351.642 70.7826H333.382C332.664 70.7826 332.084 70.2012 332.084 69.4838V31.2207Z" fill="#1A1A1A"/><path d="M532.924 30.0557L525.498 42.176C525.371 42.3803 525.306 42.6149 525.306 42.8547V57.8874C525.306 58.1269 525.371 58.3618 525.498 58.5661L532.924 70.6864C533.16 71.0717 533.58 71.3066 534.032 71.3066H575.22C575.935 71.3066 576.517 70.7249 576.517 70.0078V62.0815C576.517 61.3644 575.935 60.783 575.22 60.783H551.01C550.675 60.783 550.349 60.6524 550.108 60.4189L548.179 58.559C547.927 58.3141 547.784 57.9768 547.784 57.6244V55.3202V45.2049V43.1175C547.784 42.765 547.927 42.4277 548.179 42.1831L550.108 40.3232C550.349 40.0897 550.675 39.9591 551.01 39.9591H575.756C576.474 39.9591 577.057 39.3777 577.057 38.6603V30.7341C577.057 30.0169 576.474 29.4355 575.756 29.4355H534.032C533.58 29.4355 533.16 29.6704 532.924 30.0557Z" fill="#1A1A1A"/><path fill-rule="evenodd" clip-rule="evenodd" d="M50.3668 100C50.3668 72.3888 73.2854 50.0001 100.866 50.0001C73.3 50.0001 50.3668 27.6068 50.3668 0C50.3668 27.6068 27.5671 50.0058 0 50.0058C27.5687 50.0058 50.3668 72.3888 50.3668 100Z" fill="#1A1A1A"/></symbol>
+<symbol id="ml" viewBox="0 0 578 100"><path d="M457.698 69.5985C457.698 70.3159 457.118 70.8973 456.4 70.8973H438.116C437.398 70.8973 436.818 70.3159 436.818 69.5985V67.5455C436.818 66.3429 435.323 65.7864 434.537 66.6959L431.289 70.4484C431.043 70.7334 430.685 70.8973 430.308 70.8973H398.093C397.375 70.8973 396.793 70.3159 396.793 69.5985V62.1954V58.6214V55.203V31.0175C396.793 30.3004 397.375 29.7188 398.093 29.7188H416.378C417.096 29.7188 417.675 30.3004 417.675 31.0175V54.0594C417.675 54.7768 418.258 55.3582 418.976 55.3582H429.891C430.268 55.3582 430.625 55.1949 430.872 54.9104L436.499 48.4211C436.705 48.1848 436.818 47.8828 436.818 47.5701V31.0175C436.818 30.3004 437.398 29.7188 438.116 29.7188H456.4C457.118 29.7188 457.698 30.3004 457.698 31.0175V69.5985Z" fill="currentColor"/><path d="M522.681 69.5985C522.681 70.3159 522.101 70.8973 521.383 70.8973H503.099C502.381 70.8973 501.798 70.3159 501.798 69.5985V64.9179C501.798 64.2007 501.218 63.6193 500.501 63.6193H483.955C483.24 63.6193 482.658 64.2007 482.658 64.9179V69.5985C482.658 70.3159 482.075 70.8973 481.36 70.8973H463.076C462.358 70.8973 461.775 70.3159 461.775 69.5985V62.1954V58.6214V55.203V31.0175C461.775 30.3004 462.358 29.7188 463.076 29.7188H481.36C482.075 29.7188 482.658 30.3004 482.658 31.0175V52.4767C482.658 53.1938 483.24 53.7755 483.955 53.7755H495.464H500.501C501.218 53.7755 501.798 53.1938 501.798 52.4767V31.0175C501.798 30.3004 502.381 29.7188 503.099 29.7188H521.383C522.101 29.7188 522.681 30.3004 522.681 31.0175V69.5985Z" fill="currentColor"/><path fill-rule="evenodd" clip-rule="evenodd" d="M164.562 39.7094C165.062 40.1786 165.84 40.1786 166.34 39.7094L176.605 30.0707C176.846 29.8445 177.164 29.7188 177.494 29.7188H201.032C201.749 29.7188 202.331 30.3001 202.331 31.0173V69.5208C202.331 70.2382 201.749 70.8195 201.032 70.8195H182.793C182.076 70.8195 181.495 70.2382 181.495 69.5208V46.5271C181.495 45.81 180.913 45.2286 180.196 45.2286H177.913C177.582 45.2286 177.263 45.3554 177.022 45.5832L166.343 55.676C165.842 56.149 165.059 56.149 164.559 55.676L153.881 45.5832C153.639 45.3554 153.32 45.2286 152.988 45.2286H150.706C149.989 45.2286 149.407 45.81 149.407 46.5271V69.5208C149.407 70.2382 148.826 70.8195 148.109 70.8195H129.87C129.153 70.8195 128.571 70.2382 128.571 69.5208V31.0173C128.571 30.3001 129.153 29.7188 129.87 29.7188H153.407C153.738 29.7188 154.056 29.8445 154.297 30.0707L164.562 39.7094Z" fill="currentColor"/><path d="M328.936 53.5068C328.936 54.2239 328.353 54.8053 327.635 54.8053H292.4C291.682 54.8053 291.099 55.3869 291.099 56.1041V61.2304V69.5985C291.099 70.3159 290.519 70.8973 289.802 70.8973H271.571C270.855 70.8973 270.273 70.3159 270.273 69.5985V31.0175C270.273 30.3004 270.855 29.7188 271.571 29.7188H291.099H296.515H312.689H320.778H322.889C323.317 29.7188 323.718 29.9301 323.962 30.2831L328.708 37.2056C328.854 37.4218 328.936 37.6778 328.936 37.9398V42.262V53.5068ZM293.006 40.3022C292.289 40.3022 291.709 40.8838 291.709 41.601V45.1541C291.709 45.8715 292.289 46.4529 293.006 46.4529H305.653C306.696 46.4529 307.314 45.2857 306.726 44.4237L304.309 40.8703C304.068 40.5149 303.664 40.3022 303.236 40.3022H293.006Z" fill="currentColor"/><path d="M207.118 47.1093C207.118 46.3919 207.7 45.8105 208.417 45.8105H243.654C244.371 45.8105 244.953 45.2291 244.953 44.512V40.6842C244.953 39.9671 244.371 39.3857 243.654 39.3857H208.417C207.7 39.3857 207.118 38.804 207.118 38.0869V31.0173C207.118 30.3001 207.7 29.7188 208.417 29.7188H264.481C265.198 29.7188 265.779 30.3001 265.779 31.0173V69.5985C265.779 70.3156 265.198 70.897 264.481 70.897H246.252C245.534 70.897 244.953 70.3156 244.953 69.5985V67.7471C244.953 66.5128 243.393 65.9747 242.632 66.9465L239.928 70.3991C239.682 70.7133 239.305 70.897 238.905 70.897H207.188C207.149 70.897 207.118 70.8661 207.118 70.8277V47.1093ZM238.069 60.3136C238.43 60.3136 238.775 60.1632 239.021 59.8985L242.319 56.3452C243.09 55.5143 242.501 54.1632 241.367 54.1632H229.243C228.526 54.1632 227.944 54.7446 227.944 55.4617V59.0151C227.944 59.7322 228.526 60.3136 229.243 60.3136H238.069Z" fill="currentColor"/><path d="M332.084 31.2207C332.084 30.5033 332.664 29.9219 333.382 29.9219H351.642C352.36 29.9219 352.942 30.5033 352.942 31.2207V40.7502C352.942 41.4673 353.522 42.0487 354.24 42.0487H368.038C368.428 42.0487 368.796 41.874 369.043 41.5725L371.836 38.1594C372.026 37.9272 372.131 37.6368 372.131 37.3369V31.2207C372.131 30.5033 372.711 29.9219 373.429 29.9219H391.667C392.393 29.9219 392.978 30.5171 392.965 31.2429L392.791 41.3389C392.786 41.7813 392.553 42.1893 392.176 42.4218L381.697 48.8908C380.974 49.3373 380.868 50.3464 381.483 50.934L392.393 61.3739C392.64 61.6118 392.786 61.9388 392.794 62.2826L392.957 69.5315C392.976 70.2603 392.388 70.8598 391.659 70.8598H373.429C372.711 70.8598 372.131 70.2785 372.131 69.5613V62.2091C372.131 61.9092 372.026 61.6185 371.836 61.3866L369.043 57.9733C368.796 57.6721 368.428 57.4971 368.038 57.4971H354.24C353.522 57.4971 352.942 58.0787 352.942 58.7958V69.4838C352.942 70.2012 352.36 70.7826 351.642 70.7826H333.382C332.664 70.7826 332.084 70.2012 332.084 69.4838V31.2207Z" fill="currentColor"/><path d="M532.924 30.0557L525.498 42.176C525.371 42.3803 525.306 42.6149 525.306 42.8547V57.8874C525.306 58.1269 525.371 58.3618 525.498 58.5661L532.924 70.6864C533.16 71.0717 533.58 71.3066 534.032 71.3066H575.22C575.935 71.3066 576.517 70.7249 576.517 70.0078V62.0815C576.517 61.3644 575.935 60.783 575.22 60.783H551.01C550.675 60.783 550.349 60.6524 550.108 60.4189L548.179 58.559C547.927 58.3141 547.784 57.9768 547.784 57.6244V55.3202V45.2049V43.1175C547.784 42.765 547.927 42.4277 548.179 42.1831L550.108 40.3232C550.349 40.0897 550.675 39.9591 551.01 39.9591H575.756C576.474 39.9591 577.057 39.3777 577.057 38.6603V30.7341C577.057 30.0169 576.474 29.4355 575.756 29.4355H534.032C533.58 29.4355 533.16 29.6704 532.924 30.0557Z" fill="currentColor"/><path fill-rule="evenodd" clip-rule="evenodd" d="M50.3668 100C50.3668 72.3888 73.2854 50.0001 100.866 50.0001C73.3 50.0001 50.3668 27.6068 50.3668 0C50.3668 27.6068 27.5671 50.0058 0 50.0058C27.5687 50.0058 50.3668 72.3888 50.3668 100Z" fill="currentColor"/></symbol>
+
+<symbol id="ic-tasks" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></symbol>
+<symbol id="ic-calendar" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></symbol>
+<symbol id="ic-team" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></symbol>
+<symbol id="ic-docs" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></symbol>
+<symbol id="ic-budget" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></symbol>
+<symbol id="ic-progress" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/></symbol>
+<symbol id="ic-clock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></symbol>
+<symbol id="ic-target" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></symbol>
+<symbol id="ic-folder" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></symbol>
+<symbol id="ic-link" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></symbol>
+<symbol id="ic-send" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></symbol>
+<symbol id="ic-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></symbol>
+<symbol id="ic-external" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></symbol>
+<symbol id="ic-checklist" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></symbol>
 </defs>
 </svg>
 
-<!-- ==================== LOGIN ==================== -->
+<!-- ============= LOGIN ============= -->
 <div class="login-screen" id="loginScreen">
     <div class="login-card">
-        <div class="login-logo"><svg width="578" height="100"><use href="#ml"/></svg></div>
+        <div class="login-logo" style="color: var(--ink-100)"><svg width="578" height="100"><use href="#ml"/></svg></div>
         <div>
             <div class="login-title">МБ ИИ 3.0<br>Рабочий контур команды</div>
-            <div class="login-sub" style="margin-top:10px">Введите код доступа, который вам отправил Марк. После входа вы увидите свои задачи, сроки и ссылки на нужные документы.</div>
+            <div class="login-sub" style="margin-top:12px">Введите код доступа от Марка. После входа вы увидите свои задачи, сроки и ссылки на нужные документы.</div>
         </div>
         <form class="login-form" id="loginForm" onsubmit="return doLogin(event)">
-            <input type="password" id="loginPassword" placeholder="Код доступа" autocomplete="off" required>
+            <input type="password" id="loginPassword" placeholder="Код доступа" autocomplete="off" required autofocus>
             <button type="submit">Войти</button>
             <div class="login-error" id="loginError"></div>
         </form>
         <div class="login-help">
-            Если кода нет — напишите Марку: <a href="https://wa.me/79898966950">+7 989 896 69 50</a> или <a href="https://t.me/kaitmazovmark">@kaitmazovmark</a>.
+            Нет кода? Напишите Марку: <a href="https://wa.me/79898966950">+7 989 896 69 50</a> или <a href="https://t.me/kaitmazovmark">@kaitmazovmark</a>
         </div>
     </div>
 </div>
 
-<!-- ==================== APP ==================== -->
+<!-- ============= APP ============= -->
 <div class="app" id="app">
 
     <!-- TOPBAR -->
     <div class="topbar">
         <div class="topbar-left">
-            <div class="topbar-logo"><svg width="578" height="100"><use href="#ml"/></svg></div>
+            <div class="topbar-logo" style="color: var(--ink-100)"><svg width="578" height="100"><use href="#ml"/></svg></div>
             <div class="topbar-divider"></div>
             <div>
                 <div class="topbar-title">МБ ИИ 3.0</div>
@@ -597,37 +927,43 @@
         </div>
         <div class="topbar-right">
             <div class="topbar-user">
-                <div class="topbar-user-name" id="userName">—</div>
-                <div class="topbar-user-role" id="userRole">—</div>
+                <div class="avatar" id="userAvatar">—</div>
+                <div>
+                    <div class="topbar-user-name" id="userName">—</div>
+                    <div class="topbar-user-role" id="userRole">—</div>
+                </div>
             </div>
             <button class="logout-btn" onclick="doLogout()">Выйти</button>
         </div>
     </div>
 
-    <!-- TABS -->
+    <!-- TABS (desktop) -->
     <div class="tabs" id="tabs"></div>
 
-    <!-- ==================== TAB: TASKS ==================== -->
+    <!-- ============= TAB: TASKS ============= -->
     <div class="tab-content" id="tab-tasks">
-        <div class="section-eyebrow">Мои задачи</div>
+        <div class="section-eyebrow" id="tasksEyebrow">Мои задачи</div>
         <h2 class="section-title" id="tasksTitle">Задачи и ожидаемые результаты</h2>
-        <p class="section-sub" id="tasksSub">По каждой задаче указан срок, что именно нужно сдать и ссылки на нужные документы. Если по задаче возникает вопрос — пишите Марку.</p>
+        <p class="section-sub" id="tasksSub">У каждой задачи — срок, ЦКП и ссылки на нужные документы. Кликните по карточке чтобы развернуть. Если по задаче возникает вопрос — пишите Марку.</p>
+
+        <div id="dashboardWrap"></div>
+        <div class="filterbar" id="filterbar"></div>
         <div id="tasksContainer"></div>
     </div>
 
-    <!-- ==================== TAB: CALENDAR ==================== -->
+    <!-- ============= TAB: CALENDAR ============= -->
     <div class="tab-content" id="tab-calendar">
         <div class="section-eyebrow">Календарь и Гант</div>
         <h2 class="section-title">Сроки проекта по фазам</h2>
         <p class="section-sub">Старт курса — пн 22 июня 2026. Сдача отчёта в Центр поддержки предпринимательства — пн 31 августа 2026 (за 2 месяца до договорного дедлайна 30.12.2026).</p>
 
-        <div id="ganttContainer"></div>
+        <div class="gantt-wrap" id="ganttContainer"></div>
 
-        <h3 style="font-family:'Unbounded',sans-serif;font-size:16px;font-weight:500;margin-top:36px;margin-bottom:8px">Ключевые вехи</h3>
+        <h3 style="font-family:'Unbounded',sans-serif;font-size:17px;font-weight:500;margin-top:32px;margin-bottom:8px">Ключевые вехи</h3>
         <div class="milestones" id="milestonesContainer"></div>
     </div>
 
-    <!-- ==================== TAB: TEAM ==================== -->
+    <!-- ============= TAB: TEAM ============= -->
     <div class="tab-content" id="tab-team">
         <div class="section-eyebrow">Команда</div>
         <h2 class="section-title">7 участников проекта</h2>
@@ -635,58 +971,70 @@
         <div class="team-grid" id="teamContainer"></div>
     </div>
 
-    <!-- ==================== TAB: DOCS ==================== -->
+    <!-- ============= TAB: DOCS ============= -->
     <div class="tab-content" id="tab-docs">
         <div class="section-eyebrow">Документы и таблицы</div>
         <h2 class="section-title">Что куда складывать</h2>
         <p class="section-sub">Все файлы, которые нужно заполнять, лежат в Google Диске или в локальной папке проекта. Здесь — единый список ссылок.</p>
         <div class="docs-list" id="docsContainer"></div>
-        <div style="margin-top:18px;padding:14px 16px;background:var(--bg-1);border-radius:8px;font-size:12px;color:var(--fg-70);line-height:1.7">
-            <strong style="color:var(--fg-100)">Где живут «настоящие» файлы:</strong> сами заявки, выписки МСП, сертификаты и подписанные сканы — на Google Диске и в локальной папке <code style="background:var(--bg-2);padding:1px 5px;border-radius:3px">mb/2026/Отчёт в МБ/</code>. Этот портал — только указатели.
+        <div style="margin-top:18px;padding:14px 16px;background:var(--p-prep-bg);border-radius:var(--rad-md);font-size:13px;color:var(--ink-80);line-height:1.65">
+            <strong style="color:var(--p-prep)">Где живут «настоящие» файлы:</strong> сами заявки, выписки МСП, сертификаты и подписанные сканы — на Google Диске и в локальной папке <code>mb/2026/Отчёт в МБ/</code>. Этот портал — только указатели.
         </div>
     </div>
 
-    <!-- ==================== TAB: BUDGET (admin) ==================== -->
+    <!-- ============= TAB: BUDGET (admin) ============= -->
     <div class="tab-content" id="tab-budget">
         <div class="section-eyebrow">Смета — расходы Марка</div>
         <h2 class="section-title">Что и кому платим</h2>
         <p class="section-sub">Только исходящие платежи Марка как субподрядчика. Гонорар Сеража по договору №13042026 (608К + 352К входящих) — здесь не отражается.</p>
-        <table class="budget-table" id="budgetTable"></table>
-        <div style="margin-top:14px;font-size:11px;color:var(--fg-45);line-height:1.7">
+        <div class="budget-grid" id="budgetContainer"></div>
+        <div style="margin-top:14px;font-size:12px;color:var(--ink-40);line-height:1.7">
             Обновление сметы — через диалог с Markins-агентом. Чтобы внести фактический платёж или скорректировать оценку, скажи в чате.
         </div>
     </div>
 
-    <!-- ==================== TAB: PROGRESS (admin) ==================== -->
+    <!-- ============= TAB: PROGRESS (admin) ============= -->
     <div class="tab-content" id="tab-progress">
         <div class="section-eyebrow">Прогресс</div>
         <h2 class="section-title">Состояние задач по команде</h2>
         <p class="section-sub">Снимок на дату последнего обновления портала. Статусы обновляются по факту через диалог с Markins-агентом.</p>
         <div class="progress-grid" id="progressGrid"></div>
-        <h3 style="font-family:'Unbounded',sans-serif;font-size:14px;font-weight:500;margin-bottom:10px">По участникам</h3>
-        <table class="by-role-table" id="byRoleTable"></table>
+        <h3 style="font-family:'Unbounded',sans-serif;font-size:15px;font-weight:500;margin-bottom:10px">По участникам</h3>
+        <div class="by-role-list" id="byRoleList"></div>
     </div>
 
     <div class="app-footer">
-        Markins · <a href="https://wa.me/79898966950">+7 989 896 69 50</a> · <a href="mailto:info@markins.ru">info@markins.ru</a> · <span id="versionLabel">Версия документа: v0.1, 04.05.2026</span>
+        Markins · <a href="https://wa.me/79898966950">+7 989 896 69 50</a> · <a href="mailto:info@markins.ru">info@markins.ru</a> · <span id="versionLabel">v0.2 · 04.05.2026</span>
     </div>
 
 </div>
 
+<!-- BOTTOM NAV (mobile) -->
+<div class="bottom-nav" id="bottomNav"></div>
+
 <script>
+    // ============= TODAY (для бейджей срочности) =============
+    const TODAY = new Date('2026-05-04');
+
     // ============= DATA =============
     const TEAM = {
-        mark:    { name: 'Марк Кайтмазов',  role: 'Product owner, отчёт, сопровождение', short: 'Марк',    badge: 'badge--neutral', barClass: 'gantt-bar--mark', admin: true },
-        serj:    { name: 'Сераж Шарапилов', role: 'Заказчик договора с МБ, публикации, печать, сдача отчёта', short: 'Сераж', badge: 'badge--blue', barClass: 'gantt-bar--serj' },
-        ali:     { name: 'Али',             role: 'Разработка (лендинг, ЛК, форма заявки), монтаж и публикация уроков', short: 'Али', badge: 'badge--blue', barClass: 'gantt-bar--ali' },
-        magomed: { name: 'Магомед',         role: 'Обработка заявок учеников, тексты речи для уроков 3 и 6', short: 'Магомед', badge: 'badge--green', barClass: 'gantt-bar--magomed' },
-        eva:     { name: 'Ева Демидова',    role: 'Спикер. Уроки 2 и 5 — съёмка и монтаж полностью', short: 'Ева', badge: 'badge--amber', barClass: 'gantt-bar--eva' },
-        ilya:    { name: 'Илья Егоров',     role: 'Спикер. Участие в онлайн- и оффлайн-встречах', short: 'Илья', badge: 'badge--red', barClass: 'gantt-bar--ilya' },
-        ruslan:  { name: 'Руслан Гамзатов', role: 'Спикер. Участие в онлайн- и оффлайн-встречах', short: 'Руслан', badge: 'badge--green', barClass: 'gantt-bar--ruslan' }
+        mark:    { name: 'Марк Кайтмазов',  short: 'Марк',    initial: 'М', role: 'Product owner, отчёт, сопровождение', admin: true },
+        serj:    { name: 'Сераж Шарапилов', short: 'Сераж',   initial: 'С', role: 'Заказчик договора с МБ, публикации, печать, сдача' },
+        ali:     { name: 'Али',             short: 'Али',     initial: 'А', role: 'Лендинг, ЛК, форма заявки, монтаж уроков' },
+        magomed: { name: 'Магомед',         short: 'Магомед', initial: 'Г', role: 'Обработка заявок, тексты речи для уроков 3 и 6' },
+        eva:     { name: 'Ева Демидова',    short: 'Ева',     initial: 'Е', role: 'Спикер. Уроки 2 и 5 — съёмка и монтаж' },
+        ilya:    { name: 'Илья Егоров',     short: 'Илья',    initial: 'И', role: 'Спикер. Онлайн- и оффлайн-встречи' },
+        ruslan:  { name: 'Руслан Гамзатов', short: 'Руслан',  initial: 'Р', role: 'Спикер. Онлайн- и оффлайн-встречи' }
     };
 
-    // Коды доступа. Косметическая защита (от случайных).
-    // Реальные данные учеников живут в защищённых Google-таблицах, не в этом HTML.
+    TEAM.mark.resp = 'Готовит ТЗ для команды. Координирует подготовку и запись уроков. Создаёт WhatsApp-чат с учениками и ведёт сопровождение. Заполняет все 14+1 пункт отчёта в МБ. Финальная упаковка отчёта.';
+    TEAM.serj.resp = 'Подписывает все документы. Привлекает 20 учеников через свои каналы. Публикует анонсы №1 и №2. Спикер уроков 1, 3, 4. Печатает отчёт и сдаёт в Центр поддержки предпринимательства РД.';
+    TEAM.ali.resp = 'Делает лендинг курса, личный кабинет ученика и форму заявки. Монтирует 6 уроков (для 1, 3, 4, 6 — генерирует аватара через HeyGen). Загружает уроки в ЛК.';
+    TEAM.magomed.resp = 'Обзванивает 20 заявок, собирает анкеты и выписки МСП. Пишет тексты речи для уроков 3 и 6 (которые потом озвучит аватар).';
+    TEAM.eva.resp = 'Урок 2 «ИИ в сторителлинге» и Урок 5 «ИИ в дизайне и креативе» — снимает и монтирует полностью самостоятельно.';
+    TEAM.ilya.resp = 'Спикер на онлайн-встрече 30 июля и оффлайн-мероприятии в Махачкале (3–7 августа).';
+    TEAM.ruslan.resp = 'Спикер на онлайн-встрече 30 июля и оффлайн-мероприятии в Махачкале (3–7 августа).';
+
     const PLAIN_PASSWORDS = {
         'mark-mb-2026':    'mark',
         'serj-mb-2026':    'serj',
@@ -708,12 +1056,27 @@
     };
 
     const TAB_LABELS = {
-        tasks:    'Мои задачи',
-        calendar: 'Календарь и Гант',
-        team:     'Команда',
-        docs:     'Документы',
-        budget:   'Смета',
-        progress: 'Прогресс'
+        tasks:    { label: 'Задачи',     icon: 'ic-tasks' },
+        calendar: { label: 'Календарь',  icon: 'ic-calendar' },
+        team:     { label: 'Команда',    icon: 'ic-team' },
+        docs:     { label: 'Документы',  icon: 'ic-docs' },
+        budget:   { label: 'Смета',      icon: 'ic-budget' },
+        progress: { label: 'Прогресс',   icon: 'ic-progress' }
+    };
+
+    const PHASE_KEY = {
+        'Подготовка':            'prep',
+        'Запись уроков':         'record',
+        'Старт и ведение курса': 'run',
+        'Сворачивание и отчёт':  'wrap',
+        'Сдача':                 'deliver'
+    };
+    const PHASE_DATES = {
+        'Подготовка':            '04.05 – 31.05.2026',
+        'Запись уроков':         '01.06 – 25.07.2026',
+        'Старт и ведение курса': '22.06 – 30.07.2026',
+        'Сворачивание и отчёт':  '03.08 – 28.08.2026',
+        'Сдача':                 '29.08 – 31.08.2026'
     };
 
     // ============= LOGIN =============
@@ -739,9 +1102,14 @@
     function showApp(role) {
         document.getElementById('loginScreen').style.display = 'none';
         document.getElementById('app').classList.add('active');
-        document.getElementById('userName').textContent = TEAM[role].name;
-        document.getElementById('userRole').textContent = TEAM[role].role;
+        const m = TEAM[role];
+        document.getElementById('userName').textContent = m.name;
+        document.getElementById('userRole').textContent = m.role;
+        const av = document.getElementById('userAvatar');
+        av.textContent = m.initial;
+        av.className = 'avatar avatar--' + role;
         renderTabs(role);
+        renderBottomNav(role);
         renderTasks(role);
         renderCalendar(role);
         renderTeam(role);
@@ -752,7 +1120,6 @@
         }
     }
 
-    // Auto-login if session exists
     window.addEventListener('DOMContentLoaded', () => {
         const role = sessionStorage.getItem('mb-role');
         if (role && TEAM[role]) showApp(role);
@@ -762,106 +1129,243 @@
         const allowed = TABS_BY_ROLE[role];
         const html = allowed.map((id, idx) => {
             const isAdmin = id === 'budget' || id === 'progress';
-            return `<button class="tab ${isAdmin ? 'tab--admin' : ''} ${idx === 0 ? 'active' : ''}" data-tab="${id}" onclick="switchTab('${id}')">${TAB_LABELS[id]}</button>`;
+            const t = TAB_LABELS[id];
+            return `<button class="tab ${isAdmin ? 'tab--admin' : ''} ${idx === 0 ? 'active' : ''}" data-tab="${id}" onclick="switchTab('${id}')">
+                <svg><use href="#${t.icon}"/></svg>${t.label}
+            </button>`;
         }).join('');
         document.getElementById('tabs').innerHTML = html;
-        // hide all, show first
         document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
         document.getElementById('tab-' + allowed[0]).classList.add('active');
     }
+    function renderBottomNav(role) {
+        const allowed = TABS_BY_ROLE[role];
+        const html = allowed.map((id, idx) => {
+            const isAdmin = id === 'budget' || id === 'progress';
+            const t = TAB_LABELS[id];
+            return `<button class="bn-item ${isAdmin ? 'bn-item--admin' : ''} ${idx === 0 ? 'active' : ''}" data-tab="${id}" onclick="switchTab('${id}')">
+                <svg><use href="#${t.icon}"/></svg><span>${t.label}</span>
+            </button>`;
+        }).join('');
+        const bn = document.getElementById('bottomNav');
+        bn.innerHTML = html;
+        bn.style.setProperty('--bn-count', allowed.length);
+        if (allowed.length <= 1) { bn.style.display = 'none'; }
+    }
     function switchTab(id) {
         document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.tab === id));
+        document.querySelectorAll('.bn-item').forEach(t => t.classList.toggle('active', t.dataset.tab === id));
         document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
         document.getElementById('tab-' + id).classList.add('active');
         window.scrollTo({ top: 0, behavior: 'instant' });
     }
 
-    // ============= RENDERERS — populated from window.* in tasks-data.js block below =============
+    // ============= DATE URGENCY =============
+    function parseDate(str) {
+        // 'дд.мм.гггг' -> Date
+        const m = str.match(/(\d{2})\.(\d{2})\.(\d{4})/);
+        if (!m) return null;
+        return new Date(parseInt(m[3]), parseInt(m[2])-1, parseInt(m[1]));
+    }
+    function dateBadge(due) {
+        if (/постоянно/i.test(due)) return { cls: 'ongoing', label: 'Постоянно' };
+        // Try last date in string
+        const matches = due.match(/(\d{2}\.\d{2}\.\d{4})/g);
+        const targetStr = matches ? matches[matches.length-1] : null;
+        const target = targetStr ? parseDate(targetStr) : null;
+        if (!target) return { cls: 'later', label: due };
+        const days = Math.round((target - TODAY) / 86400000);
+        if (days < 0) return { cls: 'overdue', label: 'Прошло · ' + due };
+        if (days <= 7) return { cls: 'week', label: 'На неделе · ' + due };
+        if (days <= 21) return { cls: 'soon', label: due };
+        return { cls: 'later', label: due };
+    }
+
+    // ============= RENDER TASKS =============
+    let CURRENT_FILTER = 'all'; // for admin filter chips
     function renderTasks(role) {
         const isAdmin = role === 'mark';
-        const tasks = (isAdmin ? Object.values(TASKS_BY_ROLE).flat() : TASKS_BY_ROLE[role] || []);
+        const allTasks = isAdmin ? Object.values(TASKS_BY_ROLE).flat() : (TASKS_BY_ROLE[role] || []);
+        // dashboard for admin
+        const dashWrap = document.getElementById('dashboardWrap');
+        if (isAdmin && allTasks.length) {
+            const onWeek = allTasks.filter(t => dateBadge(t.due).cls === 'week').length;
+            const overdue = allTasks.filter(t => dateBadge(t.due).cls === 'overdue').length;
+            const soon = allTasks.filter(t => dateBadge(t.due).cls === 'soon').length;
+            dashWrap.innerHTML = `<div class="dashboard">
+                <div class="dash-card"><div class="dash-card__num">${allTasks.length}</div><div class="dash-card__label">Всего задач</div></div>
+                <div class="dash-card dash-card--alert"><div class="dash-card__num">${overdue}</div><div class="dash-card__label">Просрочено</div></div>
+                <div class="dash-card dash-card--warn"><div class="dash-card__num">${onWeek}</div><div class="dash-card__label">На неделе</div></div>
+                <div class="dash-card dash-card--info"><div class="dash-card__num">${soon}</div><div class="dash-card__label">Через 1–3 нед</div></div>
+            </div>`;
+        } else {
+            dashWrap.innerHTML = '';
+        }
+
+        // filter chips for admin
+        const fb = document.getElementById('filterbar');
+        if (isAdmin) {
+            const phaseCounts = {};
+            allTasks.forEach(t => { phaseCounts[t.phase] = (phaseCounts[t.phase]||0)+1; });
+            const phases = ['Подготовка','Запись уроков','Старт и ведение курса','Сворачивание и отчёт','Сдача'];
+            const chipHtml = ['all', ...phases.filter(p => phaseCounts[p])].map(key => {
+                const isAll = key === 'all';
+                const phaseK = isAll ? '' : PHASE_KEY[key];
+                const count = isAll ? allTasks.length : phaseCounts[key];
+                const cls = isAll ? '' : 'chip--' + phaseK;
+                const dot = isAll ? '' : `<span class="chip__dot chip__dot--${phaseK}"></span>`;
+                const label = isAll ? 'Все фазы' : key;
+                return `<button class="chip ${cls} ${(CURRENT_FILTER===key || (isAll && CURRENT_FILTER==='all')) ? 'active' : ''}" onclick="setFilter('${key}', '${role}')">${dot}${label}<span class="chip__count">${count}</span></button>`;
+            }).join('');
+            fb.innerHTML = chipHtml;
+        } else {
+            fb.innerHTML = '';
+        }
+
+        const tasks = (isAdmin && CURRENT_FILTER !== 'all') ? allTasks.filter(t => t.phase === CURRENT_FILTER) : allTasks;
+
         // group by phase
         const phases = {};
-        tasks.forEach(t => {
-            phases[t.phase] = phases[t.phase] || [];
-            phases[t.phase].push(t);
-        });
-        const phaseOrder = ['Подготовка', 'Запись уроков', 'Старт и ведение курса', 'Сворачивание и отчёт', 'Сдача'];
+        tasks.forEach(t => { (phases[t.phase] = phases[t.phase] || []).push(t); });
+        const phaseOrder = ['Подготовка','Запись уроков','Старт и ведение курса','Сворачивание и отчёт','Сдача'];
         const html = phaseOrder.filter(p => phases[p]).map((phase, idx) => {
+            const k = PHASE_KEY[phase];
             const phaseTasks = phases[phase];
             const dates = PHASE_DATES[phase] || '';
             return `<div class="phase-block">
                 <div class="phase-head">
-                    <span class="phase-num">Фаза ${String(idx+1).padStart(2,'0')}</span>
-                    <span class="phase-name">${phase}</span>
-                    <span class="phase-dates">${dates}</span>
+                    <div class="phase-marker phase-marker--${k}">${String(phaseOrder.indexOf(phase)+1).padStart(2,'0')}</div>
+                    <div class="phase-name">${phase}</div>
+                    <div class="phase-dates">${dates}</div>
                 </div>
-                ${phaseTasks.map(t => renderTaskCard(t, isAdmin)).join('')}
+                ${phaseTasks.map(t => taskCardHtml(t, isAdmin)).join('')}
             </div>`;
         }).join('');
-        document.getElementById('tasksContainer').innerHTML = html || '<div style="padding:24px;background:var(--bg-1);border-radius:8px;color:var(--fg-70);font-size:13px">У вас пока нет задач в активной фазе. Заходите ближе к старту курса.</div>';
-        if (!isAdmin) {
-            document.getElementById('tasksTitle').textContent = `Задачи: ${TEAM[role].short}`;
+
+        document.getElementById('tasksContainer').innerHTML = html || `<div class="empty-state">
+            <div class="empty-state__title">Пусто</div>
+            <div class="empty-state__sub">У вас нет задач в этой фазе. Поменяйте фильтр или зайдите ближе к старту.</div>
+        </div>`;
+
+        const eb = document.getElementById('tasksEyebrow');
+        const tt = document.getElementById('tasksTitle');
+        if (isAdmin) {
+            eb.textContent = 'Все задачи команды';
+            tt.textContent = 'План реализации курса';
+        } else {
+            eb.textContent = 'Мои задачи';
+            tt.textContent = `Задачи: ${TEAM[role].short}`;
         }
     }
+    function setFilter(phase, role) {
+        CURRENT_FILTER = phase;
+        renderTasks(role);
+    }
 
-    function renderTaskCard(t, isAdmin) {
-        const ownerBadge = isAdmin && t.owner ? `<span class="badge badge--role">${TEAM[t.owner].short}</span>` : '';
+    function taskCardHtml(t, isAdmin) {
+        const k = PHASE_KEY[t.phase] || '';
+        const badge = dateBadge(t.due);
+        const ownerHtml = isAdmin && t.owner
+            ? `<div class="owner-chip"><span class="avatar avatar--${t.owner}">${TEAM[t.owner].initial}</span>${TEAM[t.owner].short}</div>`
+            : '';
         const links = (t.links || []).map(l => l.url
-            ? `<a href="${l.url}" target="_blank">${l.label}</a>`
-            : `<span class="placeholder-link">${l.label}${l.note ? ' — ' + l.note : ''}</span>`
+            ? `<a class="link-item" href="${l.url}" target="_blank" rel="noopener"><svg><use href="#ic-external"/></svg>${l.label}</a>`
+            : `<span class="link-item link-item--placeholder"><svg><use href="#ic-link"/></svg>${l.label}${l.note ? ' — ' + l.note : ''}</span>`
         ).join('');
-        return `<div class="task-card">
-            <div class="task-card__top">
-                <div class="task-card__num">${t.num}</div>
-                <div class="task-card__title">${t.title}</div>
+        return `<div class="task-card" data-phase="${k}" onclick="toggleTask(this)">
+            <div class="task-head">
+                <div class="task-head__main">
+                    <div class="task-head__title-row">
+                        <span class="task-head__num">${t.num}</span>
+                        <span class="task-head__title">${t.title}</span>
+                    </div>
+                    <div class="task-head__meta">
+                        <span class="date-badge date-badge--${badge.cls}"><svg><use href="#ic-clock"/></svg>${badge.label}</span>
+                        ${ownerHtml}
+                    </div>
+                </div>
+                <svg class="task-chevron" width="20" height="20"><use href="#ic-chevron"/></svg>
             </div>
-            <div class="task-card__meta">
-                <span class="badge badge--date">До ${t.due}</span>
-                ${ownerBadge}
-                ${t.tags ? t.tags.map(tag => `<span class="badge badge--neutral">${tag}</span>`).join('') : ''}
-            </div>
-            <div class="task-card__body">
-                ${t.body || ''}
-                <div class="task-section-label">Что считается готовым (ЦКП)</div>
-                <div class="ckp-block">${t.ckp}</div>
-                ${t.report ? `<div class="task-section-label">Куда ложится в отчёт МБ</div><div style="font-size:12px;color:var(--fg-70)">${t.report}</div>` : ''}
-                ${links ? `<div class="task-section-label">Ссылки</div><div class="links-list">${links}</div>` : ''}
+            <div class="task-body" onclick="event.stopPropagation()">
+                ${t.body ? `<div class="task-body__intro">${t.body}</div>` : ''}
+                <div class="task-section">
+                    <div class="task-section__label"><svg><use href="#ic-target"/></svg>Что считается готовым (ЦКП)</div>
+                    <div class="ckp-block">${t.ckp}</div>
+                </div>
+                ${t.report ? `<div class="task-section">
+                    <div class="task-section__label"><svg><use href="#ic-folder"/></svg>Куда ложится в отчёт МБ</div>
+                    <div class="report-block">${t.report}</div>
+                </div>` : ''}
+                ${links ? `<div class="task-section">
+                    <div class="task-section__label"><svg><use href="#ic-link"/></svg>Ссылки</div>
+                    <div class="links-list">${links}</div>
+                </div>` : ''}
             </div>
         </div>`;
     }
+    function toggleTask(el) {
+        el.classList.toggle('expanded');
+    }
 
+    // ============= TEAM =============
     function renderTeam(role) {
         const html = Object.entries(TEAM).map(([key, m]) => {
             const count = (TASKS_BY_ROLE[key] || []).length;
             const isMe = key === role;
-            return `<div class="team-card" style="${isMe ? 'border-color:var(--accent);border-width:2px' : ''}">
-                <div class="team-card__role-badge ${m.badge}">${isMe ? 'Это вы' : 'участник'}</div>
-                <div class="team-card__name">${m.name}</div>
+            return `<div class="team-card ${isMe ? 'team-card--me' : ''}">
+                <div class="team-card__top">
+                    <div class="avatar avatar--${key} team-card__avatar">${m.initial}</div>
+                    <div>
+                        <div class="team-card__name">${m.name}</div>
+                        <span class="team-card__role-tag">${isMe ? 'Это вы' : m.short}</span>
+                    </div>
+                </div>
                 <div class="team-card__title">${m.role}</div>
                 <div class="team-card__resp">${m.resp || ''}</div>
-                <div class="team-card__count">Задач в плане: ${count}</div>
+                <div class="team-card__count"><svg><use href="#ic-checklist"/></svg>${count} задач${count === 1 ? 'а' : count < 5 ? 'и' : ''}</div>
             </div>`;
         }).join('');
         document.getElementById('teamContainer').innerHTML = html;
     }
 
+    // ============= DOCS =============
     function renderDocs(role) {
         const allowed = role === 'mark' ? DOCS : DOCS.filter(d => !d.adminOnly);
-        const html = `<div class="docs-row docs-row--head">
-            <div>№</div><div>Документ / таблица</div><div>Формат сдачи</div><div>Ссылка</div>
-        </div>` + allowed.map(d => `<div class="docs-row">
-            <div class="docs-num">${d.num || '—'}</div>
-            <div class="docs-name">${d.name}<div style="font-size:11px;color:var(--fg-45);margin-top:2px;font-weight:400">${d.descr || ''}</div></div>
+        const html = allowed.map(d => `<div class="docs-row">
+            <div class="docs-num">${d.num || '·'}</div>
+            <div>
+                <div class="docs-name">${d.name}</div>
+                ${d.descr ? `<div class="docs-name__sub">${d.descr}</div>` : ''}
+            </div>
             <div class="docs-format">${d.format || ''}</div>
-            <div class="docs-link">${d.url ? `<a href="${d.url}" target="_blank">Открыть</a>` : '<span class="placeholder-link">ссылку пришлёт Марк</span>'}</div>
+            <div class="docs-link">${d.url ? `<a href="${d.url}" target="_blank" rel="noopener">Открыть<svg><use href="#ic-external"/></svg></a>` : '<span>пришлёт Марк</span>'}</div>
         </div>`).join('');
         document.getElementById('docsContainer').innerHTML = html;
     }
 
+    // ============= CALENDAR =============
+    const WEEK_LABELS = ['04.05','11.05','18.05','25.05','01.06','08.06','15.06','22.06','29.06','06.07','13.07','20.07','27.07','03.08','10.08','17.08','24.08','31.08'];
+    function getRoleBarColor(owner) {
+        return getComputedStyle(document.documentElement).getPropertyValue('--r-' + owner).trim() || '#0E0E11';
+    }
     function renderCalendar(role) {
-        // Render gantt + milestones (same for all roles, but bars belonging to current role highlighted)
-        document.getElementById('ganttContainer').innerHTML = renderWeekGrid(role);
+        const head = `<div class="wg-task wg-head">Задача / поток</div>` + WEEK_LABELS.map(w => `<div class="wg-head">${w}</div>`).join('');
+        const rows = GANTT_ROWS.map(row => {
+            const isMine = role === row.owner || role === 'mark';
+            const opacity = isMine ? 1 : 0.22;
+            const start = ((row.startWeek - 1) / 18) * 100;
+            const width = ((row.endWeek - row.startWeek + 1) / 18) * 100;
+            const m = TEAM[row.owner];
+            const taskHtml = `<div class="wg-task" style="opacity:${opacity}">
+                <span class="avatar avatar--${row.owner}">${m.initial}</span>
+                <span>${row.label}</span>
+            </div>`;
+            const barHtml = `<div class="wg-bar" style="grid-column: 2 / span 18; --start:${start}%; --width:${width}%; --bar-color:var(--r-${row.owner}); --bar-opacity:${opacity}"></div>`;
+            return taskHtml + barHtml;
+        }).join('');
+        document.getElementById('ganttContainer').innerHTML = `<div class="week-grid">${head}${rows}</div>
+            <div class="gantt-hint">Числа в шапке — понедельник недели. Полоса вашей роли — яркая, остальные приглушены.</div>`;
+
         document.getElementById('milestonesContainer').innerHTML = MILESTONES.map(m => `
             <div class="milestone ${m.major ? 'milestone--major' : ''}">
                 <div class="milestone__date">${m.date}</div>
@@ -870,52 +1374,22 @@
         `).join('');
     }
 
-    // 18 weeks: w1=04.05 ... w18=31.08
-    const WEEK_LABELS = ['04.05','11.05','18.05','25.05','01.06','08.06','15.06','22.06','29.06','06.07','13.07','20.07','27.07','03.08','10.08','17.08','24.08','31.08'];
-    function renderWeekGrid(role) {
-        const head = `<div class="wg-task wg-head">Задача / фаза</div>` + WEEK_LABELS.map(w => `<div class="wg-head">${w}</div>`).join('');
-        const rows = GANTT_ROWS.map(row => {
-            const isMine = role === row.owner || role === 'mark';
-            const dim = isMine ? 1 : 0.25;
-            const bar = (function(){
-                const start = ((row.startWeek - 1) / 18) * 100;
-                const width = ((row.endWeek - row.startWeek + 1) / 18) * 100;
-                const color = TEAM[row.owner] ? `var(--bar, ${getBarColor(row.owner)})` : 'var(--accent)';
-                return `<div class="wg-bar" style="grid-column: 2 / span 18; --start:${start}%; --width:${width}%; --bar-color:${getBarColor(row.owner)}; opacity:${dim}"></div>`;
-            })();
-            return `<div class="wg-task" style="opacity:${dim}">${row.label}</div>${bar}`;
-        }).join('');
-        return `<div class="week-grid" style="grid-template-columns: 240px repeat(18, 1fr);">${head}${rows}</div>
-            <div style="font-size:11px;color:var(--fg-45);margin-top:10px">Числа в шапке — понедельник недели. Полоса вашей роли — яркая, остальные — приглушённые.</div>`;
-    }
-    function getBarColor(owner) {
-        const map = {
-            mark: 'rgba(26,26,26,0.85)',
-            serj: 'rgba(30,64,175,0.85)',
-            ali:  'rgba(155,89,182,0.85)',
-            magomed: 'rgba(46,125,50,0.85)',
-            eva:  'rgba(184,134,11,0.85)',
-            ilya: 'rgba(185,28,28,0.7)',
-            ruslan: 'rgba(34,139,34,0.7)'
-        };
-        return map[owner] || 'var(--accent)';
-    }
-
+    // ============= BUDGET =============
     function renderBudget() {
-        const html = `<thead><tr><th>Статья расхода</th><th>Сумма, ₽</th><th>Комментарий</th></tr></thead>
-            <tbody>${BUDGET.items.map(i => `<tr>
-                <td><strong>${i.name}</strong></td>
-                <td>${i.amount.toLocaleString('ru-RU')}</td>
-                <td>${i.comment || ''}</td>
-            </tr>`).join('')}
-            <tr class="total-row">
-                <td>ИТОГО</td>
-                <td>${BUDGET.total.toLocaleString('ru-RU')}</td>
-                <td></td>
-            </tr></tbody>`;
-        document.getElementById('budgetTable').innerHTML = html;
+        const html = BUDGET.items.map(i => `<div class="budget-row">
+            <div>
+                <div class="budget-row__name">${i.name}</div>
+                ${i.comment ? `<div class="budget-row__comment">${i.comment}</div>` : ''}
+            </div>
+            <div class="budget-row__amount">${i.amount.toLocaleString('ru-RU')} ₽</div>
+        </div>`).join('') + `<div class="budget-row budget-row--total">
+            <div><div class="budget-row__name">Итого</div></div>
+            <div class="budget-row__amount">${BUDGET.total.toLocaleString('ru-RU')} ₽</div>
+        </div>`;
+        document.getElementById('budgetContainer').innerHTML = html;
     }
 
+    // ============= PROGRESS =============
     function renderProgress() {
         const all = Object.values(TASKS_BY_ROLE).flat();
         const total = all.length;
@@ -925,93 +1399,94 @@
         document.getElementById('progressGrid').innerHTML = `
             <div class="progress-card"><div class="progress-card__num">${total}</div><div class="progress-card__label">Всего задач</div></div>
             <div class="progress-card progress-card--done"><div class="progress-card__num">${done}</div><div class="progress-card__label">Готово</div></div>
-            <div class="progress-card progress-card--inprogress"><div class="progress-card__num">${inprog}</div><div class="progress-card__label">В работе</div></div>
+            <div class="progress-card progress-card--inprog"><div class="progress-card__num">${inprog}</div><div class="progress-card__label">В работе</div></div>
             <div class="progress-card"><div class="progress-card__num">${todo}</div><div class="progress-card__label">Не начато</div></div>
         `;
         const rolesStat = Object.keys(TEAM).map(key => {
             const ts = TASKS_BY_ROLE[key] || [];
-            const dn = ts.filter(t => t.status === 'done').length;
-            const ip = ts.filter(t => t.status === 'inprog').length;
-            return { key, name: TEAM[key].short, total: ts.length, done: dn, inprog: ip };
+            return { key, name: TEAM[key].short, initial: TEAM[key].initial, total: ts.length, done: ts.filter(t=>t.status==='done').length, inprog: ts.filter(t=>t.status==='inprog').length };
         });
-        document.getElementById('byRoleTable').innerHTML = `
-            <thead><tr><th>Участник</th><th>Всего</th><th>Готово</th><th>В работе</th><th style="width:30%">Прогресс</th></tr></thead>
-            <tbody>${rolesStat.map(r => {
-                const donePct = r.total ? (r.done / r.total) * 100 : 0;
-                const inpPct = r.total ? (r.inprog / r.total) * 100 : 0;
-                return `<tr>
-                    <td><strong>${r.name}</strong></td>
-                    <td>${r.total}</td>
-                    <td>${r.done}</td>
-                    <td>${r.inprog}</td>
-                    <td><div class="by-role-bar"><div class="by-role-bar__done" style="width:${donePct}%"></div><div class="by-role-bar__progress" style="width:${inpPct}%"></div></div></td>
-                </tr>`;
-            }).join('')}</tbody>
-        `;
+        document.getElementById('byRoleList').innerHTML = rolesStat.map(r => {
+            const dp = r.total ? (r.done / r.total) * 100 : 0;
+            const ip = r.total ? (r.inprog / r.total) * 100 : 0;
+            return `<div class="by-role-row">
+                <span class="avatar avatar--${r.key} avatar--sm">${r.initial}</span>
+                <div class="by-role-row__name">${r.name}</div>
+                <div class="by-role-row__stat">${r.total}</div>
+                <div class="by-role-row__stat" style="color:var(--p-run)">${r.done}</div>
+                <div class="by-role-row__bar">
+                    <span class="b-done" style="width:${dp}%"></span>
+                    <span class="b-inprog" style="width:${ip}%"></span>
+                </div>
+            </div>`;
+        }).join('');
     }
 </script>
 
 <script>
-    // ============= TEAM RESPONSIBILITIES (long form) =============
-    TEAM.mark.resp = 'Готовит ТЗ для команды. Координирует подготовку и запись уроков. Создаёт WhatsApp-чат с учениками и ведёт сопровождение. Заполняет все 14+1 пункт отчёта в МБ. Финальная упаковка отчёта.';
-    TEAM.serj.resp = 'Подписывает все документы (договор, программа, отчёт, акт, счёт). Привлекает 20 учеников через свои каналы. Публикует анонсы №1 и №2. Спикер уроков 1, 3, 4. Печатает отчёт и сдаёт в Центр поддержки предпринимательства РД.';
-    TEAM.ali.resp = 'Делает лендинг курса, личный кабинет ученика и форму заявки. Монтирует 6 уроков (для 1, 3, 4, 6 — генерирует аватара через HeyGen по сценарию). Загружает уроки в ЛК.';
-    TEAM.magomed.resp = 'Обзванивает 20 поступивших заявок, собирает анкеты и выписки МСП по каждому ученику. Пишет тексты речи для уроков 3 и 6 (которые потом озвучит аватар).';
-    TEAM.eva.resp = 'Урок 2 «ИИ в сторителлинге и визуальном контенте» и Урок 5 «ИИ в дизайне и креативе» — снимает и монтирует полностью самостоятельно, передаёт готовый файл Али на загрузку в ЛК.';
-    TEAM.ilya.resp = 'Спикер на онлайн-встрече 30 июля и оффлайн-мероприятии в Махачкале (3–7 августа). Подготавливает свою секцию по согласованию с Марком.';
-    TEAM.ruslan.resp = 'Спикер на онлайн-встрече 30 июля и оффлайн-мероприятии в Махачкале (3–7 августа). Подготавливает свою секцию по согласованию с Марком.';
-
-    // ============= PHASE DATES =============
-    const PHASE_DATES = {
-        'Подготовка':            '04.05 – 31.05.2026',
-        'Запись уроков':         '01.06 – 25.07.2026 (нарастающим итогом)',
-        'Старт и ведение курса': '22.06 – 30.07.2026',
-        'Сворачивание и отчёт':  '03.08 – 28.08.2026',
-        'Сдача':                 '29.08 – 31.08.2026'
-    };
-
     // ============= MILESTONES =============
     const MILESTONES = [
-        { date: '18.05.2026', text: 'Договор, ТЗ и спецификация подписаны Серажем с Центром поддержки предпринимательства РД (по основному договору № _ от _).' },
+        { date: '18.05.2026', text: 'Договор, ТЗ и спецификация подписаны Серажем с Центром поддержки предпринимательства РД.' },
         { date: '25.05.2026', text: 'Анонс №1 «Скоро запуск курса» опубликован в ≥2 соцсетях. Скриншоты в папке «9. СМИ».' },
         { date: '31.05.2026', text: 'Лендинг + Личный кабинет + Форма заявки готовы. Анонс уже работает на сбор предзаписи.' },
-        { date: '15.06.2026', text: 'Набрано 20 учеников. По каждому: анкета-заявка (PDF) + выписка из реестра МСП (PDF) + строка в единой таблице.' },
+        { date: '15.06.2026', text: 'Набрано 20 учеников. По каждому: анкета-заявка + выписка из реестра МСП + строка в единой таблице.' },
         { date: '21.06.2026', text: 'Записаны и опубликованы Уроки 1 и 2. Уроки 3 и 4 готовятся параллельно.', major: true },
         { date: '22.06.2026', text: 'СТАРТ КУРСА. Урок 1 в ЛК. WhatsApp-чат создан, ученики добавлены, приветствие отправлено. Анонс №2 «Курс стартовал».', major: true },
         { date: '27.07.2026', text: 'Опубликован Урок 6. Все 6 уроков доступны в ЛК.' },
         { date: '30.07.2026', text: 'Онлайн-встреча в Zoom с записью. Скриншоты + видео в папку «Онлайн встреча».', major: true },
         { date: '03–07.08.2026', text: 'Оффлайн-мероприятие в Махачкале. ≥10 фото и 1–2 видео в папку «Оффлайн мероприятие».', major: true },
         { date: '14.08.2026', text: 'Итоговый тест готов. 20 сертификатов сгенерированы (PDF).' },
-        { date: '21.08.2026', text: 'Сертификаты распечатаны, подписаны Серажем и отсканированы. Единая таблица учеников полностью заполнена.' },
-        { date: '28.08.2026', text: 'Все 14+1 пункт отчёта оформлены, подписи и сканы готовы. Чек-лист требований к отчёту пройден.' },
+        { date: '21.08.2026', text: 'Сертификаты распечатаны, подписаны и отсканированы. Единая таблица учеников полностью заполнена.' },
+        { date: '28.08.2026', text: 'Все 14+1 пунктов отчёта оформлены, подписи и сканы готовы. Чек-лист требований пройден.' },
         { date: '31.08.2026', text: 'СДАЧА ОТЧЁТА в Центр поддержки предпринимательства РД. Запас до договорного дедлайна — 4 месяца.', major: true }
+    ];
+
+    // ============= GANTT ROWS =============
+    const GANTT_ROWS = [
+        { label: 'Документы, ТЗ, программа',          owner: 'mark',    startWeek: 1,  endWeek: 3 },
+        { label: 'Лендинг + ЛК + форма заявки',       owner: 'ali',     startWeek: 2,  endWeek: 4 },
+        { label: 'Анонс №1 + набор учеников',         owner: 'serj',    startWeek: 3,  endWeek: 7 },
+        { label: 'Обработка заявок',                  owner: 'magomed', startWeek: 5,  endWeek: 7 },
+        { label: 'Запись уроков 1, 2 (предстарт)',    owner: 'mark',    startWeek: 5,  endWeek: 7 },
+        { label: 'Запись уроков 3, 4',                owner: 'ali',     startWeek: 7,  endWeek: 10 },
+        { label: 'Урок 2 — съёмка/монтаж (Ева)',      owner: 'eva',     startWeek: 5,  endWeek: 7 },
+        { label: 'Урок 5 — съёмка/монтаж (Ева)',      owner: 'eva',     startWeek: 10, endWeek: 12 },
+        { label: 'Уроки выходят в ЛК (1–6)',          owner: 'mark',    startWeek: 8,  endWeek: 13 },
+        { label: 'Сопровождение в WhatsApp',          owner: 'mark',    startWeek: 8,  endWeek: 14 },
+        { label: 'Онлайн-встреча (Zoom)',             owner: 'mark',    startWeek: 13, endWeek: 13 },
+        { label: 'Оффлайн в Махачкале',               owner: 'mark',    startWeek: 14, endWeek: 14 },
+        { label: 'Итоговый тест + сертификаты',       owner: 'mark',    startWeek: 14, endWeek: 16 },
+        { label: 'Печать сертификатов',               owner: 'serj',    startWeek: 16, endWeek: 16 },
+        { label: 'Оформление 14 пунктов отчёта',      owner: 'mark',    startWeek: 16, endWeek: 18 },
+        { label: 'Печать отчёта + флешка',            owner: 'serj',    startWeek: 18, endWeek: 18 },
+        { label: 'Сдача отчёта в МБ',                 owner: 'serj',    startWeek: 18, endWeek: 18 }
     ];
 
     // ============= DOCS =============
     const DOCS = [
-        { num: '—', name: 'Единая таблица учеников', descr: '20 строк × 18 колонок. Заполняется по мере поступления заявок.', format: 'Google Sheets', url: null },
-        { num: '—', name: 'Папка проекта в Google Диске', descr: 'Все исходники, видео, монтаж, сценарии', format: 'Google Drive', url: null },
-        { num: '—', name: 'Лендинг курса', descr: 'sharapilov.ru/mbai-course3', format: 'Tilda / web', url: null },
-        { num: '—', name: 'Личный кабинет ученика', descr: 'С 6 уроками + итоговый тест', format: 'web', url: null },
-        { num: '01', name: '1. Информационно-презентационные материалы уроков', descr: 'Таблица из 6 строк со скриншотами уроков с сайта/ЛК', format: 'DOCX', url: null },
-        { num: '02', name: '2. Документы, подтверждающие проведение мероприятий', descr: 'Скриншоты Zoom + фото оффлайн-встречи', format: 'DOCX', url: null },
-        { num: '03', name: '3. Журнал учёта услуг для СМСП', descr: '20 строк, нужен подписанный скан', format: 'XLSX + PDF скан', url: null },
-        { num: '04', name: '4. Информация о субъектах МСП', descr: '20 строк × 10 колонок, нужен подписанный скан', format: 'XLSX + PDF скан', url: null },
-        { num: '05', name: '5. Анкеты-Заявки (по 20 ученикам)', descr: 'PDF в папке каждого ученика', format: 'PDF', url: null },
-        { num: '06', name: '6. Выписки из реестра МСП', descr: 'PDF в папке каждого ученика, актуальны на дату подачи заявки', format: 'PDF', url: null },
-        { num: '07', name: '7. Сертификаты участников', descr: 'PDF + бумажный скан в папке каждого ученика', format: 'PDF', url: null },
-        { num: '08', name: '8. Документ обратной связи в чате', descr: 'Таблица с 10–15 скриншотами WhatsApp', format: 'DOCX', url: null },
-        { num: '09', name: '9. Документы размещения в СМИ', descr: 'Площадка / ссылка / дата по каждому анонсу', format: 'XLSX + PDF скан', url: null },
-        { num: '10', name: '10. Информация о спикерах', descr: '4 спикера: ФИО, фото, образование, опыт', format: 'DOCX', url: null },
-        { num: '11', name: '11. Программа курса', descr: 'Теория и практика по 6 урокам, нужен подписанный скан', format: 'DOCX + PDF скан', url: null },
-        { num: '12', name: '12. Расписание мероприятий', descr: 'Дата / время / урок / содержание (9 строк)', format: 'DOCX + PDF скан', url: null },
-        { num: '13', name: '13. Итоговый отчёт', descr: 'Описание выполненных работ + титульный лист', format: 'DOCX', url: null },
-        { num: '14', name: '14. Акт сдачи-приёмки', descr: 'Подписи и печати обеих сторон', format: 'DOCX', url: null },
-        { num: '15', name: '15. Счёт на оплату', descr: 'Нужен подписанный скан', format: 'DOCX + PDF скан', url: null },
-        { num: '—', name: 'Гарантийное письмо', descr: 'Подпись только Исполнителя + печать ИП', format: 'DOCX + PDF скан', url: null },
-        { num: '—', name: 'Итоговый тест по курсу', descr: '10 вопросов с 4 вариантами ответа', format: 'DOCX', url: null },
-        { num: '—', name: 'HeyGen — генерация аватара', descr: 'Для уроков 1, 3, 4, 6 (Сераж/Mark на видео)', format: 'web (heygen.com)', url: 'https://app.heygen.com/' },
-        { num: '—', name: 'Чек-лист требований к отчёту', descr: '25 строк. Проверка перед печатью.', format: 'XLSX', url: null, adminOnly: true }
+        { num: '·',  name: 'Единая таблица учеников', descr: '20 строк × 18 колонок. Заполняется по мере поступления заявок.', format: 'Google Sheets', url: null },
+        { num: '·',  name: 'Папка проекта в Google Диске', descr: 'Все исходники, видео, монтаж, сценарии', format: 'Google Drive', url: null },
+        { num: '·',  name: 'Лендинг курса', descr: 'sharapilov.ru/mbai-course3', format: 'Tilda / web', url: null },
+        { num: '·',  name: 'Личный кабинет ученика', descr: 'С 6 уроками + итоговый тест', format: 'web', url: null },
+        { num: '01', name: 'Информационно-презентационные материалы уроков', descr: 'Таблица из 6 строк со скриншотами уроков с сайта/ЛК', format: 'DOCX', url: null },
+        { num: '02', name: 'Документы, подтверждающие проведение мероприятий', descr: 'Скриншоты Zoom + фото оффлайн-встречи', format: 'DOCX', url: null },
+        { num: '03', name: 'Журнал учёта услуг для СМСП', descr: '20 строк, нужен подписанный скан', format: 'XLSX + PDF', url: null },
+        { num: '04', name: 'Информация о субъектах МСП', descr: '20 строк × 10 колонок, нужен подписанный скан', format: 'XLSX + PDF', url: null },
+        { num: '05', name: 'Анкеты-Заявки (по 20 ученикам)', descr: 'PDF в папке каждого ученика', format: 'PDF', url: null },
+        { num: '06', name: 'Выписки из реестра МСП', descr: 'PDF в папке каждого ученика, актуальны на дату подачи', format: 'PDF', url: null },
+        { num: '07', name: 'Сертификаты участников', descr: 'PDF + бумажный скан в папке каждого ученика', format: 'PDF', url: null },
+        { num: '08', name: 'Документ обратной связи в чате', descr: 'Таблица с 10–15 скриншотами WhatsApp', format: 'DOCX', url: null },
+        { num: '09', name: 'Документы размещения в СМИ', descr: 'Площадка / ссылка / дата по каждому анонсу', format: 'XLSX + PDF', url: null },
+        { num: '10', name: 'Информация о спикерах', descr: '4 спикера: ФИО, фото, образование, опыт', format: 'DOCX', url: null },
+        { num: '11', name: 'Программа курса', descr: 'Теория и практика по 6 урокам', format: 'DOCX + PDF', url: null },
+        { num: '12', name: 'Расписание мероприятий', descr: 'Дата / время / урок / содержание (9 строк)', format: 'DOCX + PDF', url: null },
+        { num: '13', name: 'Итоговый отчёт', descr: 'Описание выполненных работ + титульный лист', format: 'DOCX', url: null },
+        { num: '14', name: 'Акт сдачи-приёмки', descr: 'Подписи и печати обеих сторон', format: 'DOCX', url: null },
+        { num: '15', name: 'Счёт на оплату', descr: 'Нужен подписанный скан', format: 'DOCX + PDF', url: null },
+        { num: '·',  name: 'Гарантийное письмо', descr: 'Подпись только Исполнителя + печать ИП', format: 'DOCX + PDF', url: null },
+        { num: '·',  name: 'Итоговый тест по курсу', descr: '10 вопросов с 4 вариантами ответа', format: 'DOCX', url: null },
+        { num: '·',  name: 'HeyGen — генерация аватара', descr: 'Для уроков 1, 3, 4, 6', format: 'web', url: 'https://app.heygen.com/' },
+        { num: '·',  name: 'Чек-лист требований к отчёту', descr: '25 строк. Проверка перед печатью.', format: 'XLSX', url: null, adminOnly: true }
     ];
 
     // ============= BUDGET =============
@@ -1028,530 +1503,216 @@
 </script>
 
 <script>
-    // ============= GANTT ROWS =============
-    // weeks: 1=04.05, 2=11.05, ..., 8=22.06 (start), 13=27.07 (last lesson), 14=03.08 (offline), 18=31.08 (сдача)
-    const GANTT_ROWS = [
-        { label: 'Документы, ТЗ, программа',          owner: 'mark',    startWeek: 1,  endWeek: 3 },
-        { label: 'Лендинг + ЛК + форма заявки',       owner: 'ali',     startWeek: 2,  endWeek: 4 },
-        { label: 'Анонс №1 + набор учеников',         owner: 'serj',    startWeek: 3,  endWeek: 7 },
-        { label: 'Обработка заявок',                  owner: 'magomed', startWeek: 5,  endWeek: 7 },
-        { label: 'Запись уроков 1, 2 (предстарт)',    owner: 'mark',    startWeek: 5,  endWeek: 7 },
-        { label: 'Запись уроков 3, 4',                owner: 'ali',     startWeek: 7,  endWeek: 10 },
-        { label: 'Урок 2 — съёмка/монтаж (Ева)',      owner: 'eva',     startWeek: 5,  endWeek: 7 },
-        { label: 'Урок 5 — съёмка/монтаж (Ева)',      owner: 'eva',     startWeek: 10, endWeek: 12 },
-        { label: 'Уроки выходят в ЛК (1–6)',          owner: 'mark',    startWeek: 8,  endWeek: 13 },
-        { label: 'Сопровождение в WhatsApp-чате',     owner: 'mark',    startWeek: 8,  endWeek: 14 },
-        { label: 'Онлайн-встреча (Zoom)',             owner: 'mark',    startWeek: 13, endWeek: 13 },
-        { label: 'Оффлайн-мероприятие в Махачкале',   owner: 'mark',    startWeek: 14, endWeek: 14 },
-        { label: 'Итоговый тест + сертификаты',       owner: 'mark',    startWeek: 14, endWeek: 16 },
-        { label: 'Печать сертификатов',               owner: 'serj',    startWeek: 16, endWeek: 16 },
-        { label: 'Оформление 14 пунктов отчёта',      owner: 'mark',    startWeek: 16, endWeek: 18 },
-        { label: 'Печать отчёта + флешка',            owner: 'serj',    startWeek: 18, endWeek: 18 },
-        { label: 'Сдача отчёта в МБ',                 owner: 'serj',    startWeek: 18, endWeek: 18 }
-    ];
-</script>
-
-<script>
-    // ============= TASKS BY ROLE =============
-    // Each task: { num, title, due, ckp, body?, report?, links?, status?, owner?, phase, tags? }
+    // ============= TASKS =============
     const T = (num, title, due, phase, ckp, opts = {}) => ({ num, title, due, phase, ckp, ...opts });
 
     const TASKS_BY_ROLE = {
         mark: [
-            T('M01', 'Подготовить пакет документов: договор, ТЗ, спецификация',
-                '11.05.2026', 'Подготовка',
+            T('M01', 'Подготовить пакет документов: договор, ТЗ, спецификация', '11.05.2026', 'Подготовка',
                 'Готовые черновики договора с Центром поддержки предпринимательства РД, ТЗ и спецификации. Передать Серажу на согласование с Заказчиком и подписание.',
-                {
-                    owner: 'mark',
-                    body: '<p>Доделать черновики на основе шаблонов из папки <code>Договор и план/</code>. После подписания Серажем — вписать номер и дату договора во все шаблоны отчёта (п.11, п.12, п.13, п.14, п.15, титульный лист).</p>',
-                    report: 'Подписанные оригиналы в 2 экземплярах + сканы PDF → папка <code>2026/Договор и план/</code>',
-                    links: [
-                        { label: 'Папка «Договор и план»' },
-                        { label: 'Шаблон акта (п.14)' },
-                        { label: 'Шаблон счёта (п.15)' }
-                    ]
-                }
-            ),
-            T('M02', 'Подготовить программу курса (п.11) к подписанию',
-                '15.05.2026', 'Подготовка',
+                { owner: 'mark', body: '<p>Доделать черновики на основе шаблонов из папки <code>Договор и план/</code>. После подписания Серажем — вписать номер и дату договора во все шаблоны отчёта (п.11, п.12, п.13, п.14, п.15, титульный лист).</p>',
+                  report: 'Подписанные оригиналы в 2 экземплярах + сканы PDF → папка <code>2026/Договор и план/</code>',
+                  links: [{ label: 'Папка «Договор и план»' }, { label: 'Шаблон акта (п.14)' }, { label: 'Шаблон счёта (п.15)' }] }),
+            T('M02', 'Подготовить программу курса (п.11) к подписанию', '15.05.2026', 'Подготовка',
                 'Финализированный файл «11. Программа курса.docx» (теория и практика по 6 урокам) с вписанным номером и датой договора. Готов на печать и подпись Серажем.',
-                {
-                    owner: 'mark',
-                    report: 'Подписанный DOCX + PDF скан → <code>Отчёт в МБ/11. Программа курса/</code>',
-                    links: [
-                        { label: 'Шаблон 11. Программа курса.docx' }
-                    ]
-                }
-            ),
-            T('M03', 'ТЗ для Али: лендинг курса',
-                '08.05.2026', 'Подготовка',
+                { owner: 'mark', report: 'Подписанный DOCX + PDF скан → <code>Отчёт в МБ/11. Программа курса/</code>',
+                  links: [{ label: 'Шаблон 11. Программа курса.docx' }] }),
+            T('M03', 'ТЗ для Али: лендинг курса', '08.05.2026', 'Подготовка',
                 'Документ (Google Doc/DOCX) с описанием структуры лендинга: hero, описание курса, программа, спикеры, форма записи, тексты блоков, требования к дизайну, ссылки на референсы.',
-                {
-                    owner: 'mark',
-                    body: '<p>Передать Али лично или в чате проекта. Лендинг будет жить на <code>sharapilov.ru/mbai-course3</code>.</p>',
-                    links: [
-                        { label: 'Шаблон ТЗ для Markins' }
-                    ]
-                }
-            ),
-            T('M04', 'ТЗ для Али: личный кабинет ученика',
-                '11.05.2026', 'Подготовка',
+                { owner: 'mark', body: '<p>Передать Али лично или в чате проекта. Лендинг будет жить на <code>sharapilov.ru/mbai-course3</code>.</p>' }),
+            T('M04', 'ТЗ для Али: личный кабинет ученика', '11.05.2026', 'Подготовка',
                 'Документ с описанием ЛК: разделы (уроки, материалы, итоговый тест), навигация, ограничение доступа по сроку (до 30.12.2026), требования к дизайну.',
-                { owner: 'mark' }
-            ),
-            T('M05', 'ТЗ для Али: форма заявки',
-                '08.05.2026', 'Подготовка',
-                'Документ с обязательными полями формы: ФИО, телефон, email, наименование МСП, ИНН, юр. адрес, пол, правовой статус (ИП/ООО). Куда приходят заявки. Текст благодарности после отправки.',
-                { owner: 'mark' }
-            ),
-            T('M06', 'Анонс-баннер №1 «Скоро запуск курса»',
-                '20.05.2026', 'Подготовка',
-                'Баннер (PNG/JPG, 1080×1080 + 1200×628) и текст поста (200–300 слов: что за курс, для кого, когда старт, как записаться). Передать Серажу на публикацию.',
-                {
-                    owner: 'mark',
-                    report: 'Исходники сохранить (Figma / папка проекта). Готовый баннер передать Серажу.',
-                    links: [
-                        { label: 'Текст анонса (готов)', url: '../Анонс/текст-анонса.md' },
-                        { label: 'Афиша', url: '../Анонс/афиша.html' }
-                    ]
-                }
-            ),
-            T('M07', 'Сценарий урока 1 «Введение в ИИ для создания контента»',
-                '12.06.2026', 'Запись уроков',
-                'Текст речи для аватара (Сераж на видео). 8–12 минут. Спикер выступает по сценарию.',
-                {
-                    owner: 'mark',
-                    body: '<p>Передать Али — он сгенерирует аватар через HeyGen и смонтирует.</p>',
-                    links: [
-                        { label: 'Лист «План курса» в xlsx — урок 1' }
-                    ]
-                }
-            ),
-            T('M08', 'Сценарий урока 4 «Интеграция ИИ инструментов и стратегия монетизации»',
-                '06.07.2026', 'Запись уроков',
-                'Текст речи для аватара (Сераж на видео). 8–12 минут. По плану публикуется 13.07.',
-                { owner: 'mark' }
-            ),
-            T('M09', 'Запись и публикация всех 6 уроков — координация',
-                '27.07.2026', 'Старт и ведение курса',
-                'Все 6 уроков опубликованы в ЛК ученика по графику. По каждому уроку: видеозапись (.mp4), все использованные файлы (презентации, PDF), скриншоты урока с сайта/ЛК, заполненное «Приложение к уроку N.docx».',
-                {
-                    owner: 'mark',
-                    body: '<p><strong>График публикации:</strong></p><ul><li>22.06 — Урок 1 (Сераж/аватар)</li><li>29.06 — Урок 2 (Ева)</li><li>06.07 — Урок 3 (Сераж/аватар, текст Магомед)</li><li>13.07 — Урок 4 (Сераж/аватар, сценарий Mark)</li><li>20.07 — Урок 5 (Ева)</li><li>27.07 — Урок 6 (Mark/аватар, текст Магомед)</li></ul>',
-                    report: 'По каждому уроку папка <code>Отчёт в МБ/1-2. Материалы уроков/Урок N/</code> с видео, файлами, скриншотами и приложением',
-                    tags: ['координация']
-                }
-            ),
-            T('M10', 'Анонс-баннер №2 «Курс стартовал!»',
-                '19.06.2026', 'Старт и ведение курса',
-                'Баннер (PNG/JPG, 1080×1080 + 1200×628) с текстом «Курс стартовал!» и текст поста (старт курса, как присоединиться, ссылка). Передать Серажу.',
-                { owner: 'mark' }
-            ),
-            T('M11', 'Создать WhatsApp-чат и добавить учеников',
-                '22.06.2026', 'Старт и ведение курса',
-                'Группа WhatsApp с названием курса. Добавить всех 20 учеников (номера из единой таблицы). Приветственное сообщение: представление, план курса, правила чата.',
-                {
-                    owner: 'mark',
-                    report: 'Скриншот созданного чата с участниками → <code>Отчёт в МБ/8. Обратная связь в чате/Скриншоты/</code>'
-                }
-            ),
-            T('M12', 'Назначить и провести онлайн-встречу (Zoom)',
-                '30.07.2026', 'Старт и ведение курса',
-                'Zoom-встреча проведена с записью. Сделано 2–3 скриншота экрана (начало, процесс, финал). До встречи — 4 напоминания в чат: за 3д, 1д, в день, за 1ч.',
-                {
-                    owner: 'mark',
-                    body: '<p>Дату назначить до 06.07. Включить запись Zoom с самого начала. Спикеры онлайн-встречи: Сераж, Ева, Илья, Руслан.</p>',
-                    report: 'Видеозапись и скриншоты → <code>Отчёт в МБ/1-2. Материалы уроков/Онлайн встреча/</code>. Скриншоты потом — в п.2 отчёта.'
-                }
-            ),
-            T('M13', 'Выбрать и забронировать помещение для оффлайн',
-                '20.07.2026', 'Старт и ведение курса',
-                'Найдено помещение в Махачкале на 03–07.08.2026. Адрес, дата, время вписаны в лист «План курса» и «12. Расписание мероприятий.docx».',
-                {
-                    owner: 'mark',
-                    body: '<p>Без расходов на аренду (по договорённости). Возможны: коворкинг, аудитория, офис партнёра.</p>'
-                }
-            ),
-            T('M14', 'Провести оффлайн-мероприятие',
-                '07.08.2026', 'Старт и ведение курса',
-                'Оффлайн в Махачкале проведён. ≥10 фотографий (общие планы, участники, спикер, процесс) + 1–2 коротких видео.',
-                {
-                    owner: 'mark',
-                    body: '<p>Спикеры оффлайн: Илья и Руслан. До встречи — 4 напоминания в чат.</p>',
-                    report: 'Фото и видео → <code>Отчёт в МБ/1-2. Материалы уроков/Оффлайн мероприятие/</code>. Фото потом — в п.2 отчёта.'
-                }
-            ),
-            T('M15', 'Сопровождение в чате WhatsApp',
-                'Постоянно (22.06 – 21.08)', 'Старт и ведение курса',
-                'Минимум 2–3 сообщения в неделю от организаторов: ответы на вопросы, полезные материалы, напоминания о новых уроках, сбор обратной связи.',
-                { owner: 'mark', tags: ['постоянно'] }
-            ),
-            T('M16', 'Собрать 10–15 скриншотов чата для отчёта',
-                '14.08.2026', 'Сворачивание и отчёт',
-                '10–15 показательных скриншотов из чата: вопросы, ответы, обсуждения уроков, обратная связь.',
-                {
-                    owner: 'mark',
-                    report: 'Скриншоты → <code>Отчёт в МБ/8. Обратная связь в чате/Скриншоты/</code>. Затем вставить в «8. Документ обратной связи.docx» (16 строк: дата / описание / скриншот).'
-                }
-            ),
-            T('M17', 'Подготовить итоговый тест по курсу',
-                '10.08.2026', 'Сворачивание и отчёт',
+                { owner: 'mark' }),
+            T('M05', 'ТЗ для Али: форма заявки', '08.05.2026', 'Подготовка',
+                'Документ с обязательными полями формы: ФИО, телефон, email, наименование МСП, ИНН, юр. адрес, пол, правовой статус (ИП/ООО). Куда приходят заявки. Текст благодарности.',
+                { owner: 'mark' }),
+            T('M06', 'Анонс-баннер №1 «Скоро запуск курса»', '20.05.2026', 'Подготовка',
+                'Баннер (PNG/JPG, 1080×1080 + 1200×628) и текст поста (200–300 слов). Передать Серажу на публикацию.',
+                { owner: 'mark', report: 'Исходники сохранить (Figma / папка проекта). Готовый баннер передать Серажу.',
+                  links: [{ label: 'Текст анонса (готов)', url: '../Анонс/текст-анонса.md' }, { label: 'Афиша', url: '../Анонс/афиша.html' }] }),
+            T('M07', 'Сценарий урока 1 «Введение в ИИ для создания контента»', '12.06.2026', 'Запись уроков',
+                'Текст речи для аватара (Сераж на видео). 8–12 минут.',
+                { owner: 'mark', body: '<p>Передать Али — он сгенерирует аватар через HeyGen и смонтирует.</p>' }),
+            T('M08', 'Сценарий урока 4 «Интеграция ИИ инструментов и стратегия монетизации»', '06.07.2026', 'Запись уроков',
+                'Текст речи для аватара (Сераж на видео). 8–12 минут. По плану публикуется 13.07.', { owner: 'mark' }),
+            T('M09', 'Запись и публикация всех 6 уроков — координация', '27.07.2026', 'Старт и ведение курса',
+                'Все 6 уроков опубликованы в ЛК ученика по графику. По каждому уроку: видеозапись, файлы, скриншоты, заполненное «Приложение к уроку N.docx».',
+                { owner: 'mark', body: '<p><strong>График публикации:</strong></p><ul><li>22.06 — Урок 1 (Сераж/аватар)</li><li>29.06 — Урок 2 (Ева)</li><li>06.07 — Урок 3 (Сераж/аватар, текст Магомед)</li><li>13.07 — Урок 4 (Сераж/аватар, сценарий Mark)</li><li>20.07 — Урок 5 (Ева)</li><li>27.07 — Урок 6 (Mark/аватар, текст Магомед)</li></ul>',
+                  report: 'По каждому уроку папка <code>Отчёт в МБ/1-2. Материалы уроков/Урок N/</code>' }),
+            T('M10', 'Анонс-баннер №2 «Курс стартовал!»', '19.06.2026', 'Старт и ведение курса',
+                'Баннер (PNG/JPG, 1080×1080 + 1200×628) с текстом «Курс стартовал!» и текст поста.', { owner: 'mark' }),
+            T('M11', 'Создать WhatsApp-чат и добавить учеников', '22.06.2026', 'Старт и ведение курса',
+                'Группа WhatsApp с названием курса. Все 20 учеников добавлены. Приветственное сообщение отправлено.',
+                { owner: 'mark', report: 'Скриншот созданного чата с участниками → <code>Отчёт в МБ/8. Обратная связь в чате/Скриншоты/</code>' }),
+            T('M12', 'Назначить и провести онлайн-встречу (Zoom)', '30.07.2026', 'Старт и ведение курса',
+                'Zoom-встреча проведена с записью. 2–3 скриншота (начало, процесс, финал). Перед встречей — 4 напоминания в чат.',
+                { owner: 'mark', body: '<p>Дату назначить до 06.07. Спикеры онлайн-встречи: Сераж, Ева, Илья, Руслан.</p>',
+                  report: 'Видеозапись и скриншоты → <code>Отчёт в МБ/1-2. Материалы уроков/Онлайн встреча/</code>' }),
+            T('M13', 'Выбрать и забронировать помещение для оффлайн', '20.07.2026', 'Старт и ведение курса',
+                'Помещение в Махачкале на 03–07.08.2026. Адрес, дата, время вписаны в лист «План курса» и «12. Расписание мероприятий».',
+                { owner: 'mark', body: '<p>Без расходов на аренду (по договорённости).</p>' }),
+            T('M14', 'Провести оффлайн-мероприятие', '07.08.2026', 'Старт и ведение курса',
+                'Оффлайн в Махачкале проведён. ≥10 фотографий + 1–2 коротких видео.',
+                { owner: 'mark', body: '<p>Спикеры оффлайн: Илья и Руслан. До встречи — 4 напоминания в чат.</p>',
+                  report: 'Фото и видео → <code>Отчёт в МБ/1-2. Материалы уроков/Оффлайн мероприятие/</code>' }),
+            T('M15', 'Сопровождение в чате WhatsApp', 'Постоянно', 'Старт и ведение курса',
+                'Минимум 2–3 сообщения в неделю от организаторов: ответы, материалы, напоминания, обратная связь.',
+                { owner: 'mark' }),
+            T('M16', 'Собрать 10–15 скриншотов чата для отчёта', '14.08.2026', 'Сворачивание и отчёт',
+                '10–15 показательных скриншотов из чата.',
+                { owner: 'mark', report: 'Скриншоты → <code>Отчёт в МБ/8. Обратная связь в чате/Скриншоты/</code>. Затем — в «8. Документ обратной связи».' }),
+            T('M17', 'Подготовить итоговый тест по курсу', '10.08.2026', 'Сворачивание и отчёт',
                 '10 вопросов с 4 вариантами ответа по содержанию курса. Указан правильный ответ.',
-                {
-                    owner: 'mark',
-                    body: '<p>Делать после того как все 6 уроков подготовлены.</p>',
-                    report: 'DOCX → <code>Отчёт в МБ/1-2. Материалы уроков/Итоговый тест по курсу.docx</code>'
-                }
-            ),
-            T('M18', 'Сгенерировать 20 сертификатов (PDF)',
-                '14.08.2026', 'Сворачивание и отчёт',
-                '20 персональных PDF-сертификатов в фирменном стиле Markins (Unbounded/Commissioner, фирменные цвета, лого). Шаблон с подстановкой ФИО.',
-                {
-                    owner: 'mark',
-                    body: '<p>HTML-шаблон → скрипт генерации → 20 PDF.</p>',
-                    report: 'Каждый PDF → <code>Отчёт в МБ/5-7. Данные по каждому ученику/[ФИО]/Сертификат.pdf</code>. Ссылки в единой таблице учеников (колонка «Сертификат»).'
-                }
-            ),
-            T('M19', 'Заполнить единую таблицу учеников',
-                '21.08.2026', 'Сворачивание и отчёт',
-                'Все 18 колонок заполнены по каждому из 20 учеников. Все ссылки указывают на реальные файлы в папках учеников.',
-                {
-                    owner: 'mark',
-                    links: [
-                        { label: 'Единая таблица учеников (Google Sheets)' }
-                    ]
-                }
-            ),
-            T('M20', 'Заполнить Журнал учёта услуг для СМСП (п.3)',
-                '24.08.2026', 'Сворачивание и отчёт',
-                'XLSX заполнен (20 строк), номер и дата договора в заголовке. Передан Серажу на печать → подпись → скан.',
-                {
-                    owner: 'mark',
-                    report: 'XLSX + PDF скан → <code>Отчёт в МБ/3. Журнал учёта СМСП/</code>'
-                }
-            ),
-            T('M21', 'Заполнить Информацию о субъектах МСП (п.4)',
-                '24.08.2026', 'Сворачивание и отчёт',
-                'XLSX заполнен (20 строк × 10 колонок). Форма поддержки = «информационная», вид = «обучающий курс». Подписан и отсканирован.',
-                {
-                    owner: 'mark',
-                    report: 'XLSX + PDF скан → <code>Отчёт в МБ/4. Информация о субъектах МСП/</code>'
-                }
-            ),
-            T('M22', 'Проверить комплект у всех 20 учеников (п.5–7)',
-                '21.08.2026', 'Сворачивание и отчёт',
-                'В каждой папке ученика — 4 файла: Анкета-заявка.pdf, Выписка из реестра МСП.pdf, Сертификат.pdf, Сертификат - Скан.pdf.',
-                {
-                    owner: 'mark',
-                    body: '<p>Где не хватает — записать в комментарий единой таблицы.</p>'
-                }
-            ),
-            T('M23', 'Оформить документ обратной связи в чате (п.8)',
-                '24.08.2026', 'Сворачивание и отчёт',
-                'DOCX с таблицей на 16 строк: Дата / Описание / Скриншот. Вставлены 10–15 скриншотов с описанием темы и номера урока.',
-                {
-                    owner: 'mark',
-                    report: '<code>Отчёт в МБ/8. Обратная связь в чате/8. Документ, подтверждающий обратную связь в чате.docx</code>'
-                }
-            ),
-            T('M24', 'Оформить документ СМИ (п.9)',
-                '24.08.2026', 'Сворачивание и отчёт',
-                'XLSX заполнен: Площадка / Ссылка / Дата / Описание по каждому анонсу. Скриншоты публикаций в той же папке.',
-                {
-                    owner: 'mark',
-                    report: 'XLSX + PDF скан → <code>Отчёт в МБ/9. СМИ/</code>'
-                }
-            ),
-            T('M25', 'Оформить информацию о спикерах (п.10)',
-                '24.08.2026', 'Сворачивание и отчёт',
-                '4 таблицы (Шарапилов, Кайтмазов, Гамзатов, Демидова). По каждому: ФИО, возраст, адрес, образование, профиль, опыт, достижения, ссылки на соцсети, фото.',
-                {
-                    owner: 'mark',
-                    body: '<p>Информацию собрать у каждого спикера лично — пинговать в WhatsApp с шаблоном.</p>',
-                    report: '<code>Отчёт в МБ/10. Информация о спикерах/10. Информация о спикерах.docx</code>'
-                }
-            ),
-            T('M26', 'Финализировать расписание мероприятий (п.12)',
-                '24.08.2026', 'Сворачивание и отчёт',
-                '9 строк с реальными датами и временем: 6 уроков (даты публикаций), онлайн-встреча, оффлайн-мероприятие, итоговый тест.',
-                {
-                    owner: 'mark',
-                    report: 'DOCX + PDF скан → <code>Отчёт в МБ/12. Расписание мероприятий/</code>'
-                }
-            ),
-            T('M27', 'Оформить п.1 — скриншоты уроков с сайта',
-                '24.08.2026', 'Сворачивание и отчёт',
-                'DOCX с таблицей из 6 строк (по уроку). В каждой строке — скриншот урока с сайта/ЛК (название, описание, видеоплеер, приложение, ДЗ, цель).',
-                {
-                    owner: 'mark',
-                    report: '<code>Отчёт в МБ/1-2. Материалы уроков/1. Информационно-презентационные материалы уроков.docx</code>'
-                }
-            ),
-            T('M28', 'Оформить п.2 — скриншоты Zoom + фото оффлайн',
-                '24.08.2026', 'Сворачивание и отчёт',
-                'DOCX. Таблица 1: скриншоты Zoom-встречи с датой и описанием. Таблица 2: фотографии оффлайн с датой, местом, описанием.',
-                {
-                    owner: 'mark',
-                    report: '<code>Отчёт в МБ/1-2. Материалы уроков/2. Документы, подтверждающие проведение мероприятий.docx</code>'
-                }
-            ),
-            T('M29', 'Написать итоговый отчёт (п.13)',
-                '26.08.2026', 'Сворачивание и отчёт',
-                'DOCX с описанием выполненных работ, списком оказанных услуг (6 уроков + онлайн + оффлайн + тест + сопровождение). Реквизиты Исполнителя проверены. Титульный лист — отдельным файлом, на подпись обеими сторонами.',
-                {
-                    owner: 'mark',
-                    report: '<code>Отчёт в МБ/13. Итоговый отчёт/13. Отчёт.docx</code> + <code>0. Отчёт - Титульный лист.docx</code> + PDF скан титульного'
-                }
-            ),
-            T('M30', 'Оформить акт сдачи-приёмки (п.14)',
-                '26.08.2026', 'Сворачивание и отчёт',
-                'DOCX: номер и дата договора, дата акта, сумма (цифрами и прописью) в тексте и таблице. Реквизиты сторон проверены.',
-                {
-                    owner: 'mark',
-                    report: '<code>Отчёт в МБ/14. Акт сдачи-приёмки/</code> — на подпись обеими сторонами + печати'
-                }
-            ),
-            T('M31', 'Оформить счёт на оплату (п.15)',
-                '26.08.2026', 'Сворачивание и отчёт',
-                'DOCX: номер и дата счёта, номер и дата договора, сумма цифрами и прописью. Реквизиты Исполнителя и Плательщика.',
-                {
-                    owner: 'mark',
-                    report: 'DOCX + PDF скан → <code>Отчёт в МБ/15. Счёт на оплату/</code>'
-                }
-            ),
-            T('M32', 'Оформить гарантийное письмо',
-                '26.08.2026', 'Сворачивание и отчёт',
-                'DOCX: дата, реквизиты ИП (ИНН, ОГРНИП, адрес, р/с, банк). Подпись ТОЛЬКО Исполнителя + печать ИП.',
-                {
-                    owner: 'mark',
-                    report: 'DOCX + PDF скан → <code>Отчёт в МБ/Гарантийное письмо/</code>'
-                }
-            ),
-            T('M33', 'Финальная проверка по чек-листу требований',
-                '28.08.2026', 'Сворачивание и отчёт',
-                'Все 25 строк в «Требованиях к отчёту.xlsx» помечены: Файл готов, Согласован, Подпись/Скан, Распечатан, На флешке. Где не готово — комментарий.',
-                {
-                    owner: 'mark',
-                    links: [
-                        { label: 'Чек-лист требований к отчёту.xlsx' }
-                    ]
-                }
-            ),
-            T('M34', 'Упаковать отчёт для сдачи',
-                '29.08.2026', 'Сдача',
-                'Полный пакет для МБ: бумажный экземпляр (все документы, подписи, печати) + флешка USB с электронными копиями всех файлов из «Отчёт в МБ/».',
-                {
-                    owner: 'mark',
-                    body: '<p>Проверить что на флешке всё совпадает с бумажным пакетом. Проставить «На флешке» в чек-листе.</p>'
-                }
-            )
+                { owner: 'mark', body: '<p>Делать после того как все 6 уроков подготовлены.</p>',
+                  report: 'DOCX → <code>Отчёт в МБ/1-2. Материалы уроков/Итоговый тест по курсу.docx</code>' }),
+            T('M18', 'Сгенерировать 20 сертификатов (PDF)', '14.08.2026', 'Сворачивание и отчёт',
+                '20 персональных PDF-сертификатов в фирменном стиле Markins. Шаблон с подстановкой ФИО.',
+                { owner: 'mark', body: '<p>HTML-шаблон → скрипт генерации → 20 PDF.</p>',
+                  report: 'PDF → <code>Отчёт в МБ/5-7. Данные по каждому ученику/[ФИО]/Сертификат.pdf</code>' }),
+            T('M19', 'Заполнить единую таблицу учеников', '21.08.2026', 'Сворачивание и отчёт',
+                'Все 18 колонок заполнены по каждому из 20 учеников. Все ссылки указывают на реальные файлы.',
+                { owner: 'mark', links: [{ label: 'Единая таблица учеников (Google Sheets)' }] }),
+            T('M20', 'Заполнить Журнал учёта услуг для СМСП (п.3)', '24.08.2026', 'Сворачивание и отчёт',
+                'XLSX заполнен (20 строк), номер и дата договора в заголовке. Подписан и отсканирован.',
+                { owner: 'mark', report: 'XLSX + PDF → <code>Отчёт в МБ/3. Журнал учёта СМСП/</code>' }),
+            T('M21', 'Заполнить Информацию о субъектах МСП (п.4)', '24.08.2026', 'Сворачивание и отчёт',
+                'XLSX заполнен (20 строк × 10 колонок). Форма поддержки = «информационная», вид = «обучающий курс». Подписан.',
+                { owner: 'mark', report: 'XLSX + PDF → <code>Отчёт в МБ/4. Информация о субъектах МСП/</code>' }),
+            T('M22', 'Проверить комплект у всех 20 учеников (п.5–7)', '21.08.2026', 'Сворачивание и отчёт',
+                'В каждой папке 4 файла: Анкета-заявка.pdf, Выписка из реестра МСП.pdf, Сертификат.pdf, Сертификат - Скан.pdf.',
+                { owner: 'mark' }),
+            T('M23', 'Оформить документ обратной связи в чате (п.8)', '24.08.2026', 'Сворачивание и отчёт',
+                'DOCX с таблицей на 16 строк: Дата / Описание / Скриншот.',
+                { owner: 'mark', report: '<code>Отчёт в МБ/8. Обратная связь в чате/8. Документ, подтверждающий обратную связь в чате.docx</code>' }),
+            T('M24', 'Оформить документ СМИ (п.9)', '24.08.2026', 'Сворачивание и отчёт',
+                'XLSX заполнен: Площадка / Ссылка / Дата / Описание по каждому анонсу.',
+                { owner: 'mark', report: 'XLSX + PDF → <code>Отчёт в МБ/9. СМИ/</code>' }),
+            T('M25', 'Оформить информацию о спикерах (п.10)', '24.08.2026', 'Сворачивание и отчёт',
+                '4 таблицы (Шарапилов, Кайтмазов, Гамзатов, Демидова). Для каждого: ФИО, возраст, адрес, образование, профиль, опыт, достижения, ссылки, фото.',
+                { owner: 'mark', body: '<p>Информацию собрать у каждого спикера лично — пинговать в WhatsApp.</p>',
+                  report: '<code>Отчёт в МБ/10. Информация о спикерах/10. Информация о спикерах.docx</code>' }),
+            T('M26', 'Финализировать расписание мероприятий (п.12)', '24.08.2026', 'Сворачивание и отчёт',
+                '9 строк с реальными датами и временем: 6 уроков, онлайн, оффлайн, итоговый тест.',
+                { owner: 'mark', report: 'DOCX + PDF → <code>Отчёт в МБ/12. Расписание мероприятий/</code>' }),
+            T('M27', 'Оформить п.1 — скриншоты уроков с сайта', '24.08.2026', 'Сворачивание и отчёт',
+                'DOCX с таблицей из 6 строк (по уроку). В каждой строке — скриншот урока с сайта/ЛК.',
+                { owner: 'mark', report: '<code>Отчёт в МБ/1-2. Материалы уроков/1. Информационно-презентационные материалы уроков.docx</code>' }),
+            T('M28', 'Оформить п.2 — скриншоты Zoom + фото оффлайн', '24.08.2026', 'Сворачивание и отчёт',
+                'DOCX. Таблица 1: скриншоты Zoom. Таблица 2: фотографии оффлайн.',
+                { owner: 'mark', report: '<code>Отчёт в МБ/1-2. Материалы уроков/2. Документы, подтверждающие проведение мероприятий.docx</code>' }),
+            T('M29', 'Написать итоговый отчёт (п.13)', '26.08.2026', 'Сворачивание и отчёт',
+                'DOCX с описанием выполненных работ. Реквизиты Исполнителя проверены. Титульный лист — отдельным файлом, на подпись.',
+                { owner: 'mark', report: '<code>Отчёт в МБ/13. Итоговый отчёт/13. Отчёт.docx</code> + <code>0. Отчёт - Титульный лист.docx</code>' }),
+            T('M30', 'Оформить акт сдачи-приёмки (п.14)', '26.08.2026', 'Сворачивание и отчёт',
+                'DOCX: номер и дата договора, дата акта, сумма (цифрами и прописью). Реквизиты сторон проверены.',
+                { owner: 'mark', report: '<code>Отчёт в МБ/14. Акт сдачи-приёмки/</code> — на подпись обеими сторонами' }),
+            T('M31', 'Оформить счёт на оплату (п.15)', '26.08.2026', 'Сворачивание и отчёт',
+                'DOCX: номер и дата счёта, договора, сумма. Реквизиты Исполнителя и Плательщика.',
+                { owner: 'mark', report: 'DOCX + PDF → <code>Отчёт в МБ/15. Счёт на оплату/</code>' }),
+            T('M32', 'Оформить гарантийное письмо', '26.08.2026', 'Сворачивание и отчёт',
+                'DOCX: дата, реквизиты ИП. Подпись ТОЛЬКО Исполнителя + печать ИП.',
+                { owner: 'mark', report: 'DOCX + PDF → <code>Отчёт в МБ/Гарантийное письмо/</code>' }),
+            T('M33', 'Финальная проверка по чек-листу требований', '28.08.2026', 'Сворачивание и отчёт',
+                'Все 25 строк помечены: Файл готов, Согласован, Подпись/Скан, Распечатан, На флешке.',
+                { owner: 'mark', links: [{ label: 'Чек-лист требований к отчёту.xlsx' }] }),
+            T('M34', 'Упаковать отчёт для сдачи', '29.08.2026', 'Сдача',
+                'Полный пакет для МБ: бумажный экземпляр + флешка USB.',
+                { owner: 'mark' })
         ],
-
         serj: [
-            T('S01', 'Подписать договор и приложения с Центром поддержки предпринимательства РД',
-                '18.05.2026', 'Подготовка',
-                'Договор, ТЗ, спецификация подписаны с обеих сторон, печати проставлены. Сканы PDF готовы.',
-                {
-                    owner: 'serj',
-                    report: 'Оригиналы в 2 экземплярах + PDF сканы → <code>2026/Договор и план/</code>'
-                }
-            ),
-            T('S02', 'Опубликовать анонс №1 «Скоро запуск курса»',
-                '25.05.2026', 'Подготовка',
-                'Анонс опубликован минимум на 2 площадках (Telegram, VK, сайт МБ или Instagram). Скриншоты публикаций сохранены.',
-                {
-                    owner: 'serj',
-                    body: '<p>Текст и баннер получает от Марка к 20.05. Публикация — со своих аккаунтов.</p>',
-                    report: 'PNG-скриншоты → <code>Отчёт в МБ/9. СМИ/</code> + строка в xlsx документа СМИ (площадка, ссылка, дата)',
-                    links: [
-                        { label: 'Текст анонса', url: '../Анонс/текст-анонса.md' }
-                    ]
-                }
-            ),
-            T('S03', 'Привлечь 20 учеников (СМСП) на курс',
-                '15.06.2026', 'Подготовка',
-                '20 заявок от субъектов МСП (ИП или ООО из Единого реестра МСП). Каждый: подтвердил участие, дал контактные данные.',
-                {
-                    owner: 'serj',
-                    body: '<p>Через свои каналы и партнёров. Заявки приходят на лендинг / в форму. Магомед обзванивает и собирает анкеты.</p>'
-                }
-            ),
-            T('S04', 'Записать видео для урока 1 (по сценарию Mark)',
-                '14.06.2026', 'Запись уроков',
-                'Видеозапись выступления по сценарию Марка. Передать Али — он сделает аватар через HeyGen и смонтирует.',
-                {
-                    owner: 'serj',
-                    body: '<p>Запись с лица или речь под аватара — по согласованию с Али.</p>'
-                }
-            ),
-            T('S05', 'Записать видео для урока 3 (по тексту Магомеда)',
-                '02.07.2026', 'Запись уроков',
-                'Видеозапись по тексту речи от Магомеда. Передать Али.',
-                { owner: 'serj' }
-            ),
-            T('S06', 'Записать видео для урока 4 (по сценарию Mark)',
-                '09.07.2026', 'Запись уроков',
-                'Видеозапись по сценарию Марка. Передать Али.',
-                { owner: 'serj' }
-            ),
-            T('S07', 'Опубликовать анонс №2 «Курс стартовал!»',
-                '22.06.2026', 'Старт и ведение курса',
-                'Анонс №2 опубликован на тех же площадках, что и №1. Скриншоты публикаций сохранены.',
-                {
-                    owner: 'serj',
-                    report: 'PNG-скриншоты → <code>Отчёт в МБ/9. СМИ/</code> + строка в xlsx документа СМИ'
-                }
-            ),
-            T('S08', 'Распечатать и подписать 20 сертификатов',
-                '21.08.2026', 'Сворачивание и отчёт',
-                'Все 20 сертификатов распечатаны на плотной бумаге, подписаны Исполнителем. Бумажные сертификаты переданы Марку для сканирования и упаковки.',
-                {
-                    owner: 'serj',
-                    body: '<p>PDF от Марка получает к 14.08.</p>'
-                }
-            ),
-            T('S09', 'Распечатать полный отчёт',
-                '28.08.2026', 'Сдача',
-                'Все документы из «Отчёт в МБ/» распечатаны (кроме уже напечатанных и подписанных). Подписи и печати проставлены на бумажных экземплярах.',
-                {
-                    owner: 'serj',
-                    body: '<p>Полный бумажный пакет передать Марку для упаковки.</p>'
-                }
-            ),
-            T('S10', 'Сдать отчёт в Центр поддержки предпринимательства РД',
-                '31.08.2026', 'Сдача',
-                'Бумажный пакет + флешка USB переданы в ГАУ РД ЦПП (Мигитинов И.М.). Получено подтверждение приёма (подпись на акте или письмо).',
-                { owner: 'serj' }
-            )
+            T('S01', 'Подписать договор и приложения с ЦПП РД', '18.05.2026', 'Подготовка',
+                'Договор, ТЗ, спецификация подписаны с обеих сторон, печати проставлены.',
+                { owner: 'serj', report: 'Оригиналы в 2 экземплярах + PDF сканы → <code>2026/Договор и план/</code>' }),
+            T('S02', 'Опубликовать анонс №1 «Скоро запуск курса»', '25.05.2026', 'Подготовка',
+                'Анонс опубликован минимум на 2 площадках. Скриншоты сохранены.',
+                { owner: 'serj', body: '<p>Текст и баннер от Марка к 20.05. Публикация со своих аккаунтов.</p>',
+                  report: 'PNG-скриншоты → <code>Отчёт в МБ/9. СМИ/</code> + строка в xlsx документа СМИ',
+                  links: [{ label: 'Текст анонса', url: '../Анонс/текст-анонса.md' }] }),
+            T('S03', 'Привлечь 20 учеников (СМСП) на курс', '15.06.2026', 'Подготовка',
+                '20 заявок от субъектов МСП. Каждый: подтвердил участие, дал контактные данные.',
+                { owner: 'serj', body: '<p>Через свои каналы и партнёров. Заявки приходят на лендинг / в форму.</p>' }),
+            T('S04', 'Записать видео для урока 1 (по сценарию Mark)', '14.06.2026', 'Запись уроков',
+                'Видеозапись по сценарию Марка. Передать Али — он сделает аватар через HeyGen и смонтирует.',
+                { owner: 'serj' }),
+            T('S05', 'Записать видео для урока 3 (по тексту Магомеда)', '02.07.2026', 'Запись уроков',
+                'Видеозапись по тексту речи от Магомеда. Передать Али.', { owner: 'serj' }),
+            T('S06', 'Записать видео для урока 4 (по сценарию Mark)', '09.07.2026', 'Запись уроков',
+                'Видеозапись по сценарию Марка. Передать Али.', { owner: 'serj' }),
+            T('S07', 'Опубликовать анонс №2 «Курс стартовал!»', '22.06.2026', 'Старт и ведение курса',
+                'Анонс №2 опубликован на тех же площадках, что и №1.',
+                { owner: 'serj', report: 'PNG-скриншоты → <code>Отчёт в МБ/9. СМИ/</code>' }),
+            T('S08', 'Распечатать и подписать 20 сертификатов', '21.08.2026', 'Сворачивание и отчёт',
+                'Все 20 сертификатов распечатаны на плотной бумаге, подписаны Исполнителем.',
+                { owner: 'serj', body: '<p>PDF от Марка получает к 14.08.</p>' }),
+            T('S09', 'Распечатать полный отчёт', '28.08.2026', 'Сдача',
+                'Все документы из «Отчёт в МБ/» распечатаны. Подписи и печати проставлены.',
+                { owner: 'serj', body: '<p>Полный бумажный пакет передать Марку для упаковки.</p>' }),
+            T('S10', 'Сдать отчёт в Центр поддержки предпринимательства РД', '31.08.2026', 'Сдача',
+                'Бумажный пакет + флешка USB переданы в ГАУ РД ЦПП. Получено подтверждение приёма.',
+                { owner: 'serj' })
         ],
-
         ali: [
-            T('A01', 'Создать лендинг курса ИИ 3.0',
-                '25.05.2026', 'Подготовка',
-                'Работающий лендинг по ТЗ от Марка. Описание курса, программа (6 уроков), блок спикеров, кнопка «Записаться». Адаптивная вёрстка (мобильный + десктоп).',
-                {
-                    owner: 'ali',
-                    body: '<p>ТЗ от Марка приходит к 08.05.</p>',
-                    report: 'Ссылка на опубликованный лендинг → вписать в лист «План курса» (колонка «Ссылка на урок (сайт)»)'
-                }
-            ),
-            T('A02', 'Настроить личный кабинет ученика',
-                '31.05.2026', 'Подготовка',
-                'Работающий ЛК на сайте. Ученик входит → видит список из 6 уроков → по клику открывается урок (видео + описание + приложение + ДЗ) → может пройти итоговый тест. Доступ ограничен по сроку.',
-                {
-                    owner: 'ali',
-                    report: 'Ссылка на ЛК → вписать в лист «План курса»'
-                }
-            ),
-            T('A03', 'Настроить форму заявки на лендинге',
-                '25.05.2026', 'Подготовка',
-                'Форма собирает все данные из ТЗ. Заявки приходят на email или в Google-таблицу. Все поля обязательные. Валидация ИНН (10 или 12 цифр).',
-                { owner: 'ali' }
-            ),
-            T('A04', 'Урок 1 — аватар + монтаж + публикация',
-                '20.06.2026', 'Запись уроков',
-                'Сгенерирован аватар через HeyGen по сценарию Марка. Смонтировано финальное видео. Исходник — на Google Диск, готовый урок — в ЛК. Ссылки добавлены в лист «План курса».',
-                { owner: 'ali' }
-            ),
-            T('A05', 'Урок 3 — аватар + монтаж + публикация',
-                '04.07.2026', 'Запись уроков',
-                'Аватар по тексту речи от Магомеда. Смонтировано. Опубликовано в ЛК к 06.07.',
-                { owner: 'ali' }
-            ),
-            T('A06', 'Урок 4 — аватар + монтаж + публикация',
-                '11.07.2026', 'Запись уроков',
-                'Аватар по сценарию Марка. Смонтировано. Опубликовано в ЛК к 13.07.',
-                { owner: 'ali' }
-            ),
-            T('A07', 'Урок 6 — аватар + монтаж + публикация',
-                '25.07.2026', 'Запись уроков',
-                'Аватар по тексту речи от Магомеда. Смонтировано. Опубликовано в ЛК к 27.07.',
-                { owner: 'ali' }
-            ),
-            T('A08', 'Уроки 2 и 5 — выгрузка от Евы и публикация в ЛК',
-                '18.07.2026', 'Запись уроков',
-                'Готовые исходники от Евы выгружены на Google Диск, опубликованы в ЛК. Ссылки в лист «План курса».',
-                {
-                    owner: 'ali',
-                    body: '<p>Урок 2 — к 27.06. Урок 5 — к 18.07.</p>'
-                }
-            )
+            T('A01', 'Создать лендинг курса ИИ 3.0', '25.05.2026', 'Подготовка',
+                'Работающий лендинг по ТЗ от Марка. Адаптивная вёрстка.',
+                { owner: 'ali', body: '<p>ТЗ от Марка — к 08.05.</p>',
+                  report: 'Ссылка на лендинг → вписать в лист «План курса»' }),
+            T('A02', 'Настроить личный кабинет ученика', '31.05.2026', 'Подготовка',
+                'Работающий ЛК. Ученик входит → видит 6 уроков → может пройти итоговый тест. Доступ ограничен по сроку.',
+                { owner: 'ali', report: 'Ссылка на ЛК → лист «План курса»' }),
+            T('A03', 'Настроить форму заявки на лендинге', '25.05.2026', 'Подготовка',
+                'Форма собирает все данные из ТЗ. Все поля обязательные. Валидация ИНН.',
+                { owner: 'ali' }),
+            T('A04', 'Урок 1 — аватар + монтаж + публикация', '20.06.2026', 'Запись уроков',
+                'Сгенерирован аватар через HeyGen по сценарию Марка. Смонтировано финальное видео. Опубликовано в ЛК.',
+                { owner: 'ali' }),
+            T('A05', 'Урок 3 — аватар + монтаж + публикация', '04.07.2026', 'Запись уроков',
+                'Аватар по тексту речи от Магомеда. Опубликовано в ЛК к 06.07.',
+                { owner: 'ali' }),
+            T('A06', 'Урок 4 — аватар + монтаж + публикация', '11.07.2026', 'Запись уроков',
+                'Аватар по сценарию Марка. Опубликовано в ЛК к 13.07.',
+                { owner: 'ali' }),
+            T('A07', 'Урок 6 — аватар + монтаж + публикация', '25.07.2026', 'Запись уроков',
+                'Аватар по тексту речи от Магомеда. Опубликовано в ЛК к 27.07.',
+                { owner: 'ali' }),
+            T('A08', 'Уроки 2 и 5 — выгрузка от Евы и публикация в ЛК', '18.07.2026', 'Запись уроков',
+                'Готовые исходники от Евы выгружены на Google Диск, опубликованы в ЛК.',
+                { owner: 'ali', body: '<p>Урок 2 — к 27.06. Урок 5 — к 18.07.</p>' })
         ],
-
         magomed: [
-            T('G01', 'Обработать 20 заявок: связаться, собрать анкеты, выписки МСП',
-                '21.06.2026', 'Подготовка',
-                'По каждому из 20 учеников: внести данные в единую таблицу учеников (все 18 колонок), получить заполненную и подписанную анкету-заявку (PDF), сделать выписку из rmsp.nalog.ru на дату подачи заявки (PDF), обновить статус.',
-                {
-                    owner: 'magomed',
-                    report: 'PDF-файлы → <code>Отчёт в МБ/5-7. Данные по каждому ученику/[ФИО]/Анкета-заявка.pdf</code> и <code>Выписка из реестра МСП.pdf</code>',
-                    links: [
-                        { label: 'Единая таблица учеников (Google Sheets)' },
-                        { label: 'Реестр МСП (rmsp.nalog.ru)', url: 'https://rmsp.nalog.ru/' }
-                    ]
-                }
-            ),
-            T('G02', 'Текст речи для Урока 3 «Автоматизация взаимодействия с аудиторией через ИИ»',
-                '29.06.2026', 'Запись уроков',
-                'Текст речи на 8–12 минут под видеоаватара. Тема: автоматические воронки продаж в директе, чат-боты для бизнеса.',
-                {
-                    owner: 'magomed',
-                    body: '<p>Передать Али — он сгенерирует аватар через HeyGen и смонтирует.</p>'
-                }
-            ),
-            T('G03', 'Текст речи для Урока 6 «Интеграция ИИ в рабочие процессы»',
-                '20.07.2026', 'Запись уроков',
-                'Текст речи на 8–12 минут под видеоаватара. Тема: внедрение ИИ для улучшения рабочих процессов.',
-                { owner: 'magomed' }
-            )
+            T('G01', 'Обработать 20 заявок: связаться, собрать анкеты, выписки МСП', '21.06.2026', 'Подготовка',
+                'По каждому из 20 учеников: внести данные в единую таблицу, получить анкету-заявку (PDF), сделать выписку из rmsp.nalog.ru (PDF), обновить статус.',
+                { owner: 'magomed', report: 'PDF-файлы → <code>Отчёт в МБ/5-7. Данные по каждому ученику/[ФИО]/</code>',
+                  links: [{ label: 'Единая таблица учеников (Google Sheets)' }, { label: 'Реестр МСП', url: 'https://rmsp.nalog.ru/' }] }),
+            T('G02', 'Текст речи для Урока 3 «Автоматизация взаимодействия с аудиторией»', '29.06.2026', 'Запись уроков',
+                'Текст на 8–12 минут под видеоаватара. Тема: автоматические воронки в директе, чат-боты для бизнеса.',
+                { owner: 'magomed', body: '<p>Передать Али — сгенерирует аватар через HeyGen и смонтирует.</p>' }),
+            T('G03', 'Текст речи для Урока 6 «Интеграция ИИ в рабочие процессы»', '20.07.2026', 'Запись уроков',
+                'Текст на 8–12 минут под видеоаватара.',
+                { owner: 'magomed' })
         ],
-
         eva: [
-            T('E01', 'Урок 2 «ИИ в сторителлинге и визуальном контенте» — съёмка и монтаж',
-                '27.06.2026', 'Запись уроков',
-                'Готовый смонтированный урок (8–12 минут). Тема: применение ИИ в сторителлинге для социальных сетей, генерация визуального контента. Передать Али на загрузку в ЛК. Срок публикации в ЛК — пн 29.06.2026.',
-                {
-                    owner: 'eva',
-                    body: '<p>Снимаешь сама + монтируешь сама. Готовый файл на Google Диск.</p>'
-                }
-            ),
-            T('E02', 'Урок 5 «ИИ в дизайне и креативе» — съёмка и монтаж',
-                '18.07.2026', 'Запись уроков',
-                'Готовый смонтированный урок (8–12 минут). Тема: ИИ в создании дизайна, прототипов, креативного контента. Передать Али. Срок публикации в ЛК — пн 20.07.2026.',
-                { owner: 'eva' }
-            )
+            T('E01', 'Урок 2 «ИИ в сторителлинге и визуальном контенте» — съёмка и монтаж', '27.06.2026', 'Запись уроков',
+                'Готовый смонтированный урок (8–12 минут). Передать Али на загрузку в ЛК. Срок публикации в ЛК — пн 29.06.2026.',
+                { owner: 'eva', body: '<p>Снимаешь сама + монтируешь сама. Готовый файл на Google Диск.</p>' }),
+            T('E02', 'Урок 5 «ИИ в дизайне и креативе» — съёмка и монтаж', '18.07.2026', 'Запись уроков',
+                'Готовый смонтированный урок (8–12 минут). Срок публикации в ЛК — пн 20.07.2026.',
+                { owner: 'eva' })
         ],
-
         ilya: [
-            T('I01', 'Спикерская секция на онлайн-встрече (Zoom)',
-                '30.07.2026', 'Старт и ведение курса',
-                'Подготовлен материал на 15–25 минут, согласован с Марком. Спикер на онлайн-встрече.',
-                {
-                    owner: 'ilya',
-                    body: '<p>Точное время и тема — Марк сообщит к 13.07.</p>'
-                }
-            ),
-            T('I02', 'Участие в оффлайн-мероприятии в Махачкале',
-                '07.08.2026', 'Старт и ведение курса',
-                'Спикер на оффлайн-мероприятии 03–07.08.2026. Адрес и точную дату Марк сообщит к 20.07.',
-                { owner: 'ilya' }
-            )
+            T('I01', 'Спикерская секция на онлайн-встрече (Zoom)', '30.07.2026', 'Старт и ведение курса',
+                'Подготовлен материал на 15–25 минут, согласован с Марком.',
+                { owner: 'ilya', body: '<p>Точное время и тема — Марк сообщит к 13.07.</p>' }),
+            T('I02', 'Участие в оффлайн-мероприятии в Махачкале', '07.08.2026', 'Старт и ведение курса',
+                'Спикер на оффлайн-мероприятии 03–07.08.2026.',
+                { owner: 'ilya' })
         ],
-
         ruslan: [
-            T('R01', 'Спикерская секция на онлайн-встрече (Zoom)',
-                '30.07.2026', 'Старт и ведение курса',
-                'Подготовлен материал на 15–25 минут, согласован с Марком. Спикер на онлайн-встрече.',
-                {
-                    owner: 'ruslan',
-                    body: '<p>Точное время и тема — Марк сообщит к 13.07.</p>'
-                }
-            ),
-            T('R02', 'Участие в оффлайн-мероприятии в Махачкале',
-                '07.08.2026', 'Старт и ведение курса',
-                'Спикер на оффлайн-мероприятии 03–07.08.2026. Адрес и точную дату Марк сообщит к 20.07.',
-                { owner: 'ruslan' }
-            )
+            T('R01', 'Спикерская секция на онлайн-встрече (Zoom)', '30.07.2026', 'Старт и ведение курса',
+                'Подготовлен материал на 15–25 минут, согласован с Марком.',
+                { owner: 'ruslan', body: '<p>Точное время и тема — Марк сообщит к 13.07.</p>' }),
+            T('R02', 'Участие в оффлайн-мероприятии в Махачкале', '07.08.2026', 'Старт и ведение курса',
+                'Спикер на оффлайн-мероприятии 03–07.08.2026.',
+                { owner: 'ruslan' })
         ]
     };
 </script>

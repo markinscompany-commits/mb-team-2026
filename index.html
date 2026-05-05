@@ -42,9 +42,22 @@
             --r-serj:    #2563EB;
             --r-ali:     #9333EA;
             --r-magomed: #16A34A;
+            --r-kurban:  #14B8A6;
             --r-eva:     #D97706;
             --r-ilya:    #DC2626;
             --r-ruslan:  #0891B2;
+
+            /* Status */
+            --s-todo:      rgba(14,14,17,0.4);
+            --s-todo-bg:   rgba(14,14,17,0.06);
+            --s-inprog:    #2563EB;
+            --s-inprog-bg: rgba(37,99,235,0.08);
+            --s-paused:    #D97706;
+            --s-paused-bg: rgba(217,119,6,0.10);
+            --s-cancelled:    rgba(14,14,17,0.32);
+            --s-cancelled-bg: rgba(14,14,17,0.04);
+            --s-done:      #16A34A;
+            --s-done-bg:   rgba(22,163,74,0.10);
 
             /* Date urgency */
             --d-overdue: #DC2626;
@@ -138,25 +151,31 @@
 
         .topbar {
             position: sticky; top: 0; z-index: 50;
-            background: rgba(255,255,255,0.85);
-            backdrop-filter: saturate(180%) blur(12px);
-            -webkit-backdrop-filter: saturate(180%) blur(12px);
+            background: rgba(255,255,255,0.92);
+            backdrop-filter: saturate(180%) blur(14px);
+            -webkit-backdrop-filter: saturate(180%) blur(14px);
             border-bottom: 1px solid var(--ink-08);
-            padding: 12px 28px;
-            display: flex; align-items: center; justify-content: space-between; gap: 20px;
+            padding: 0 24px;
+            display: flex; align-items: stretch; gap: 16px;
         }
-        .topbar-left { display: flex; align-items: center; gap: 14px; }
-        .topbar-logo svg { height: 22px; width: auto; display: block; }
-        .topbar-divider { width: 1px; height: 22px; background: var(--ink-08); }
-        .topbar-title { font-family: 'Unbounded', sans-serif; font-size: 13px; font-weight: 500; line-height: 1.2; }
-        .topbar-title-sub { font-size: 11px; color: var(--ink-40); margin-top: 2px; }
-        .topbar-right { display: flex; align-items: center; gap: 12px; }
-        .topbar-user { display: flex; align-items: center; gap: 10px; font-size: 13px; }
-        .topbar-user-name { font-weight: 600; color: var(--ink-100); line-height: 1.2; }
-        .topbar-user-role { color: var(--ink-40); font-size: 11px; line-height: 1.2; margin-top: 2px; }
+        .topbar__tabs {
+            display: flex; gap: 2px;
+            flex: 1; min-width: 0;
+            overflow-x: auto;
+            scrollbar-width: none;
+        }
+        .topbar__tabs::-webkit-scrollbar { display: none; }
+        .topbar__user {
+            display: flex; align-items: center; gap: 10px;
+            padding: 8px 0;
+            flex-shrink: 0;
+        }
+        .topbar__user .avatar { width: 30px; height: 30px; font-size: 12px; }
+        .topbar-user-name { font-size: 13px; font-weight: 600; color: var(--ink-100); line-height: 1.2; }
+        .topbar-user-role { display: none; }
         .logout-btn {
             font-size: 12px; font-weight: 500;
-            padding: 8px 12px;
+            padding: 7px 12px;
             background: var(--bg-2); color: var(--ink-60);
             border: none; border-radius: var(--rad-sm);
             transition: background 0.15s, color 0.15s;
@@ -179,23 +198,67 @@
         .avatar--serj { background: var(--r-serj); }
         .avatar--ali { background: var(--r-ali); }
         .avatar--magomed { background: var(--r-magomed); }
+        .avatar--kurban { background: var(--r-kurban); }
         .avatar--eva { background: var(--r-eva); }
         .avatar--ilya { background: var(--r-ilya); }
         .avatar--ruslan { background: var(--r-ruslan); }
 
-        /* ==================== TABS (desktop) ==================== */
-        .tabs {
-            background: var(--bg-0);
-            border-bottom: 1px solid var(--ink-08);
-            padding: 0 28px;
-            display: flex; gap: 2px;
-            overflow-x: auto;
-            scrollbar-width: none;
+        /* Status badge */
+        .status-badge {
+            display: inline-flex; align-items: center; gap: 5px;
+            font-size: 11px; font-weight: 600;
+            padding: 4px 9px;
+            border-radius: 999px;
+            white-space: nowrap;
+            font-family: 'Unbounded', sans-serif;
+            letter-spacing: 0.3px;
         }
-        .tabs::-webkit-scrollbar { display: none; }
+        .status-badge::before {
+            content: '';
+            display: inline-block;
+            width: 6px; height: 6px;
+            border-radius: 50%;
+            background: currentColor;
+        }
+        .status--todo      { background: var(--s-todo-bg);      color: var(--s-todo); }
+        .status--inprog    { background: var(--s-inprog-bg);    color: var(--s-inprog); }
+        .status--paused    { background: var(--s-paused-bg);    color: var(--s-paused); }
+        .status--cancelled { background: var(--s-cancelled-bg); color: var(--s-cancelled); text-decoration: line-through; }
+        .status--done      { background: var(--s-done-bg);      color: var(--s-done); }
+        .task-card[data-status="done"] { opacity: 0.65; }
+        .task-card[data-status="cancelled"] { opacity: 0.5; }
+        .task-card[data-status="done"] .task-head__title,
+        .task-card[data-status="cancelled"] .task-head__title { text-decoration: line-through; text-decoration-color: var(--ink-40); }
+
+        /* Contact banner (для не-админов) */
+        .contact-banner {
+            display: flex; align-items: center; gap: 14px;
+            padding: 14px 18px;
+            background: linear-gradient(135deg, var(--bg-0) 0%, var(--p-prep-bg) 100%);
+            border: 1px solid var(--p-prep);
+            border-radius: var(--rad-lg);
+            margin-bottom: 22px;
+        }
+        .contact-banner__avatar { width: 40px; height: 40px; font-size: 14px; flex-shrink: 0; }
+        .contact-banner__text { font-size: 13px; color: var(--ink-100); line-height: 1.55; flex: 1; }
+        .contact-banner__text strong { color: var(--p-prep); }
+        .contact-banner__actions { display: flex; gap: 8px; flex-shrink: 0; }
+        .contact-banner__btn {
+            display: inline-flex; align-items: center; gap: 6px;
+            font-size: 12px; font-weight: 600;
+            padding: 8px 12px;
+            background: var(--p-prep); color: #FFF;
+            border-radius: var(--rad-sm);
+            white-space: nowrap;
+        }
+        .contact-banner__btn:hover { opacity: 0.85; }
+        .contact-banner__btn svg { width: 13px; height: 13px; }
+        .contact-banner__btn--alt { background: var(--bg-0); color: var(--ink-100); border: 1px solid var(--ink-20); }
+
+        /* ==================== TABS (desktop) — внутри topbar ==================== */
         .tab {
-            font-size: 14px; font-weight: 500;
-            padding: 14px 16px;
+            font-size: 13px; font-weight: 500;
+            padding: 14px 14px;
             background: transparent;
             border: none;
             border-bottom: 2px solid transparent;
@@ -206,7 +269,7 @@
         }
         .tab:hover { color: var(--ink-100); }
         .tab.active { color: var(--ink-100); border-bottom-color: var(--ink-100); }
-        .tab svg { width: 16px; height: 16px; opacity: 0.6; }
+        .tab svg { width: 15px; height: 15px; opacity: 0.6; }
         .tab.active svg { opacity: 1; }
         .tab--admin.active { color: var(--p-prep); border-bottom-color: var(--p-prep); }
         .tab--admin.active svg { color: var(--p-prep); opacity: 1; }
@@ -797,13 +860,15 @@
 
         /* ==================== RESPONSIVE ==================== */
         @media (max-width: 920px) {
-            .topbar { padding: 10px 16px; }
-            .topbar-title-sub { display: none; }
-            .topbar-user-role { display: none; }
-            .tabs { display: none; }
+            .topbar { padding: 0 14px; gap: 10px; }
+            .topbar__tabs { display: none; }
+            .topbar__user { padding: 8px 0; margin-left: auto; }
             .tab-content { padding: 20px 16px; }
             .app.active { padding-bottom: calc(var(--bottom-nav-h) + 16px); }
             .bottom-nav { display: flex; }
+            .contact-banner { flex-wrap: wrap; gap: 10px; padding: 12px 14px; }
+            .contact-banner__actions { width: 100%; }
+            .contact-banner__btn { flex: 1; justify-content: center; }
 
             .dashboard { grid-template-columns: repeat(2, 1fr); gap: 8px; }
             .dash-card { padding: 14px; }
@@ -915,30 +980,16 @@
 <!-- ============= APP ============= -->
 <div class="app" id="app">
 
-    <!-- TOPBAR -->
+    <!-- TOPBAR (одна полоса: табы + аватар + выйти) -->
     <div class="topbar">
-        <div class="topbar-left">
-            <div class="topbar-logo" style="color: var(--ink-100)"><svg width="578" height="100"><use href="#ml"/></svg></div>
-            <div class="topbar-divider"></div>
-            <div>
-                <div class="topbar-title">МБ ИИ 3.0</div>
-                <div class="topbar-title-sub">Рабочий контур команды</div>
-            </div>
-        </div>
-        <div class="topbar-right">
-            <div class="topbar-user">
-                <div class="avatar" id="userAvatar">—</div>
-                <div>
-                    <div class="topbar-user-name" id="userName">—</div>
-                    <div class="topbar-user-role" id="userRole">—</div>
-                </div>
-            </div>
+        <div class="topbar__tabs" id="tabs"></div>
+        <div class="topbar__user">
+            <div class="avatar" id="userAvatar">—</div>
+            <div class="topbar-user-name" id="userName">—</div>
+            <div class="topbar-user-role" id="userRole">—</div>
             <button class="logout-btn" onclick="doLogout()">Выйти</button>
         </div>
     </div>
-
-    <!-- TABS (desktop) -->
-    <div class="tabs" id="tabs"></div>
 
     <!-- ============= TAB: TASKS ============= -->
     <div class="tab-content" id="tab-tasks">
@@ -946,6 +997,7 @@
         <h2 class="section-title" id="tasksTitle">Задачи и ожидаемые результаты</h2>
         <p class="section-sub" id="tasksSub">У каждой задачи — срок, ЦКП и ссылки на нужные документы. Кликните по карточке чтобы развернуть. Если по задаче возникает вопрос — пишите Марку.</p>
 
+        <div id="contactBanner"></div>
         <div id="dashboardWrap"></div>
         <div class="filterbar" id="filterbar"></div>
         <div id="tasksContainer"></div>
@@ -1004,7 +1056,7 @@
     </div>
 
     <div class="app-footer">
-        Markins · <a href="https://wa.me/79898966950">+7 989 896 69 50</a> · <a href="mailto:info@markins.ru">info@markins.ru</a> · <span id="versionLabel">v0.2 · 04.05.2026</span>
+        Markins · <a href="https://wa.me/79898966950">+7 989 896 69 50</a> · <a href="mailto:info@markins.ru">info@markins.ru</a> · <span id="versionLabel">v0.3 · 04.05.2026</span>
     </div>
 
 </div>
@@ -1019,18 +1071,20 @@
     // ============= DATA =============
     const TEAM = {
         mark:    { name: 'Марк Кайтмазов',  short: 'Марк',    initial: 'М', role: 'Product owner, отчёт, сопровождение', admin: true },
-        serj:    { name: 'Сераж Шарапилов', short: 'Сераж',   initial: 'С', role: 'Заказчик договора с МБ, публикации, печать, сдача' },
+        serj:    { name: 'Сераж Шарапилов', short: 'Сераж',   initial: 'С', role: 'Заказчик договора с МБ, документы, спикер уроков' },
         ali:     { name: 'Али',             short: 'Али',     initial: 'А', role: 'Лендинг, ЛК, форма заявки, монтаж уроков' },
         magomed: { name: 'Магомед',         short: 'Магомед', initial: 'Г', role: 'Обработка заявок, тексты речи для уроков 3 и 6' },
+        kurban:  { name: 'Курбан',          short: 'Курбан',  initial: 'К', role: 'Публикации в СМИ через профили центра «Мой бизнес»' },
         eva:     { name: 'Ева Демидова',    short: 'Ева',     initial: 'Е', role: 'Спикер. Уроки 2 и 5 — съёмка и монтаж' },
         ilya:    { name: 'Илья Егоров',     short: 'Илья',    initial: 'И', role: 'Спикер. Онлайн- и оффлайн-встречи' },
         ruslan:  { name: 'Руслан Гамзатов', short: 'Руслан',  initial: 'Р', role: 'Спикер. Онлайн- и оффлайн-встречи' }
     };
 
     TEAM.mark.resp = 'Готовит ТЗ для команды. Координирует подготовку и запись уроков. Создаёт WhatsApp-чат с учениками и ведёт сопровождение. Заполняет все 14+1 пункт отчёта в МБ. Финальная упаковка отчёта.';
-    TEAM.serj.resp = 'Подписывает все документы. Привлекает 20 учеников через свои каналы. Публикует анонсы №1 и №2. Спикер уроков 1, 3, 4. Печатает отчёт и сдаёт в Центр поддержки предпринимательства РД.';
-    TEAM.ali.resp = 'Делает лендинг курса, личный кабинет ученика и форму заявки. Монтирует 6 уроков (для 1, 3, 4, 6 — генерирует аватара через HeyGen). Загружает уроки в ЛК.';
-    TEAM.magomed.resp = 'Обзванивает 20 заявок, собирает анкеты и выписки МСП. Пишет тексты речи для уроков 3 и 6 (которые потом озвучит аватар).';
+    TEAM.serj.resp = 'Подписывает все документы. Привлекает учеников через свои каналы и принимает прямые заявки. Спикер уроков 1, 3, 4. Печатает отчёт и сдаёт в Центр поддержки предпринимательства РД.';
+    TEAM.ali.resp = 'Делает лендинг курса с формой заявки и личный кабинет ученика. Монтирует 6 уроков (для 1, 3, 4, 6 — генерирует аватар через HeyGen). Загружает уроки в ЛК.';
+    TEAM.magomed.resp = 'Обзванивает поступившие заявки, собирает анкеты и выписки МСП. Пишет тексты речи для уроков 3 и 6 (которые потом озвучит аватар).';
+    TEAM.kurban.resp = 'Публикует анонсы курса (№1 «Скоро запуск» и №2 «Курс стартовал») через профили центра «Мой бизнес». Передаёт Mark’у ссылки на публикации.';
     TEAM.eva.resp = 'Урок 2 «ИИ в сторителлинге» и Урок 5 «ИИ в дизайне и креативе» — снимает и монтирует полностью самостоятельно.';
     TEAM.ilya.resp = 'Спикер на онлайн-встрече 30 июля и оффлайн-мероприятии в Махачкале (3–7 августа).';
     TEAM.ruslan.resp = 'Спикер на онлайн-встрече 30 июля и оффлайн-мероприятии в Махачкале (3–7 августа).';
@@ -1040,6 +1094,7 @@
         'serj-mb-2026':    'serj',
         'ali-mb-2026':     'ali',
         'magomed-mb-2026': 'magomed',
+        'kurban-mb-2026':  'kurban',
         'eva-mb-2026':     'eva',
         'ilya-mb-2026':    'ilya',
         'ruslan-mb-2026':  'ruslan'
@@ -1050,9 +1105,18 @@
         serj:    ['tasks'],
         ali:     ['tasks'],
         magomed: ['tasks'],
+        kurban:  ['tasks'],
         eva:     ['tasks'],
         ilya:    ['tasks'],
         ruslan:  ['tasks']
+    };
+
+    const STATUS_LABEL = {
+        todo:      'Не начата',
+        inprog:    'В работе',
+        paused:    'На стопе',
+        cancelled: 'Отменена',
+        done:      'Завершена'
     };
 
     const TAB_LABELS = {
@@ -1186,17 +1250,41 @@
     function renderTasks(role) {
         const isAdmin = role === 'mark';
         const allTasks = isAdmin ? Object.values(TASKS_BY_ROLE).flat() : (TASKS_BY_ROLE[role] || []);
-        // dashboard for admin
+
+        // contact banner for non-admins
+        const cb = document.getElementById('contactBanner');
+        if (!isAdmin) {
+            cb.innerHTML = `<div class="contact-banner">
+                <div class="avatar avatar--mark contact-banner__avatar">М</div>
+                <div class="contact-banner__text">
+                    По любым вопросам, обновлению статусов задач и неточностям — пишите <strong>Марку Кайтмазову</strong>.
+                </div>
+                <div class="contact-banner__actions">
+                    <a class="contact-banner__btn" href="https://wa.me/79898966950" target="_blank" rel="noopener">
+                        <svg><use href="#ic-send"/></svg>WhatsApp
+                    </a>
+                    <a class="contact-banner__btn contact-banner__btn--alt" href="https://t.me/kaitmazovmark" target="_blank" rel="noopener">
+                        <svg><use href="#ic-send"/></svg>Telegram
+                    </a>
+                </div>
+            </div>`;
+        } else {
+            cb.innerHTML = '';
+        }
+
+        // dashboard for admin (учитываем только активные — без done/cancelled)
         const dashWrap = document.getElementById('dashboardWrap');
         if (isAdmin && allTasks.length) {
-            const onWeek = allTasks.filter(t => dateBadge(t.due).cls === 'week').length;
-            const overdue = allTasks.filter(t => dateBadge(t.due).cls === 'overdue').length;
-            const soon = allTasks.filter(t => dateBadge(t.due).cls === 'soon').length;
+            const isActive = t => !['done','cancelled'].includes(t.status);
+            const active  = allTasks.filter(isActive);
+            const done    = allTasks.filter(t => t.status === 'done').length;
+            const onWeek  = active.filter(t => dateBadge(t.due).cls === 'week').length;
+            const overdue = active.filter(t => dateBadge(t.due).cls === 'overdue').length;
             dashWrap.innerHTML = `<div class="dashboard">
                 <div class="dash-card"><div class="dash-card__num">${allTasks.length}</div><div class="dash-card__label">Всего задач</div></div>
                 <div class="dash-card dash-card--alert"><div class="dash-card__num">${overdue}</div><div class="dash-card__label">Просрочено</div></div>
                 <div class="dash-card dash-card--warn"><div class="dash-card__num">${onWeek}</div><div class="dash-card__label">На неделе</div></div>
-                <div class="dash-card dash-card--info"><div class="dash-card__num">${soon}</div><div class="dash-card__label">Через 1–3 нед</div></div>
+                <div class="dash-card"><div class="dash-card__num" style="color:var(--p-run)">${done}</div><div class="dash-card__label">Завершено</div></div>
             </div>`;
         } else {
             dashWrap.innerHTML = '';
@@ -1264,15 +1352,19 @@
 
     function taskCardHtml(t, isAdmin) {
         const k = PHASE_KEY[t.phase] || '';
+        const status = t.status || 'todo';
+        const isClosed = status === 'done' || status === 'cancelled';
         const badge = dateBadge(t.due);
         const ownerHtml = isAdmin && t.owner
             ? `<div class="owner-chip"><span class="avatar avatar--${t.owner}">${TEAM[t.owner].initial}</span>${TEAM[t.owner].short}</div>`
             : '';
+        const statusBadge = `<span class="status-badge status--${status}">${STATUS_LABEL[status]}</span>`;
+        const dateBadgeHtml = isClosed ? '' : `<span class="date-badge date-badge--${badge.cls}"><svg><use href="#ic-clock"/></svg>${badge.label}</span>`;
         const links = (t.links || []).map(l => l.url
             ? `<a class="link-item" href="${l.url}" target="_blank" rel="noopener"><svg><use href="#ic-external"/></svg>${l.label}</a>`
             : `<span class="link-item link-item--placeholder"><svg><use href="#ic-link"/></svg>${l.label}${l.note ? ' — ' + l.note : ''}</span>`
         ).join('');
-        return `<div class="task-card" data-phase="${k}" onclick="toggleTask(this)">
+        return `<div class="task-card" data-phase="${k}" data-status="${status}" onclick="toggleTask(this)">
             <div class="task-head">
                 <div class="task-head__main">
                     <div class="task-head__title-row">
@@ -1280,7 +1372,8 @@
                         <span class="task-head__title">${t.title}</span>
                     </div>
                     <div class="task-head__meta">
-                        <span class="date-badge date-badge--${badge.cls}"><svg><use href="#ic-clock"/></svg>${badge.label}</span>
+                        ${statusBadge}
+                        ${dateBadgeHtml}
                         ${ownerHtml}
                     </div>
                 </div>
@@ -1288,10 +1381,10 @@
             </div>
             <div class="task-body" onclick="event.stopPropagation()">
                 ${t.body ? `<div class="task-body__intro">${t.body}</div>` : ''}
-                <div class="task-section">
+                ${t.ckp ? `<div class="task-section">
                     <div class="task-section__label"><svg><use href="#ic-target"/></svg>Что считается готовым (ЦКП)</div>
                     <div class="ckp-block">${t.ckp}</div>
-                </div>
+                </div>` : ''}
                 ${t.report ? `<div class="task-section">
                     <div class="task-section__label"><svg><use href="#ic-folder"/></svg>Куда ложится в отчёт МБ</div>
                     <div class="report-block">${t.report}</div>
@@ -1395,10 +1488,12 @@
         const total = all.length;
         const done = all.filter(t => t.status === 'done').length;
         const inprog = all.filter(t => t.status === 'inprog').length;
-        const todo = total - done - inprog;
+        const paused = all.filter(t => t.status === 'paused').length;
+        const cancelled = all.filter(t => t.status === 'cancelled').length;
+        const todo = total - done - inprog - paused - cancelled;
         document.getElementById('progressGrid').innerHTML = `
-            <div class="progress-card"><div class="progress-card__num">${total}</div><div class="progress-card__label">Всего задач</div></div>
-            <div class="progress-card progress-card--done"><div class="progress-card__num">${done}</div><div class="progress-card__label">Готово</div></div>
+            <div class="progress-card"><div class="progress-card__num">${total}</div><div class="progress-card__label">Всего</div></div>
+            <div class="progress-card progress-card--done"><div class="progress-card__num">${done}</div><div class="progress-card__label">Завершено</div></div>
             <div class="progress-card progress-card--inprog"><div class="progress-card__num">${inprog}</div><div class="progress-card__label">В работе</div></div>
             <div class="progress-card"><div class="progress-card__num">${todo}</div><div class="progress-card__label">Не начато</div></div>
         `;
@@ -1444,8 +1539,9 @@
     // ============= GANTT ROWS =============
     const GANTT_ROWS = [
         { label: 'Документы, ТЗ, программа',          owner: 'mark',    startWeek: 1,  endWeek: 3 },
-        { label: 'Лендинг + ЛК + форма заявки',       owner: 'ali',     startWeek: 2,  endWeek: 4 },
-        { label: 'Анонс №1 + набор учеников',         owner: 'serj',    startWeek: 3,  endWeek: 7 },
+        { label: 'Лендинг + форма + ЛК',              owner: 'ali',     startWeek: 2,  endWeek: 7 },
+        { label: 'Анонсы №1 и №2 в СМИ',              owner: 'kurban',  startWeek: 4,  endWeek: 8 },
+        { label: 'Приём заявок (общий чат)',          owner: 'serj',    startWeek: 4,  endWeek: 7 },
         { label: 'Обработка заявок',                  owner: 'magomed', startWeek: 5,  endWeek: 7 },
         { label: 'Запись уроков 1, 2 (предстарт)',    owner: 'mark',    startWeek: 5,  endWeek: 7 },
         { label: 'Запись уроков 3, 4',                owner: 'ali',     startWeek: 7,  endWeek: 10 },
@@ -1508,28 +1604,31 @@
 
     const TASKS_BY_ROLE = {
         mark: [
-            T('M01', 'Подготовить пакет документов: договор, ТЗ, спецификация', '11.05.2026', 'Подготовка',
-                'Готовые черновики договора с Центром поддержки предпринимательства РД, ТЗ и спецификации. Передать Серажу на согласование с Заказчиком и подписание.',
-                { owner: 'mark', body: '<p>Доделать черновики на основе шаблонов из папки <code>Договор и план/</code>. После подписания Серажем — вписать номер и дату договора во все шаблоны отчёта (п.11, п.12, п.13, п.14, п.15, титульный лист).</p>',
-                  report: 'Подписанные оригиналы в 2 экземплярах + сканы PDF → папка <code>2026/Договор и план/</code>',
-                  links: [{ label: 'Папка «Договор и план»' }, { label: 'Шаблон акта (п.14)' }, { label: 'Шаблон счёта (п.15)' }] }),
-            T('M02', 'Подготовить программу курса (п.11) к подписанию', '15.05.2026', 'Подготовка',
-                'Финализированный файл «11. Программа курса.docx» (теория и практика по 6 урокам) с вписанным номером и датой договора. Готов на печать и подпись Серажем.',
-                { owner: 'mark', report: 'Подписанный DOCX + PDF скан → <code>Отчёт в МБ/11. Программа курса/</code>',
-                  links: [{ label: 'Шаблон 11. Программа курса.docx' }] }),
-            T('M03', 'ТЗ для Али: лендинг курса', '08.05.2026', 'Подготовка',
-                'Документ (Google Doc/DOCX) с описанием структуры лендинга: hero, описание курса, программа, спикеры, форма записи, тексты блоков, требования к дизайну, ссылки на референсы.',
-                { owner: 'mark', body: '<p>Передать Али лично или в чате проекта. Лендинг будет жить на <code>sharapilov.ru/mbai-course3</code>.</p>' }),
-            T('M04', 'ТЗ для Али: личный кабинет ученика', '11.05.2026', 'Подготовка',
-                'Документ с описанием ЛК: разделы (уроки, материалы, итоговый тест), навигация, ограничение доступа по сроку (до 30.12.2026), требования к дизайну.',
-                { owner: 'mark' }),
-            T('M05', 'ТЗ для Али: форма заявки', '08.05.2026', 'Подготовка',
-                'Документ с обязательными полями формы: ФИО, телефон, email, наименование МСП, ИНН, юр. адрес, пол, правовой статус (ИП/ООО). Куда приходят заявки. Текст благодарности.',
-                { owner: 'mark' }),
-            T('M06', 'Анонс-баннер №1 «Скоро запуск курса»', '20.05.2026', 'Подготовка',
-                'Баннер (PNG/JPG, 1080×1080 + 1200×628) и текст поста (200–300 слов). Передать Серажу на публикацию.',
-                { owner: 'mark', report: 'Исходники сохранить (Figma / папка проекта). Готовый баннер передать Серажу.',
-                  links: [{ label: 'Текст анонса (готов)', url: '../Анонс/текст-анонса.md' }, { label: 'Афиша', url: '../Анонс/афиша.html' }] }),
+            T('M01', 'Подписать договор с Центром поддержки предпринимательства РД', '15.04.2026', 'Подготовка',
+                null,
+                { owner: 'mark', status: 'done',
+                  body: '<p>Договор подписан Серажем с Центром поддержки предпринимательства РД 15.04.2026. Сканы у нас не хранятся — задача закрыта по факту.</p>' }),
+            T('M02', 'Финализировать программу курса (п.11) для подписания', '15.05.2026', 'Подготовка',
+                'Файл «11. Программа курса.docx» (теория и практика по 6 урокам) проверен, номер и дата договора вписаны в заголовок. Готов на печать и подпись.',
+                { owner: 'mark',
+                  report: 'Подписанный DOCX + PDF-скан → <code>Отчёт в МБ/11. Программа курса/</code>',
+                  links: [{ label: 'Папка «Договор и план» (Google Drive)', url: 'https://drive.google.com/drive/folders/1ODTfrnsG3ARuoEo0zbHfVa8YIqezwqSV' }] }),
+            T('M03', 'Подготовить ТЗ для Али: лендинг курса + форма заявки', '11.05.2026', 'Подготовка',
+                'Текст ТЗ внесён в общий документ. Описана структура лендинга (hero, программа, спикеры, форма записи) и поля формы заявки (ФИО, телефон, email, наименование МСП, ИНН, юр. адрес, пол, правовой статус ИП/ООО). Указаны валидации (ИНН: 10 или 12 цифр) и куда приходят заявки.',
+                { owner: 'mark',
+                  body: '<p>Лендинг будет жить на <code>sharapilov.ru/mbai-course3</code>. Заявки автоматически идут в общую TG-группу проекта (см. задачу Магомеда).</p><p><strong>Включает в себя бывшую отдельную задачу M05 (форма заявки) — она объединена сюда как деталь.</strong></p>',
+                  links: [{ label: 'Документ для ТЗ Али', url: 'https://docs.google.com/document/d/1-MhSqDqJUo4905OHRHo31RBK9zQF2ffDtW-qgSWbodY/edit' }] }),
+            T('M04', 'Передать Али список email учеников для открытия доступа в ЛК', '20.06.2026', 'Подготовка',
+                'Список из 20 email-адресов учеников (после набора группы) передан Али за 2 дня до старта курса. Али откроет доступ в ЛК.',
+                { owner: 'mark',
+                  body: '<p>Личный кабинет Али сделает сам — отдельное ТЗ не нужно. Мне нужно только передать список email’ов.</p>' }),
+            T('M06', 'Анонс №1: новый баннер с датой → Курбану на публикацию → контроль', '20.05.2026', 'Подготовка',
+                'Создан новый анонс с датой старта курса (1080×1080 + 1200×628) и текст поста. Передан Курбану на публикацию через профили центра «Мой бизнес». Получены ссылки на публикации, оформлены в документ СМИ.',
+                { owner: 'mark',
+                  body: '<p>Старый баннер был сделан на скорую руку, без даты. Сейчас нужно сделать новый — с датой старта и реальной формой записи. После создания — передать Курбану. Курбан публикует через профили МБ. Когда готово — проконтролировать что опубликовано везде, получить ссылки и оформить в документ СМИ.</p>',
+                  links: [{ label: 'Папка с исходниками анонса (без даты)', url: 'https://drive.google.com/drive/folders/1qfQ51DTEjlDgai86IKr3Qwq90lX7lrJC' },
+                          { label: 'Документ СМИ-публикаций', url: 'https://docs.google.com/document/d/1MeM7w7TRz2SfKR64aWg4zPNXfkeFv58N/edit' },
+                          { label: 'Текст анонса (черновик)', url: '../Анонс/текст-анонса.md' }] }),
             T('M07', 'Сценарий урока 1 «Введение в ИИ для создания контента»', '12.06.2026', 'Запись уроков',
                 'Текст речи для аватара (Сераж на видео). 8–12 минут.',
                 { owner: 'mark', body: '<p>Передать Али — он сгенерирует аватар через HeyGen и смонтирует.</p>' }),
@@ -1620,17 +1719,15 @@
                 { owner: 'mark' })
         ],
         serj: [
-            T('S01', 'Подписать договор и приложения с ЦПП РД', '18.05.2026', 'Подготовка',
-                'Договор, ТЗ, спецификация подписаны с обеих сторон, печати проставлены.',
-                { owner: 'serj', report: 'Оригиналы в 2 экземплярах + PDF сканы → <code>2026/Договор и план/</code>' }),
-            T('S02', 'Опубликовать анонс №1 «Скоро запуск курса»', '25.05.2026', 'Подготовка',
-                'Анонс опубликован минимум на 2 площадках. Скриншоты сохранены.',
-                { owner: 'serj', body: '<p>Текст и баннер от Марка к 20.05. Публикация со своих аккаунтов.</p>',
-                  report: 'PNG-скриншоты → <code>Отчёт в МБ/9. СМИ/</code> + строка в xlsx документа СМИ',
-                  links: [{ label: 'Текст анонса', url: '../Анонс/текст-анонса.md' }] }),
-            T('S03', 'Привлечь 20 учеников (СМСП) на курс', '15.06.2026', 'Подготовка',
-                '20 заявок от субъектов МСП. Каждый: подтвердил участие, дал контактные данные.',
-                { owner: 'serj', body: '<p>Через свои каналы и партнёров. Заявки приходят на лендинг / в форму.</p>' }),
+            T('S01', 'Подписать договор с Центром поддержки предпринимательства РД', '15.04.2026', 'Подготовка',
+                null,
+                { owner: 'serj', status: 'done',
+                  body: '<p>Договор подписан 15.04.2026 — за месяц до начала планирования реализации.</p>' }),
+            T('S03', 'Принимать прямые заявки от учеников и пересылать в общий чат', 'Постоянно', 'Подготовка',
+                'Все заявки от МСП попадают в одну точку — общий TG-чат проекта.',
+                { owner: 'serj',
+                  body: '<p>Заявки автоматически приходят с лендинга в TG-группу. Бывают исключения — прямые заявки или запросы от МБ. В этих случаях Сераж сам кидает заявку в эту же группу. Магомед обрабатывает заявки оттуда.</p>',
+                  links: [{ label: 'Общий чат заявок (Telegram)', url: 'https://t.me/c/3730250882/3' }] }),
             T('S04', 'Записать видео для урока 1 (по сценарию Mark)', '14.06.2026', 'Запись уроков',
                 'Видеозапись по сценарию Марка. Передать Али — он сделает аватар через HeyGen и смонтирует.',
                 { owner: 'serj' }),
@@ -1652,43 +1749,63 @@
                 { owner: 'serj' })
         ],
         ali: [
-            T('A01', 'Создать лендинг курса ИИ 3.0', '25.05.2026', 'Подготовка',
-                'Работающий лендинг по ТЗ от Марка. Адаптивная вёрстка.',
-                { owner: 'ali', body: '<p>ТЗ от Марка — к 08.05.</p>',
-                  report: 'Ссылка на лендинг → вписать в лист «План курса»' }),
-            T('A02', 'Настроить личный кабинет ученика', '31.05.2026', 'Подготовка',
-                'Работающий ЛК. Ученик входит → видит 6 уроков → может пройти итоговый тест. Доступ ограничен по сроку.',
-                { owner: 'ali', report: 'Ссылка на ЛК → лист «План курса»' }),
-            T('A03', 'Настроить форму заявки на лендинге', '25.05.2026', 'Подготовка',
-                'Форма собирает все данные из ТЗ. Все поля обязательные. Валидация ИНН.',
+            T('A01', 'Создать лендинг курса ИИ 3.0 + форма заявки', '25.05.2026', 'Подготовка',
+                'Работающий лендинг по ТЗ от Марка с встроенной формой заявки. Все поля обязательные, валидация ИНН (10 или 12 цифр), заявки уходят в общую TG-группу проекта. Адаптивная вёрстка.',
+                { owner: 'ali',
+                  body: '<p>Формирующая лендинг и форма заявки — единый этап работы. Бывшая отдельная задача A03 (форма) объединена сюда.</p>',
+                  links: [{ label: 'ТЗ для лендинга и формы (документ)', url: 'https://docs.google.com/document/d/1-MhSqDqJUo4905OHRHo31RBK9zQF2ffDtW-qgSWbodY/edit' }] }),
+            T('A02', 'Настроить личный кабинет ученика', '20.06.2026', 'Подготовка',
+                'Работающий ЛК. Ученик входит → видит 6 уроков → может пройти итоговый тест. Доступ ограничен по сроку. Mark передаст список email’ов за 2 дня до старта курса.',
                 { owner: 'ali' }),
-            T('A04', 'Урок 1 — аватар + монтаж + публикация', '20.06.2026', 'Запись уроков',
+            T('A03', 'Урок 1 — аватар + монтаж + публикация', '20.06.2026', 'Запись уроков',
                 'Сгенерирован аватар через HeyGen по сценарию Марка. Смонтировано финальное видео. Опубликовано в ЛК.',
                 { owner: 'ali' }),
-            T('A05', 'Урок 3 — аватар + монтаж + публикация', '04.07.2026', 'Запись уроков',
+            T('A04', 'Урок 3 — аватар + монтаж + публикация', '04.07.2026', 'Запись уроков',
                 'Аватар по тексту речи от Магомеда. Опубликовано в ЛК к 06.07.',
                 { owner: 'ali' }),
-            T('A06', 'Урок 4 — аватар + монтаж + публикация', '11.07.2026', 'Запись уроков',
+            T('A05', 'Урок 4 — аватар + монтаж + публикация', '11.07.2026', 'Запись уроков',
                 'Аватар по сценарию Марка. Опубликовано в ЛК к 13.07.',
                 { owner: 'ali' }),
-            T('A07', 'Урок 6 — аватар + монтаж + публикация', '25.07.2026', 'Запись уроков',
+            T('A06', 'Урок 6 — аватар + монтаж + публикация', '25.07.2026', 'Запись уроков',
                 'Аватар по тексту речи от Магомеда. Опубликовано в ЛК к 27.07.',
                 { owner: 'ali' }),
-            T('A08', 'Уроки 2 и 5 — выгрузка от Евы и публикация в ЛК', '18.07.2026', 'Запись уроков',
+            T('A07', 'Уроки 2 и 5 — выгрузка от Евы и публикация в ЛК', '18.07.2026', 'Запись уроков',
                 'Готовые исходники от Евы выгружены на Google Диск, опубликованы в ЛК.',
                 { owner: 'ali', body: '<p>Урок 2 — к 27.06. Урок 5 — к 18.07.</p>' })
         ],
         magomed: [
-            T('G01', 'Обработать 20 заявок: связаться, собрать анкеты, выписки МСП', '21.06.2026', 'Подготовка',
-                'По каждому из 20 учеников: внести данные в единую таблицу, получить анкету-заявку (PDF), сделать выписку из rmsp.nalog.ru (PDF), обновить статус.',
-                { owner: 'magomed', report: 'PDF-файлы → <code>Отчёт в МБ/5-7. Данные по каждому ученику/[ФИО]/</code>',
-                  links: [{ label: 'Единая таблица учеников (Google Sheets)' }, { label: 'Реестр МСП', url: 'https://rmsp.nalog.ru/' }] }),
+            T('G01', 'Обработать заявки: связаться, собрать анкеты, выписки МСП', '21.06.2026', 'Подготовка',
+                'По каждому ученику: создать папку в общей папке проекта, внести данные в единую таблицу, получить заполненную анкету-заявку (PDF), сделать выписку из rmsp.nalog.ru (PDF), обновить статус.',
+                { owner: 'magomed',
+                  body: `<p><strong>Где брать заявки:</strong> заявки автоматически приходят с лендинга в общий TG-чат проекта. Прямые / от МБ — Сераж докидывает в этот же чат.</p>
+                         <p><strong>Унификация имён файлов в папках учеников</strong> (важно для поиска):</p>
+                         <ul>
+                            <li><code>Анкета-заявка - Магомедов Магомед Магомедович.pdf</code></li>
+                            <li><code>Выписка из реестра МСП - Магомедов Магомед Магомедович.pdf</code></li>
+                            <li><code>Сертификат - Магомедов Магомед Магомедович.pdf</code> (потом)</li>
+                            <li><code>Сертификат - Скан - Магомедов Магомед Магомедович.pdf</code> (потом)</li>
+                         </ul>`,
+                  report: 'PDF-файлы → <code>Папка проекта/Папки учеников/[ФИО]/</code>',
+                  links: [{ label: 'Общий чат заявок (Telegram)', url: 'https://t.me/c/3730250882/3' },
+                          { label: 'Единая таблица учеников (Google Sheets)', url: 'https://docs.google.com/spreadsheets/d/1HMrvBLMy-TSefeBOIDOTOPCOgYEJclGu/edit' },
+                          { label: 'Папка для папок учеников (Google Drive)', url: 'https://drive.google.com/drive/folders/1C6Aa8cq57n4szQH_37CNk40ppOLI1wyY' },
+                          { label: 'Единый реестр МСП', url: 'https://rmsp.nalog.ru/' }] }),
             T('G02', 'Текст речи для Урока 3 «Автоматизация взаимодействия с аудиторией»', '29.06.2026', 'Запись уроков',
                 'Текст на 8–12 минут под видеоаватара. Тема: автоматические воронки в директе, чат-боты для бизнеса.',
                 { owner: 'magomed', body: '<p>Передать Али — сгенерирует аватар через HeyGen и смонтирует.</p>' }),
             T('G03', 'Текст речи для Урока 6 «Интеграция ИИ в рабочие процессы»', '20.07.2026', 'Запись уроков',
                 'Текст на 8–12 минут под видеоаватара.',
                 { owner: 'magomed' })
+        ],
+        kurban: [
+            T('K01', 'Опубликовать анонс №1 «Скоро запуск курса» через профили центра «Мой бизнес»', '25.05.2026', 'Подготовка',
+                'Анонс №1 опубликован на всех профилях центра «Мой бизнес» (Telegram, VK, Instagram и т.п. — где публикуется центр). После публикации передать Mark’у ссылки на каждую публикацию.',
+                { owner: 'kurban',
+                  body: '<p>Mark передаст готовый баннер с датой и текст поста. Публиковать только через профили МБ — не через личные.</p>',
+                  report: 'Ссылки на публикации передать Mark’у. Скриншоты сохранять не нужно — Mark соберёт сам.' }),
+            T('K02', 'Опубликовать анонс №2 «Курс стартовал!» через профили центра «Мой бизнес»', '22.06.2026', 'Старт и ведение курса',
+                'Анонс №2 опубликован на тех же профилях, что и №1, в день старта курса. Ссылки на публикации переданы Mark’у.',
+                { owner: 'kurban' })
         ],
         eva: [
             T('E01', 'Урок 2 «ИИ в сторителлинге и визуальном контенте» — съёмка и монтаж', '27.06.2026', 'Запись уроков',

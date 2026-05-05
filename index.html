@@ -326,6 +326,64 @@
         .dash-card--warn .dash-card__num { color: var(--d-week); }
         .dash-card--info .dash-card__num { color: var(--d-soon); }
 
+        /* ==================== TOOLBAR (sort + group) ==================== */
+        .toolbar {
+            display: flex; gap: 16px 18px; flex-wrap: wrap; align-items: center;
+            margin-bottom: 14px;
+        }
+        .toolbar__group { display: flex; align-items: center; gap: 8px; }
+        .toolbar__label {
+            font-family: 'Unbounded', sans-serif;
+            font-size: 9px; font-weight: 600;
+            color: var(--ink-40);
+            text-transform: uppercase; letter-spacing: 1.5px;
+        }
+        .seg {
+            display: inline-flex; gap: 0;
+            background: var(--bg-2);
+            padding: 3px;
+            border-radius: var(--rad-md);
+        }
+        .seg button {
+            font-size: 12px; font-weight: 500;
+            padding: 6px 11px;
+            background: transparent; border: none;
+            color: var(--ink-60);
+            border-radius: 6px;
+            white-space: nowrap;
+            display: inline-flex; align-items: center; gap: 5px;
+            transition: color 0.15s, background 0.15s;
+        }
+        .seg button:hover { color: var(--ink-100); }
+        .seg button.active {
+            background: var(--bg-0);
+            color: var(--ink-100);
+            box-shadow: var(--shadow-sm);
+        }
+        .seg button svg { width: 12px; height: 12px; }
+
+        /* Phase pill (на карточке в режиме без группировки) */
+        .phase-pill {
+            display: inline-flex; align-items: center; gap: 5px;
+            font-family: 'Unbounded', sans-serif;
+            font-size: 9px; font-weight: 600;
+            padding: 3px 8px;
+            border-radius: 999px;
+            letter-spacing: 0.3px;
+            white-space: nowrap;
+        }
+        .phase-pill::before {
+            content: '';
+            width: 6px; height: 6px;
+            border-radius: 50%;
+            background: currentColor;
+        }
+        .phase-pill--prep    { background: var(--p-prep-bg);    color: var(--p-prep); }
+        .phase-pill--record  { background: var(--p-record-bg);  color: var(--p-record); }
+        .phase-pill--run     { background: var(--p-run-bg);     color: var(--p-run); }
+        .phase-pill--wrap    { background: var(--p-wrap-bg);    color: var(--p-wrap); }
+        .phase-pill--deliver { background: var(--p-deliver-bg); color: var(--p-deliver); }
+
         /* ==================== FILTER BAR ==================== */
         .filterbar {
             display: flex; gap: 8px; flex-wrap: wrap;
@@ -999,6 +1057,7 @@
 
         <div id="contactBanner"></div>
         <div id="dashboardWrap"></div>
+        <div id="toolbar"></div>
         <div class="filterbar" id="filterbar"></div>
         <div id="tasksContainer"></div>
     </div>
@@ -1056,7 +1115,7 @@
     </div>
 
     <div class="app-footer">
-        Markins · <a href="https://wa.me/79898966950">+7 989 896 69 50</a> · <a href="mailto:info@markins.ru">info@markins.ru</a> · <span id="versionLabel">v0.3 · 04.05.2026</span>
+        Markins · <a href="https://wa.me/79898966950">+7 989 896 69 50</a> · <a href="mailto:info@markins.ru">info@markins.ru</a> · <span id="versionLabel">v0.4 · 05.05.2026</span>
     </div>
 
 </div>
@@ -1136,8 +1195,8 @@
         'Сдача':                 'deliver'
     };
     const PHASE_DATES = {
-        'Подготовка':            '04.05 – 31.05.2026',
-        'Запись уроков':         '01.06 – 25.07.2026',
+        'Подготовка':            '04.05 – 22.06.2026',
+        'Запись уроков':         '05.06 – 25.07.2026',
         'Старт и ведение курса': '22.06 – 30.07.2026',
         'Сворачивание и отчёт':  '03.08 – 28.08.2026',
         'Сдача':                 '29.08 – 31.08.2026'
@@ -1247,6 +1306,34 @@
 
     // ============= RENDER TASKS =============
     let CURRENT_FILTER = 'all'; // for admin filter chips
+    let CURRENT_GROUP  = 'phase'; // 'phase' | 'none'
+    let CURRENT_SORT   = 'date';  // 'date' | 'owner' | 'num'
+
+    function setGroup(g, role) { CURRENT_GROUP = g; renderTasks(role); }
+    function setSort(s, role)  { CURRENT_SORT = s; renderTasks(role); }
+
+    function sortTasks(arr) {
+        const dateVal = t => {
+            if (/постоянно/i.test(t.due)) return 9e15; // в конце
+            const m = t.due.match(/(\d{2})\.(\d{2})\.(\d{4})/g);
+            if (!m) return 9e15;
+            const last = m[m.length-1].match(/(\d{2})\.(\d{2})\.(\d{4})/);
+            return new Date(parseInt(last[3]), parseInt(last[2])-1, parseInt(last[1])).getTime();
+        };
+        const sorted = [...arr];
+        if (CURRENT_SORT === 'date') {
+            sorted.sort((a, b) => dateVal(a) - dateVal(b) || a.num.localeCompare(b.num));
+        } else if (CURRENT_SORT === 'owner') {
+            sorted.sort((a, b) => {
+                const oa = a.owner ? TEAM[a.owner].short : 'я';
+                const ob = b.owner ? TEAM[b.owner].short : 'я';
+                return oa.localeCompare(ob, 'ru') || dateVal(a) - dateVal(b);
+            });
+        } else {
+            sorted.sort((a, b) => a.num.localeCompare(b.num));
+        }
+        return sorted;
+    }
     function renderTasks(role) {
         const isAdmin = role === 'mark';
         const allTasks = isAdmin ? Object.values(TASKS_BY_ROLE).flat() : (TASKS_BY_ROLE[role] || []);
@@ -1312,23 +1399,52 @@
 
         const tasks = (isAdmin && CURRENT_FILTER !== 'all') ? allTasks.filter(t => t.phase === CURRENT_FILTER) : allTasks;
 
-        // group by phase
-        const phases = {};
-        tasks.forEach(t => { (phases[t.phase] = phases[t.phase] || []).push(t); });
-        const phaseOrder = ['Подготовка','Запись уроков','Старт и ведение курса','Сворачивание и отчёт','Сдача'];
-        const html = phaseOrder.filter(p => phases[p]).map((phase, idx) => {
-            const k = PHASE_KEY[phase];
-            const phaseTasks = phases[phase];
-            const dates = PHASE_DATES[phase] || '';
-            return `<div class="phase-block">
-                <div class="phase-head">
-                    <div class="phase-marker phase-marker--${k}">${String(phaseOrder.indexOf(phase)+1).padStart(2,'0')}</div>
-                    <div class="phase-name">${phase}</div>
-                    <div class="phase-dates">${dates}</div>
+        // toolbar (sort + group). Если задач < 2 — не показываем.
+        const tb = document.getElementById('toolbar');
+        if (tasks.length >= 2) {
+            const segGroup = `<div class="toolbar__group">
+                <span class="toolbar__label">Группировка</span>
+                <div class="seg">
+                    <button class="${CURRENT_GROUP==='phase'?'active':''}" onclick="setGroup('phase','${role}')">По фазам</button>
+                    <button class="${CURRENT_GROUP==='none'?'active':''}"  onclick="setGroup('none','${role}')">Без группировки</button>
                 </div>
-                ${phaseTasks.map(t => taskCardHtml(t, isAdmin)).join('')}
             </div>`;
-        }).join('');
+            const sortOptions = [['date','По сроку'], ['num','По номеру']];
+            if (isAdmin) sortOptions.splice(1, 0, ['owner','По исполнителю']);
+            const segSort = `<div class="toolbar__group">
+                <span class="toolbar__label">Сортировка</span>
+                <div class="seg">
+                    ${sortOptions.map(([v,l]) => `<button class="${CURRENT_SORT===v?'active':''}" onclick="setSort('${v}','${role}')">${l}</button>`).join('')}
+                </div>
+            </div>`;
+            tb.innerHTML = `<div class="toolbar">${segGroup}${segSort}</div>`;
+        } else {
+            tb.innerHTML = '';
+        }
+
+        const phaseOrder = ['Подготовка','Запись уроков','Старт и ведение курса','Сворачивание и отчёт','Сдача'];
+        let html = '';
+
+        if (CURRENT_GROUP === 'phase') {
+            const phases = {};
+            tasks.forEach(t => { (phases[t.phase] = phases[t.phase] || []).push(t); });
+            html = phaseOrder.filter(p => phases[p]).map((phase) => {
+                const k = PHASE_KEY[phase];
+                const phaseTasks = sortTasks(phases[phase]);
+                const dates = PHASE_DATES[phase] || '';
+                return `<div class="phase-block">
+                    <div class="phase-head">
+                        <div class="phase-marker phase-marker--${k}">${String(phaseOrder.indexOf(phase)+1).padStart(2,'0')}</div>
+                        <div class="phase-name">${phase}</div>
+                        <div class="phase-dates">${dates}</div>
+                    </div>
+                    ${phaseTasks.map(t => taskCardHtml(t, isAdmin, false)).join('')}
+                </div>`;
+            }).join('');
+        } else {
+            const sorted = sortTasks(tasks);
+            html = `<div class="phase-block">${sorted.map(t => taskCardHtml(t, isAdmin, true)).join('')}</div>`;
+        }
 
         document.getElementById('tasksContainer').innerHTML = html || `<div class="empty-state">
             <div class="empty-state__title">Пусто</div>
@@ -1350,7 +1466,7 @@
         renderTasks(role);
     }
 
-    function taskCardHtml(t, isAdmin) {
+    function taskCardHtml(t, isAdmin, showPhase) {
         const k = PHASE_KEY[t.phase] || '';
         const status = t.status || 'todo';
         const isClosed = status === 'done' || status === 'cancelled';
@@ -1358,6 +1474,7 @@
         const ownerHtml = isAdmin && t.owner
             ? `<div class="owner-chip"><span class="avatar avatar--${t.owner}">${TEAM[t.owner].initial}</span>${TEAM[t.owner].short}</div>`
             : '';
+        const phaseHtml = showPhase ? `<span class="phase-pill phase-pill--${k}">${t.phase}</span>` : '';
         const statusBadge = `<span class="status-badge status--${status}">${STATUS_LABEL[status]}</span>`;
         const dateBadgeHtml = isClosed ? '' : `<span class="date-badge date-badge--${badge.cls}"><svg><use href="#ic-clock"/></svg>${badge.label}</span>`;
         const links = (t.links || []).map(l => l.url
@@ -1375,6 +1492,7 @@
                         ${statusBadge}
                         ${dateBadgeHtml}
                         ${ownerHtml}
+                        ${phaseHtml}
                     </div>
                 </div>
                 <svg class="task-chevron" width="20" height="20"><use href="#ic-chevron"/></svg>
@@ -1622,26 +1740,30 @@
                 'Список из 20 email-адресов учеников (после набора группы) передан Али за 2 дня до старта курса. Али откроет доступ в ЛК.',
                 { owner: 'mark',
                   body: '<p>Личный кабинет Али сделает сам — отдельное ТЗ не нужно. Мне нужно только передать список email’ов.</p>' }),
-            T('M06', 'Анонс №1: новый баннер с датой → Курбану на публикацию → контроль', '20.05.2026', 'Подготовка',
-                'Создан новый анонс с датой старта курса (1080×1080 + 1200×628) и текст поста. Передан Курбану на публикацию через профили центра «Мой бизнес». Получены ссылки на публикации, оформлены в документ СМИ.',
+            T('M06', 'Анонс №1: контроль публикации Курбана + ссылки в документ СМИ', '11.05.2026', 'Подготовка',
+                'Курбан опубликовал анонс №1 на профилях МБ. Mark получил ссылки на каждую публикацию и внёс их с описанием и скриншотом в документ СМИ-публикаций.',
+                { owner: 'mark', status: 'inprog',
+                  body: '<p>Исходники анонса №1 переданы Курбану в пятницу <strong>02.05.2026</strong>. Дальше:</p><ul><li>Запросил у Курбана ссылки на публикации (ждём)</li><li>Когда придут — внести каждую в документ СМИ: ссылка + описание + скриншот</li></ul>',
+                  links: [{ label: 'Папка с исходниками анонса №1', url: 'https://drive.google.com/drive/folders/1qfQ51DTEjlDgai86IKr3Qwq90lX7lrJC' },
+                          { label: 'Документ СМИ-публикаций', url: 'https://docs.google.com/document/d/1MeM7w7TRz2SfKR64aWg4zPNXfkeFv58N/edit' }] }),
+            T('M06a', 'Сделать нормальный баннер для анонса №1 (с датой) → Курбану', '08.05.2026', 'Подготовка',
+                'Готовый качественный баннер анонса №1 (1080×1080 + 1200×628), с датой старта курса и понятным CTA. Загружен в папку проекта и передан Курбану на замену.',
                 { owner: 'mark',
-                  body: '<p>Старый баннер был сделан на скорую руку, без даты. Сейчас нужно сделать новый — с датой старта и реальной формой записи. После создания — передать Курбану. Курбан публикует через профили МБ. Когда готово — проконтролировать что опубликовано везде, получить ссылки и оформить в документ СМИ.</p>',
-                  links: [{ label: 'Папка с исходниками анонса (без даты)', url: 'https://drive.google.com/drive/folders/1qfQ51DTEjlDgai86IKr3Qwq90lX7lrJC' },
-                          { label: 'Документ СМИ-публикаций', url: 'https://docs.google.com/document/d/1MeM7w7TRz2SfKR64aWg4zPNXfkeFv58N/edit' },
-                          { label: 'Текст анонса (черновик)', url: '../Анонс/текст-анонса.md' }] }),
-            T('M07', 'Сценарий урока 1 «Введение в ИИ для создания контента»', '12.06.2026', 'Запись уроков',
+                  body: '<p>Тот, что сейчас у Курбана — сделан на скорую руку, без даты. Нужно подготовить нормальный, загрузить в общую папку и переслать Курбану. После замены — он опубликует уже его.</p>',
+                  links: [{ label: 'Папка для готового баннера', url: 'https://drive.google.com/drive/folders/1qfQ51DTEjlDgai86IKr3Qwq90lX7lrJC' }] }),
+            T('M07', 'Сценарий урока 1 «Введение в ИИ для создания контента»', '05.06.2026', 'Запись уроков',
                 'Текст речи для аватара (Сераж на видео). 8–12 минут.',
-                { owner: 'mark', body: '<p>Передать Али — он сгенерирует аватар через HeyGen и смонтирует.</p>' }),
-            T('M08', 'Сценарий урока 4 «Интеграция ИИ инструментов и стратегия монетизации»', '06.07.2026', 'Запись уроков',
-                'Текст речи для аватара (Сераж на видео). 8–12 минут. По плану публикуется 13.07.', { owner: 'mark' }),
+                { owner: 'mark', body: '<p>Можно начинать прямо сейчас — ничего не блокирует. К старту курса (22.06) уроки 1–3 должны быть готовы. Передать Али на генерацию аватара и монтаж.</p>' }),
+            T('M08', 'Сценарий урока 4 «Интеграция ИИ инструментов и стратегия монетизации»', '19.06.2026', 'Запись уроков',
+                'Текст речи для аватара (Сераж на видео). 8–12 минут. По плану публикуется 13.07. Желательно успеть до старта курса.', { owner: 'mark' }),
             T('M09', 'Запись и публикация всех 6 уроков — координация', '27.07.2026', 'Старт и ведение курса',
                 'Все 6 уроков опубликованы в ЛК ученика по графику. По каждому уроку: видеозапись, файлы, скриншоты, заполненное «Приложение к уроку N.docx».',
                 { owner: 'mark', body: '<p><strong>График публикации:</strong></p><ul><li>22.06 — Урок 1 (Сераж/аватар)</li><li>29.06 — Урок 2 (Ева)</li><li>06.07 — Урок 3 (Сераж/аватар, текст Магомед)</li><li>13.07 — Урок 4 (Сераж/аватар, сценарий Mark)</li><li>20.07 — Урок 5 (Ева)</li><li>27.07 — Урок 6 (Mark/аватар, текст Магомед)</li></ul>',
                   report: 'По каждому уроку папка <code>Отчёт в МБ/1-2. Материалы уроков/Урок N/</code>' }),
             T('M10', 'Анонс-баннер №2 «Курс стартовал!»', '19.06.2026', 'Старт и ведение курса',
                 'Баннер (PNG/JPG, 1080×1080 + 1200×628) с текстом «Курс стартовал!» и текст поста.', { owner: 'mark' }),
-            T('M11', 'Создать WhatsApp-чат и добавить учеников', '22.06.2026', 'Старт и ведение курса',
-                'Группа WhatsApp с названием курса. Все 20 учеников добавлены. Приветственное сообщение отправлено.',
+            T('M11', 'Создать WhatsApp-чат и добавить учеников', '22.06.2026', 'Подготовка',
+                'Группа WhatsApp с названием курса. Все ученики из единой таблицы добавлены. Приветственное сообщение отправлено.',
                 { owner: 'mark', report: 'Скриншот созданного чата с участниками → <code>Отчёт в МБ/8. Обратная связь в чате/Скриншоты/</code>' }),
             T('M12', 'Назначить и провести онлайн-встречу (Zoom)', '30.07.2026', 'Старт и ведение курса',
                 'Zoom-встреча проведена с записью. 2–3 скриншота (начало, процесс, финал). Перед встречей — 4 напоминания в чат.',
@@ -1723,10 +1845,10 @@
                 null,
                 { owner: 'serj', status: 'done',
                   body: '<p>Договор подписан 15.04.2026 — за месяц до начала планирования реализации.</p>' }),
-            T('S03', 'Принимать прямые заявки от учеников и пересылать в общий чат', 'Постоянно', 'Подготовка',
-                'Все заявки от МСП попадают в одну точку — общий TG-чат проекта.',
-                { owner: 'serj',
-                  body: '<p>Заявки автоматически приходят с лендинга в TG-группу. Бывают исключения — прямые заявки или запросы от МБ. В этих случаях Сераж сам кидает заявку в эту же группу. Магомед обрабатывает заявки оттуда.</p>',
+            T('S03', 'Принимать прямые заявки от учеников и пересылать в общий чат', '21.06.2026', 'Подготовка',
+                'Все заявки от МСП попадают в одну точку — общий TG-чат проекта. Приём идёт до конца последнего дня перед стартом курса (21.06.2026 включительно).',
+                { owner: 'serj', status: 'inprog',
+                  body: '<p>Заявки автоматически приходят с лендинга в TG-группу. Сераж докидывает в эту же группу всё что приходит мимо лендинга:</p><ul><li>прямые звонки и сообщения</li><li>заявки на email от МБ</li><li>запросы из других каналов</li></ul><p>Магомед обрабатывает все заявки из этого чата.</p>',
                   links: [{ label: 'Общий чат заявок (Telegram)', url: 'https://t.me/c/3730250882/3' }] }),
             T('S04', 'Записать видео для урока 1 (по сценарию Mark)', '14.06.2026', 'Запись уроков',
                 'Видеозапись по сценарию Марка. Передать Али — он сделает аватар через HeyGen и смонтирует.',
@@ -1749,11 +1871,11 @@
                 { owner: 'serj' })
         ],
         ali: [
-            T('A01', 'Создать лендинг курса ИИ 3.0 + форма заявки', '25.05.2026', 'Подготовка',
-                'Работающий лендинг по ТЗ от Марка с встроенной формой заявки. Все поля обязательные, валидация ИНН (10 или 12 цифр), заявки уходят в общую TG-группу проекта. Адаптивная вёрстка.',
+            T('A01', 'Создать лендинг курса ИИ 3.0 + форма заявки', '14.05.2026', 'Подготовка',
+                'Работающий лендинг по ТЗ от Марка с встроенной формой заявки. Все поля обязательные, валидация ИНН (10 или 12 цифр), заявки уходят в общий TG-чат проекта. Адаптивная вёрстка. Лендинг должен быть готов до публикации анонса №2.',
                 { owner: 'ali',
-                  body: '<p>Формирующая лендинг и форма заявки — единый этап работы. Бывшая отдельная задача A03 (форма) объединена сюда.</p>',
-                  links: [{ label: 'ТЗ для лендинга и формы (документ)', url: 'https://docs.google.com/document/d/1-MhSqDqJUo4905OHRHo31RBK9zQF2ffDtW-qgSWbodY/edit' }] }),
+                  links: [{ label: 'ТЗ для лендинга и формы (документ)', url: 'https://docs.google.com/document/d/1-MhSqDqJUo4905OHRHo31RBK9zQF2ffDtW-qgSWbodY/edit' },
+                          { label: 'TG-чат, куда падают заявки', url: 'https://t.me/c/3730250882/3' }] }),
             T('A02', 'Настроить личный кабинет ученика', '20.06.2026', 'Подготовка',
                 'Работающий ЛК. Ученик входит → видит 6 уроков → может пройти итоговый тест. Доступ ограничен по сроку. Mark передаст список email’ов за 2 дня до старта курса.',
                 { owner: 'ali' }),
@@ -1790,27 +1912,27 @@
                           { label: 'Единая таблица учеников (Google Sheets)', url: 'https://docs.google.com/spreadsheets/d/1HMrvBLMy-TSefeBOIDOTOPCOgYEJclGu/edit' },
                           { label: 'Папка для папок учеников (Google Drive)', url: 'https://drive.google.com/drive/folders/1C6Aa8cq57n4szQH_37CNk40ppOLI1wyY' },
                           { label: 'Единый реестр МСП', url: 'https://rmsp.nalog.ru/' }] }),
-            T('G02', 'Текст речи для Урока 3 «Автоматизация взаимодействия с аудиторией»', '29.06.2026', 'Запись уроков',
+            T('G02', 'Текст речи для Урока 3 «Автоматизация взаимодействия с аудиторией»', '12.06.2026', 'Запись уроков',
                 'Текст на 8–12 минут под видеоаватара. Тема: автоматические воронки в директе, чат-боты для бизнеса.',
-                { owner: 'magomed', body: '<p>Передать Али — сгенерирует аватар через HeyGen и смонтирует.</p>' }),
-            T('G03', 'Текст речи для Урока 6 «Интеграция ИИ в рабочие процессы»', '20.07.2026', 'Запись уроков',
-                'Текст на 8–12 минут под видеоаватара.',
+                { owner: 'magomed', body: '<p>Можно начинать сейчас. Желательно успеть до старта курса (22.06). Передать Али — сгенерирует аватар через HeyGen и смонтирует.</p>' }),
+            T('G03', 'Текст речи для Урока 6 «Интеграция ИИ в рабочие процессы»', '03.07.2026', 'Запись уроков',
+                'Текст на 8–12 минут под видеоаватара. По плану публикуется 27.07.',
                 { owner: 'magomed' })
         ],
         kurban: [
-            T('K01', 'Опубликовать анонс №1 «Скоро запуск курса» через профили центра «Мой бизнес»', '25.05.2026', 'Подготовка',
-                'Анонс №1 опубликован на всех профилях центра «Мой бизнес» (Telegram, VK, Instagram и т.п. — где публикуется центр). После публикации передать Mark’у ссылки на каждую публикацию.',
+            T('K01', 'Опубликовать анонс №1 через профили центра «Мой бизнес»', '09.05.2026', 'Подготовка',
+                'Анонс №1 опубликован на всех профилях центра «Мой бизнес» (Telegram, VK, Instagram и т.п. — где публикуется центр). После публикации — передать Mark’у ссылки на каждую публикацию.',
                 { owner: 'kurban',
-                  body: '<p>Mark передаст готовый баннер с датой и текст поста. Публиковать только через профили МБ — не через личные.</p>',
-                  report: 'Ссылки на публикации передать Mark’у. Скриншоты сохранять не нужно — Mark соберёт сам.' }),
-            T('K02', 'Опубликовать анонс №2 «Курс стартовал!» через профили центра «Мой бизнес»', '22.06.2026', 'Старт и ведение курса',
-                'Анонс №2 опубликован на тех же профилях, что и №1, в день старта курса. Ссылки на публикации переданы Mark’у.',
-                { owner: 'kurban' })
+                  body: '<p>Исходники у Курбана с 02.05. Mark пришлёт обновлённый баннер с датой к 08.05 — публиковать его. Только через профили МБ.</p>' }),
+            T('K02', 'Опубликовать анонс №2 через профили центра «Мой бизнес»', '16.05.2026', 'Подготовка',
+                'Анонс №2 опубликован на тех же профилях. Лендинг к этому моменту уже работает — ссылка должна вести на форму записи.',
+                { owner: 'kurban',
+                  body: '<p>Mark пришлёт баннер и текст ближе к дате. Перед публикацией убедиться что лендинг доступен (Mark подтвердит).</p>' })
         ],
         eva: [
-            T('E01', 'Урок 2 «ИИ в сторителлинге и визуальном контенте» — съёмка и монтаж', '27.06.2026', 'Запись уроков',
-                'Готовый смонтированный урок (8–12 минут). Передать Али на загрузку в ЛК. Срок публикации в ЛК — пн 29.06.2026.',
-                { owner: 'eva', body: '<p>Снимаешь сама + монтируешь сама. Готовый файл на Google Диск.</p>' }),
+            T('E01', 'Урок 2 «ИИ в сторителлинге и визуальном контенте» — съёмка и монтаж', '12.06.2026', 'Запись уроков',
+                'Готовый смонтированный урок (8–12 минут). Передать Али на загрузку в ЛК. Срок публикации в ЛК — пн 29.06.2026, но желательно сдать до старта курса.',
+                { owner: 'eva', body: '<p>Можно начинать сейчас. Снимаешь сама + монтируешь сама. Готовый файл на Google Диск.</p>' }),
             T('E02', 'Урок 5 «ИИ в дизайне и креативе» — съёмка и монтаж', '18.07.2026', 'Запись уроков',
                 'Готовый смонтированный урок (8–12 минут). Срок публикации в ЛК — пн 20.07.2026.',
                 { owner: 'eva' })

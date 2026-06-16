@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Урок 1 — монтаж · Регистрация в ChatGPT и сценарий ролика</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Commissioner:wght@300;400;500;600;700&family=Unbounded:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg-0:#FFFFFF;--bg-1:#FAFAFB;--bg-2:#F2F2F4;--bg-3:#E8E8EC;
+    --ink-100:#0E0E11;--ink-80:rgba(14,14,17,.78);--ink-60:rgba(14,14,17,.58);
+    --ink-40:rgba(14,14,17,.38);--ink-20:rgba(14,14,17,.16);--ink-08:rgba(14,14,17,.08);
+    --accent:#6C4DF2;--accent-bg:#EEEAFE;
+    --tg:#2563EB;--tg-bg:#EFF4FF;
+    --inf:#D97706;--inf-bg:#FEF3E0;
+    --ava:#0E0E11;--ava-bg:#F2F2F4;
+    --ok:#16A34A;--ok-bg:#ECFAEF;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Commissioner',sans-serif;color:var(--ink-100);background:var(--bg-1);line-height:1.5;padding-bottom:80px}
+  .wrap{max-width:980px;margin:0 auto;padding:0 22px}
+  a{color:var(--tg);text-decoration:none}
+  a:hover{text-decoration:underline}
+
+  .hero{background:linear-gradient(135deg,#fff 0%,var(--accent-bg) 100%);border-bottom:1px solid var(--ink-08);padding:46px 0 38px}
+  .crumb{font-size:13px;color:var(--ink-60);margin-bottom:14px}
+  .crumb a{color:var(--ink-60)}
+  .tag{display:inline-block;font-size:12px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--accent);background:#fff;border:1px solid var(--ink-08);padding:5px 11px;border-radius:20px;margin-bottom:16px}
+  h1{font-family:'Unbounded',sans-serif;font-weight:600;font-size:34px;line-height:1.12;letter-spacing:-.01em}
+  .lede{font-size:16.5px;color:var(--ink-80);margin-top:14px;max-width:760px}
+  .meta-row{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px}
+  .pill{display:inline-flex;align-items:center;gap:7px;font-size:13px;font-weight:500;background:#fff;border:1px solid var(--ink-08);border-radius:10px;padding:8px 13px;color:var(--ink-80)}
+  .pill b{font-weight:600;color:var(--ink-100)}
+
+  section.block{margin-top:42px}
+  h2{font-family:'Unbounded',sans-serif;font-weight:500;font-size:21px;letter-spacing:-.01em;margin-bottom:6px;display:flex;align-items:center;gap:10px}
+  h2 .num{font-size:13px;color:var(--ink-40);font-weight:400}
+  .sub{font-size:14.5px;color:var(--ink-60);margin-bottom:18px;max-width:760px}
+
+  .legend{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px}
+  .chip{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:600;border-radius:9px;padding:7px 12px;border:1px solid transparent}
+  .chip--ava{color:var(--ava);background:var(--ava-bg)}
+  .chip--scr{color:var(--accent);background:var(--accent-bg)}
+  .chip--inf{color:var(--inf);background:var(--inf-bg)}
+  .chip .dot{width:8px;height:8px;border-radius:50%;background:currentColor}
+
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px}
+  .card{background:var(--bg-0);border:1px solid var(--ink-08);border-radius:14px;overflow:hidden;display:flex;flex-direction:column}
+  .card img{width:100%;display:block;border-bottom:1px solid var(--ink-08);background:var(--bg-2)}
+  .card__b{padding:13px 15px 15px;display:flex;flex-direction:column;gap:10px;flex:1}
+  .card__t{font-weight:600;font-size:14.5px}
+  .card__t span{display:block;font-size:12px;color:var(--ink-60);font-weight:400;margin-top:2px}
+  .card__act{display:flex;gap:8px;margin-top:auto}
+  .btn{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:600;border-radius:9px;padding:8px 12px;border:1px solid var(--ink-20);background:#fff;color:var(--ink-100);transition:.12s}
+  .btn:hover{background:var(--bg-2);text-decoration:none}
+  .btn--p{background:var(--accent);border-color:var(--accent);color:#fff}
+  .btn--p:hover{background:#5a3fd6;color:#fff}
+  .btn svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+
+  .rec{display:flex;align-items:center;gap:14px;background:var(--bg-0);border:1px solid var(--ink-08);border-radius:12px;padding:13px 16px;margin-bottom:10px}
+  .rec__n{flex:0 0 auto;font-family:'Unbounded',sans-serif;font-weight:500;font-size:13px;color:var(--accent);background:var(--accent-bg);border-radius:8px;padding:6px 10px;white-space:nowrap}
+  .rec__t{flex:1;font-weight:500;font-size:14.5px}
+  .rec__t span{display:block;font-size:12.5px;color:var(--ink-60);font-weight:400;margin-top:1px}
+
+  .tl-group{margin-top:26px}
+  .tl-head{display:flex;align-items:center;gap:12px;margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--ink-08)}
+  .tl-head h3{font-family:'Unbounded',sans-serif;font-weight:500;font-size:16px}
+  .tl-head .src{margin-left:auto;font-size:12.5px}
+  .seg{display:flex;gap:0;margin-bottom:12px;background:var(--bg-0);border:1px solid var(--ink-08);border-radius:13px;overflow:hidden}
+  .seg__rail{flex:0 0 64px;display:flex;flex-direction:column;align-items:center;padding:15px 0;background:var(--bg-1);border-right:1px solid var(--ink-08)}
+  .seg__num{font-family:'Unbounded',sans-serif;font-weight:600;font-size:18px;color:var(--ink-100)}
+  .seg__num span{display:block;font-size:9px;font-weight:400;color:var(--ink-40);letter-spacing:.08em;text-transform:uppercase;margin-top:2px}
+  .seg__body{flex:1;padding:14px 18px 16px;min-width:0}
+  .seg__top{display:flex;flex-wrap:wrap;align-items:center;gap:9px;margin-bottom:9px}
+  .seg__t{font-weight:600;font-size:15px}
+  .badge{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;font-weight:600;border-radius:7px;padding:4px 9px}
+  .badge--ava{color:var(--ava);background:var(--ava-bg)}
+  .badge--scr{color:var(--accent);background:var(--accent-bg)}
+  .badge--inf{color:var(--inf);background:var(--inf-bg)}
+  .badge .dot{width:7px;height:7px;border-radius:50%;background:currentColor}
+  .seg__txt{font-size:14px;color:var(--ink-80);white-space:pre-line}
+  .seg__asset{margin-top:11px;display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+  .seg__asset .lbl{font-size:12px;color:var(--ink-60)}
+  .pause{display:flex;align-items:center;gap:9px;font-size:12.5px;color:var(--ink-40);margin:2px 0 14px 76px}
+  .pause::before{content:"";flex:0 0 22px;height:1px;background:var(--ink-20)}
+  .pause b{color:var(--inf);font-weight:600}
+
+  .foot{margin-top:50px;padding-top:22px;border-top:1px solid var(--ink-08);font-size:13px;color:var(--ink-60);text-align:center}
+  .note{font-size:12px;color:var(--ink-40);margin-top:8px}
+  @media(max-width:560px){h1{font-size:26px}.seg__rail{flex-basis:50px}}
+
+  /* Гейт доступа */
+  #gate{position:fixed;inset:0;z-index:1000;background:linear-gradient(135deg,#fff 0%,var(--accent-bg) 100%);display:flex;align-items:center;justify-content:center;padding:22px}
+  #gate .box{width:100%;max-width:360px;background:#fff;border:1px solid var(--ink-08);border-radius:18px;padding:30px 28px;box-shadow:0 20px 60px rgba(14,14,17,.10)}
+  #gate .wm{font-family:'Unbounded',sans-serif;font-weight:600;font-size:17px;letter-spacing:-.01em}
+  #gate .ttl{font-family:'Unbounded',sans-serif;font-weight:500;font-size:16px;margin-top:18px}
+  #gate .sub{font-size:13.5px;color:var(--ink-60);line-height:1.6;margin-top:8px}
+  #gate form{display:flex;flex-direction:column;gap:11px;margin-top:18px}
+  #gate input{font-family:inherit;font-size:15px;padding:12px 14px;border:1px solid var(--ink-20);border-radius:10px;outline:none}
+  #gate input:focus{border-color:var(--ink-100)}
+  #gate button{font-family:inherit;font-size:15px;font-weight:600;padding:12px;border:none;border-radius:10px;background:var(--ink-100);color:#fff;cursor:pointer}
+  #gate button:hover{opacity:.88}
+  #gate .err{font-size:13px;color:#DC2626;min-height:18px}
+  #gate .help{font-size:12.5px;color:var(--ink-60);line-height:1.6;margin-top:14px;padding-top:14px;border-top:1px solid var(--ink-08)}
+  body.locked{overflow:hidden}
+</style>
+</head>
+<body class="locked">
+
+<!-- ============= ГЕЙТ ДОСТУПА ============= -->
+<div id="gate">
+  <div class="box">
+    <div class="wm">МБ ИИ 3.0 · команда</div>
+    <div class="ttl">Урок 1 — монтаж</div>
+    <div class="sub">Введите код доступа от Марка — тот же, что и для рабочего контура команды.</div>
+    <form id="gateForm" onsubmit="return doGate(event)">
+      <input type="password" id="gatePwd" placeholder="Код доступа" autocomplete="off" required autofocus>
+      <button type="submit">Войти</button>
+      <div class="err" id="gateErr"></div>
+    </form>
+    <div class="help">Нет кода? Напишите Марку.</div>
+  </div>
+</div>
+
+<div class="hero">
+  <div class="wrap">
+    <div class="crumb"><a href="index.html">← Рабочий контур команды</a> · Урок 1</div>
+    <div class="tag">Монтаж · для Али (A03)</div>
+    <h1>Урок 1 — Регистрация в ChatGPT и сценарий ролика</h1>
+    <p class="lede">Всё для монтажа в одном месте: запись скринкаста, инфографика для скачивания и текст озвучки аватара, разложенный по сегментам — что и в какой момент ставить на экран.</p>
+    <div class="meta-row">
+      <span class="pill"><b>Аватар:</b> Mark</span>
+      <span class="pill"><b>Скринкаст:</b> 1 запись</span>
+      <span class="pill"><b>Сегментов:</b> 16</span>
+      <span class="pill"><b>Инфографик:</b> 5</span>
+    </div>
+    <div class="legend">
+      <span class="chip chip--ava"><span class="dot"></span>Аватар в кадре</span>
+      <span class="chip chip--scr"><span class="dot"></span>Озвучка поверх скринкаста</span>
+      <span class="chip chip--inf"><span class="dot"></span>Озвучка поверх инфографики</span>
+    </div>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <section class="block">
+    <h2>Инфографика <span class="num">— 5 слайдов 16:9, 2560×1440 PNG</span></h2>
+    <p class="sub">Готовые слайды для наложения в видео. PNG — для монтажа, HTML — если нужно поправить текст и перерендерить.</p>
+    <div class="grid" id="inf-grid"></div>
+    <div style="margin-top:14px">
+      <a class="btn" href="urok-1/infografika/infografika-teoriya-vse-5.html" target="_blank">
+        <svg viewBox="0 0 24 24"><path d="M4 5h16v14H4zM4 9h16"/></svg>Открыть все 5 слайдов одной страницей
+      </a>
+    </div>
+  </section>
+
+  <section class="block">
+    <h2>Запись скринкаста <span class="num">— Google Диск</span></h2>
+    <p class="sub">Одна запись экрана на весь урок: регистрация в ChatGPT и работа с проектом. Скринкастовые сегменты режутся из неё.</p>
+    <div id="rec-list"></div>
+  </section>
+
+  <section class="block">
+    <h2>Раскадровка озвучки <span class="num">— 16 сегментов</span></h2>
+    <p class="sub">Текст аватара по сегментам. У каждого — что ставить на экран (аватар / скринкаст / инфографика) и кнопка нужного материала. Между сегментами ⏸ — точка склейки, тут аватар держит паузу 2–3 сек.</p>
+    <div id="timeline"></div>
+  </section>
+
+  <div class="foot">
+    Урок 1 «Регистрация в ChatGPT и сценарий ролика» · МБ ИИ 3.0 · оформление инфографики — Sharapilov AI
+  </div>
+</div>
+
+<script>
+// ============= ГЕЙТ ДОСТУПА (те же коды, что в рабочем контуре) =============
+const PLAIN_PASSWORDS = {
+  'mark-mb-2026':'mark','serj-mb-2026':'serj','ali-mb-2026':'ali','magomed-mb-2026':'magomed',
+  'kurban-mb-2026':'kurban','eva-mb-2026':'eva','ilya-mb-2026':'ilya','ruslan-mb-2026':'ruslan'
+};
+const ROLES = new Set(Object.values(PLAIN_PASSWORDS));
+function unlock(){ document.getElementById('gate').style.display='none'; document.body.classList.remove('locked'); }
+function doGate(e){
+  e&&e.preventDefault();
+  const pwd=document.getElementById('gatePwd').value.trim();
+  const role=PLAIN_PASSWORDS[pwd];
+  if(!role){document.getElementById('gateErr').textContent='Код не подходит. Проверьте у Марка.';return false;}
+  sessionStorage.setItem('mb-role',role); unlock(); return false;
+}
+(function(){ const role=sessionStorage.getItem('mb-role'); if(role&&ROLES.has(role)) unlock(); })();
+
+const INF = [
+  {n:1,t:'Что даёт ИИ',s:'Сегмент 5 · теория'},
+  {n:2,t:'Что подготовить о бизнесе',s:'Сегмент 6 · теория'},
+  {n:3,t:'Проект в ChatGPT',s:'Сегмент 7 · теория'},
+  {n:4,t:'Путь урока',s:'Сегмент 15 · итог'},
+  {n:5,t:'Чек-лист ДЗ',s:'Сегмент 16 · финал'},
+];
+const REC = [
+  {n:'Запись',t:'Скринкаст урока 1',s:'регистрация ChatGPT + работа с проектом · сегменты 2–3 и 8–14',u:'https://drive.google.com/file/d/1Bo953er9ZphHNWsdCmjtA78jwje9HJmN/view'},
+];
+
+const GROUPS = [
+  {head:'Вступление', src:'Аватар в кадре', segs:[
+    {n:1,kind:'ava',t:'Вступление',txt:'Привет, коллеги! В этом уроке мы разберём, как зарегистрироваться в ChatGPT, а потом сразу перейдём к практике: я покажу, как с помощью нейросети за несколько минут получить идею короткого ролика и готовое техническое задание для специалистов. Начнём с регистрации.',pauseAfter:'Переход к скринкасту: chatgpt.com'},
+  ]},
+  {head:'Регистрация и тарифы', src:'rec:0', segs:[
+    {n:2,kind:'scr',rec:0,t:'Регистрация в ChatGPT',txt:'Заходим на сайт chatgpt.com. В правом верхнем углу нажимаем «Зарегистрироваться бесплатно». Откроется форма — указываем адрес электронной почты, подойдёт любой рабочий e-mail. Я зайду через свой Google-аккаунт: вставляю Gmail и нажимаю «Продолжить».\n\nНа почту придёт проверочный код. Открываем письмо от ChatGPT, копируем код, возвращаемся на страницу регистрации, вставляем его и снова нажимаем «Продолжить». Дальше ChatGPT попросит имя, фамилию и возраст — указываем реальные данные и нажимаем «Сохранить».\n\nБазовая регистрация завершена — мы в интерфейсе ChatGPT. Если появится короткий обзор возможностей, его можно посмотреть или пропустить. Всё, аккаунт создан, можно работать.',pauseAfter:'Скринкаст: страница тарифов'},
+    {n:3,kind:'scr',rec:0,t:'Тарифы и оплата',txt:'Коротко покажу, где находятся тарифы. В левом нижнем углу есть кнопка обновления тарифа — нажимаем, открывается страница с планами. Здесь выбираем подходящий под ваши задачи. Для активной работы обычно берут платный план — он даёт больше возможностей и лимитов.\n\nПосле выбора тарифа нажимаем переход к оплате, откроется платёжная форма. Выбираем доступный способ оплаты и следуем подсказкам на экране. Важно: вводите только свои корректные данные и проверяйте всё перед подтверждением. Подтвердили — подписка оформлена, можно возвращаться в ChatGPT и работать.\n\nВ нашем случае мы будем использовать его для идей коротких видео, сценариев и технических заданий для специалистов.',pauseAfter:'Аватар возвращается в кадр'},
+  ]},
+  {head:'Теория', src:'Аватар + инфографика №1–3', segs:[
+    {n:4,kind:'ava',t:'Переход к практике',txt:'На этом регистрационная часть завершена — переходим к главному. Я покажу, как загрузить описание бизнеса, получить идеи для коротких роликов, выбрать самую подходящую и превратить её в понятное техническое задание для SMM-специалиста и контент-мейкера.\n\nСразу о результате: к концу урока вы сможете взять любую идею для короткого видео — или вообще начать без идеи — и за несколько минут получить готовый сценарий. Причём не просто текст, а понятное задание, по которому уже можно идти и снимать ролик.',pauseAfter:'Вывести Инфографику №1'},
+    {n:5,kind:'inf',inf:1,t:'Что даёт ИИ в работе',txt:'Сначала — зачем нам вообще нейросеть. Что ChatGPT даёт в работе?\n\nПервое — экономия сил. Он берёт на себя рутину: придумать с нуля, сформулировать, переписать текст, найти более удачную подачу.\n\nВторое — экономия времени. То, на что раньше уходил час, теперь делается за несколько минут, и в любое удобное время — хоть поздно вечером.\n\nТретье — качество результата. Нейросеть подскажет идеи, формулировки и ходы, до которых в спешке сам бы и не дошёл.\n\nИ самое важное — она забирает рутину и освобождает вас для творчества. Вы перестаёте быть человеком перед чистым листом и становитесь режиссёром, которому помогает быстрый ассистент.',pauseAfter:'Сменить на Инфографику №2'},
+    {n:6,kind:'inf',inf:2,t:'Что подготовить о бизнесе',txt:'А теперь к практике. Первое, что нужно подготовить, — информация о вашем бизнесе. Главное правило, от которого зависит результат: чем больше нейросеть знает о бизнесе, тем точнее и полезнее ответ. Напишете просто «придумай идеи для видео» — получите что-то общее и пресное.\n\nПоэтому заранее опишем четыре вещи. Первое — сам бизнес: где находится, что продаёт, какая площадь, сколько мест, какой интерьер, кто в команде и за что отвечает. Второе — уникальное торговое предложение: чем вы отличаетесь от конкурентов, что заставит человека зайти впервые или вернуться. Третье — аудиторию и её спрос: кто эти люди и когда приходят. Если есть возможность, проведите небольшой опрос посетителей: пять-шесть вопросов уже дают много полезного. И четвёртое — меню и цены, чтобы нейросеть предлагала идеи не абстрактно, а под ваши реальные продукты.',pauseAfter:'Сменить на Инфографику №3'},
+    {n:7,kind:'inf',inf:3,t:'Проект в ChatGPT',txt:'Пару слов о том, куда мы всё это загрузим. Слева в ChatGPT есть сайдбар — там чаты и проекты. Проект — это как отдельная рабочая зона, своя «личность» нейросети. Например, можно создать проект для финансов и загрузить туда сметы, планы и расходы — и нейросеть будет помогать именно с финансами. А у нас будет проект для маркетинга и контента: в него мы загрузим файл с описанием бизнеса, чтобы ChatGPT опирался на него во всех ответах.',pauseAfter:'Переход к скринкасту: загрузка файла'},
+  ]},
+  {head:'Практика — идеи и ТЗ', src:'rec:0', segs:[
+    {n:8,kind:'scr',rec:0,t:'Загрузка файла и запрос на идеи',txt:'Создаём проект для маркетинга, нажимаем плюс, добавляем файлы и выбираем подготовленный PDF с описанием кофейни. После загрузки пишем запрос: «Ознакомься с описанием моей кофейни и предложи 10 идей для короткого ролика, типа Reels или Stories. Из них выдели топ-3 наиболее релевантные мне».\n\nПока нейросеть думает — пара слов про интерфейс. Здесь можно выбрать степень умственного усилия: минимальную, среднюю или высокую. И можно выбрать модель — для сложных задач берите более сильную: она лучше анализирует вводные и даёт более качественный результат.',pauseAfter:'Скринкаст: ответ с идеями'},
+    {n:9,kind:'scr',rec:0,t:'Топ-3 идеи и выбор',txt:'Смотрим, что предлагает нейросеть. Она изучила описание и выдала топ-3 идеи.\n\nПервая — «Островок тишины посреди ТЦ»: короткий атмосферный ролик на 10–15 секунд. Сюжет — шумный фудкорт, люди с пакетами, а потом резкий переход в тёплый свет, кофе, дерево и спокойную музыку. Текст на экране: «Устал от шума? Зайди выдохнуть в Зерно». Идея хороша тем, что раскрывает главное отличие кофейни — это спокойное место внутри шумного торгового центра.\n\nВторая — ролик про кофе за 3–5 минут: человек спешит в кино, бариста быстро готовит напиток, и в финале стакан уже в руке. Текст: «Кофе с собой за 3–5 минут. Успеешь до сеанса». Тоже хороший вариант, особенно если рядом кинотеатр.\n\nДопустим, мне больше понравилась первая идея — про островок тишины. Выбираем её.',pauseAfter:'Скринкаст: второй промпт на ТЗ'},
+    {n:10,kind:'scr',rec:0,t:'Запрос на техническое задание',txt:'Даём нейросети следующий запрос: «Я выбрал первую идею. Составь по ней техническое задание для SMM-специалиста и контент-мейкера, чтобы у каждого был пошаговый план действий для съёмки этого ролика».\n\nСмысл в том, что мы получаем уже не просто идею, а рабочий документ — его можно передать SMM-специалисту и контент-мейкеру, чтобы они понимали, что именно делать.',pauseAfter:'Скринкаст: результат — ТЗ'},
+    {n:11,kind:'scr',rec:0,t:'Техзадание: цель и параметры',txt:'Смотрим, что получилось. Цель ролика — показать кофейню «Зерно» как спокойное и уютное место внутри торгового центра. Основная идея — контраст: снаружи шум, люди, движение, фудкорт; внутри кофейни — тёплый свет, дерево, растения, кофе и спокойствие.\n\nДальше указаны параметры: ролик вертикальный, короткий, примерно 10–15 секунд, стиль атмосферный и уютный, темп сначала динамичный, потом спокойнее. Главный акцент — не продать кофе в лоб, а показать состояние человека: он устал от торгового центра, зашёл в кофейню, сел, сделал глоток и выдохнул.',pauseAfter:'Скринкаст: задачи для SMM'},
+    {n:12,kind:'scr',rec:0,t:'Техзадание для SMM-специалиста',txt:'Теперь задачи для SMM-специалиста. Первое — зафиксировать главную мысль ролика: «Зерно» это не просто точка с кофе, а место, где можно спрятаться от шума и немного восстановиться. Важно не продавать напрямую в духе «купи кофе», а показать состояние гостя.\n\nВторое — определить аудиторию: посетители ТЦ, молодёжь после кино, сотрудники на перерыве, родители после детской зоны. Но в самом ролике не нужно показывать все сегменты сразу — достаточно одного универсального образа: человек устал от суеты и нашёл спокойное место.\n\nДальше нейросеть предлагает текст на экране по кадрам — например: «Когда ТЦ слишком шумный…», «А хочется просто выдохнуть», «Зайди в Зерно», «Твой островок тишины в ТЦ», «2 этаж, рядом с фуд-кортом». А ещё — подпись к публикации, призыв к действию, список того, что передать контент-мейкеру, и чек-лист для проверки готового ролика.',pauseAfter:'Скринкаст: задачи для контент-мейкера'},
+    {n:13,kind:'scr',rec:0,t:'Техзадание для контент-мейкера',txt:'Теперь контент-мейкер. Нейросеть предлагает снять два визуальных мира: первый — торговый центр: шум, поток людей, фудкорт, суета; второй — кофейня: тёплый свет, дерево, растения, бариста, кофе и ощущение спокойствия.\n\nДальше расписаны обязательные кадры: шум торгового центра, усталость героя, переход в «Зерно», как готовится кофе крупными планами, островок тишины — герой садится и делает глоток, и финал — красивый общий кадр кофейни.\n\nЕсть рекомендации по монтажу: в начале динамичнее, чтобы передать шум, а после входа в кофейню — спокойнее и теплее. И по звуку хороший приём: сначала шум ТЦ, а когда герой заходит, звук приглушается и появляется спокойная музыка. В конце прописано, что сдать: готовый ролик девять на шестнадцать на 10–15 секунд, версии с текстом и без, обложку и несколько кадров для Stories.',pauseAfter:'Скринкаст: доработка через обратную связь'},
+    {n:14,kind:'scr',rec:0,t:'Доработка результата',txt:'Всё нужное для производства ролика у нас уже есть. Но важно понимать: результат можно улучшать сколько угодно. Давайте нейросети обратную связь — например: «сделай текст проще», «добавь больше юмора», «сделай ролик более премиальным», «сократи до 10 секунд», «предложи ещё 5 вариантов».\n\nМожно даже попросить её саму задать вам вопросы — например: «спроси у меня, что тебе нужно знать, чтобы сделать результат точнее». Так нейросеть соберёт недостающую информацию. А ещё её можно попросить выйти в интернет и поизучать тренды коротких роликов и лучшие практики. Но начинать лучше с простого.',pauseAfter:'Вывести Инфографику №4'},
+  ]},
+  {head:'Финал', src:'Инфографика №4–5 + аватар', segs:[
+    {n:15,kind:'inf',inf:4,t:'Путь урока (итог)',txt:'Смотрите, какой короткий путь мы прошли — и его легко повторить. Загрузили описание бизнеса в проект, попросили десять идей и выделили топ-три, выбрали одну, превратили её в подробное техническое задание для команды и при желании докрутили обратной связью. Несколько минут — и готов сценарий, по которому можно идти снимать.',pauseAfter:'Аватар в кадре, на экране Инфографика №5'},
+    {n:16,kind:'inf',inf:5,t:'Заключение и ДЗ (аватар в кадре)',txt:'К уроку приложены материалы: описание кофейни для практики и методичка, где по шагам расписано, как получить такой же результат. Ваше домашнее задание — повторить всё на учебном файле кофейни или сразу на своих данных: получить десять идей, выбрать одну и сделать по ней техническое задание.\n\nИ главный принцип урока: нейросеть не должна просто «придумать что-нибудь». Чем точнее вы дадите вводные о бизнесе, аудитории и продукте, тем лучше будет результат. Ваша роль — не переписывать всё вручную, а направлять нейросеть, выбирать лучшие идеи и давать обратную связь. Желаю успехов, и до встречи на следующем уроке!',pauseAfter:'⏹ Конец урока'},
+  ]},
+];
+
+const dl = '<svg viewBox="0 0 24 24"><path d="M12 3v12M7 11l5 5 5-5M4 20h16"/></svg>';
+const ext = '<svg viewBox="0 0 24 24"><path d="M14 4h6v6M20 4l-9 9M19 14v5H5V5h5"/></svg>';
+const play = '<svg viewBox="0 0 24 24"><path d="M5 3l14 9-14 9z"/></svg>';
+
+document.getElementById('inf-grid').innerHTML = INF.map(i=>`
+  <div class="card">
+    <img src="urok-1/infografika/inf-${i.n}.png" alt="Инфографика №${i.n}" loading="lazy">
+    <div class="card__b">
+      <div class="card__t">№${i.n} · ${i.t}<span>${i.s}</span></div>
+      <div class="card__act">
+        <a class="btn btn--p" href="urok-1/infografika/inf-${i.n}.png" download>${dl}PNG</a>
+        <a class="btn" href="urok-1/infografika/inf-${i.n}.html" target="_blank">${ext}HTML</a>
+      </div>
+    </div>
+  </div>`).join('');
+
+document.getElementById('rec-list').innerHTML = REC.map(r=>`
+  <div class="rec">
+    <span class="rec__n">${r.n}</span>
+    <div class="rec__t">${r.t}<span>${r.s}</span></div>
+    <a class="btn btn--p" href="${r.u}" target="_blank">${play}Смотреть / скачать</a>
+  </div>`).join('');
+
+const badge = (k)=>({
+  ava:'<span class="badge badge--ava"><span class="dot"></span>Аватар в кадре</span>',
+  scr:'<span class="badge badge--scr"><span class="dot"></span>Скринкаст</span>',
+  inf:'<span class="badge badge--inf"><span class="dot"></span>Инфографика</span>',
+}[k]);
+
+document.getElementById('timeline').innerHTML = GROUPS.map(g=>{
+  let srcHtml = '';
+  if(g.src && g.src.startsWith('rec:')){
+    const r = REC[+g.src.slice(4)];
+    srcHtml = `<span class="src"><a href="${r.u}" target="_blank">смотреть запись →</a></span>`;
+  } else if(g.src){
+    srcHtml = `<span class="src" style="color:var(--ink-40)">${g.src}</span>`;
+  }
+  const segs = g.segs.map(s=>{
+    let asset = '';
+    if(s.kind==='inf'){
+      asset = `<div class="seg__asset"><span class="lbl">На экране:</span>
+        <a class="btn btn--p" href="urok-1/infografika/inf-${s.inf}.png" download>${dl}Инфографика №${s.inf} (PNG)</a>
+        <a class="btn" href="urok-1/infografika/inf-${s.inf}.html" target="_blank">${ext}HTML</a></div>`;
+    } else if(s.kind==='scr'){
+      const r = REC[s.rec];
+      asset = `<div class="seg__asset"><span class="lbl">На экране:</span>
+        <a class="btn" href="${r.u}" target="_blank">${play}${r.t}</a></div>`;
+    } else {
+      asset = `<div class="seg__asset"><span class="lbl">На экране: аватар в кадре, без скринкаста</span></div>`;
+    }
+    const pause = s.pauseAfter ? `<div class="pause"><b>⏸ Пауза 2–3 сек.</b> · ${s.pauseAfter}</div>` : '';
+    return `<div class="seg">
+      <div class="seg__rail"><div class="seg__num">${s.n}<span>сег.</span></div></div>
+      <div class="seg__body">
+        <div class="seg__top">${badge(s.kind)}<span class="seg__t">${s.t}</span></div>
+        <div class="seg__txt">${s.txt}</div>
+        ${asset}
+      </div>
+    </div>${pause}`;
+  }).join('');
+  return `<div class="tl-group">
+    <div class="tl-head"><h3>${g.head}</h3>${srcHtml}</div>
+    ${segs}
+  </div>`;
+}).join('');
+</script>
+</body>
+</html>

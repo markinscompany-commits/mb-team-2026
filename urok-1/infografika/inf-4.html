@@ -1,0 +1,131 @@
+<!DOCTYPE html><html lang="ru"><head><meta charset="UTF-8">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --accent:#6C4DF2; --accent-soft:#EEEAFE; --accent-line:#D9CFFB;
+    --ink:#14131A; --muted:#6B6A78; --line:#E7E6EE;
+    --bg:#FFFFFF; --bg-soft:#F6F5FB;
+    --ok:#18A957; --gpt:#10A37F; --gpt-soft:#E5F5F0;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Inter',sans-serif;color:var(--ink);background:#D9D8E2;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;padding:32px 0}
+  .deck{display:flex;flex-direction:column;align-items:center;gap:28px}
+  .slide{width:1280px;height:720px;background:var(--bg);position:relative;border-radius:22px;overflow:hidden;
+    box-shadow:0 14px 50px rgba(20,19,26,.18);padding:64px 72px 78px;display:flex;flex-direction:column}
+  .display{font-family:'Space Grotesk',sans-serif}
+  .kicker{display:inline-flex;align-items:center;gap:9px;font-weight:600;font-size:14px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent)}
+  .kicker .dot{width:8px;height:8px;border-radius:50%;background:var(--accent)}
+  h1.title{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:46px;line-height:1.08;margin-top:14px;letter-spacing:-.01em}
+  .subtitle{font-size:18px;color:var(--muted);margin-top:12px;max-width:900px;line-height:1.45}
+  .foot{position:absolute;left:72px;right:72px;bottom:30px;display:flex;align-items:center;justify-content:space-between;border-top:1px solid var(--line);padding-top:16px}
+  .wordmark{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:16px;letter-spacing:-.01em;color:var(--ink);display:flex;align-items:center;gap:9px}
+  .wordmark .glyph{width:26px;height:26px;border-radius:7px;background:var(--accent);display:inline-flex;align-items:center;justify-content:center}
+  .foot .meta{font-size:13px;color:var(--muted);font-weight:500}
+  .ico{stroke:var(--accent);fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+
+  /* trio of value cards */
+  .trio{display:flex;gap:18px;margin-top:34px}
+  .vcard{flex:1;background:var(--bg-soft);border:1px solid var(--line);border-radius:16px;padding:26px 24px;display:flex;flex-direction:column;gap:14px}
+  .vcard__ico{width:52px;height:52px;border-radius:13px;background:#fff;border:1px solid var(--line);display:flex;align-items:center;justify-content:center}
+  .vcard__ico svg{width:26px;height:26px}
+  .vcard__t{font-family:'Space Grotesk';font-weight:700;font-size:21px}
+  .vcard__d{font-size:14.5px;color:var(--muted);line-height:1.45}
+  .accentbar{margin-top:18px;background:linear-gradient(180deg,#F4F1FE,#FFFFFF);border:1px solid var(--accent-line);border-radius:16px;padding:22px 26px;display:flex;align-items:center;gap:18px}
+  .accentbar__ico{width:48px;height:48px;border-radius:12px;background:var(--accent);display:flex;align-items:center;justify-content:center;flex:0 0 48px}
+  .accentbar__t{font-family:'Space Grotesk';font-weight:700;font-size:20px}
+  .accentbar__d{font-size:14.5px;color:var(--muted);margin-top:2px}
+
+  /* quad cards */
+  .quad{display:flex;gap:16px;margin-top:32px}
+  .qcard{flex:1;border-radius:16px;padding:24px 20px;border:1px solid var(--line);background:var(--bg-soft);display:flex;flex-direction:column;gap:12px}
+  .qcard__n{width:42px;height:42px;border-radius:11px;background:var(--accent-soft);color:var(--accent);font-family:'Space Grotesk';font-weight:700;font-size:18px;display:flex;align-items:center;justify-content:center}
+  .qcard__t{font-family:'Space Grotesk';font-weight:700;font-size:18px;line-height:1.15}
+  .qcard__d{font-size:13.5px;color:var(--muted);line-height:1.42}
+
+  /* project concept flow */
+  .pflow{display:flex;align-items:stretch;gap:0;margin-top:auto;margin-bottom:auto}
+  .pbox{flex:1;border-radius:18px;padding:30px 26px;display:flex;flex-direction:column;gap:14px;justify-content:center}
+  .pbox--file{background:var(--bg-soft);border:1px solid var(--line)}
+  .pbox--proj{background:var(--gpt-soft);border:1px solid #BFE6DA}
+  .pbox--out{background:var(--accent-soft);border:1px solid var(--accent-line)}
+  .pbox__ico{width:56px;height:56px;border-radius:14px;background:#fff;border:1px solid var(--line);display:flex;align-items:center;justify-content:center}
+  .pbox__ico svg{width:28px;height:28px}
+  .pbox__t{font-family:'Space Grotesk';font-weight:700;font-size:20px}
+  .pbox__d{font-size:14px;color:var(--muted);line-height:1.45}
+  .parrow{flex:0 0 64px;display:flex;align-items:center;justify-content:center}
+  .parrow svg{width:38px;height:38px;stroke:var(--muted);stroke-width:2;fill:none}
+
+  /* path steps */
+  .stairs{display:flex;gap:12px;margin-top:auto;margin-bottom:auto}
+  .stair{flex:1;background:var(--bg-soft);border:1px solid var(--line);border-radius:16px;padding:22px 16px;display:flex;flex-direction:column;gap:12px;position:relative}
+  .stair:last-child{background:var(--accent-soft);border-color:var(--accent-line)}
+  .stair__n{font-family:'Space Grotesk';font-weight:700;font-size:34px;color:var(--accent);line-height:1}
+  .stair__icowrap{width:44px;height:44px;border-radius:12px;background:#fff;border:1px solid var(--line);display:flex;align-items:center;justify-content:center}
+  .stair__icowrap svg{width:23px;height:23px}
+  .stair__t{font-weight:700;font-size:15.5px;line-height:1.18}
+  .stair__d{font-size:12.5px;color:var(--muted);line-height:1.4;margin-top:auto}
+
+  /* checklist */
+  .checks{margin-top:30px;display:flex;flex-direction:column;gap:14px}
+  .check{display:flex;align-items:center;gap:18px;background:var(--bg-soft);border:1px solid var(--line);border-radius:14px;padding:18px 24px}
+  .check__box{flex:0 0 30px;width:30px;height:30px;border-radius:8px;border:2px solid var(--accent);background:#fff}
+  .check__t{font-size:18.5px;font-weight:500}
+  .check__t b{font-weight:700}
+  .check__n{font-family:'Space Grotesk';font-weight:700;color:var(--accent);font-size:17px;flex:0 0 26px}
+
+  @media print{
+    body{background:#fff;padding:0}.deck{gap:0}
+    .slide{box-shadow:none;border-radius:0;page-break-after:always;width:100%;height:100vh}
+    @page{size:landscape;margin:0}
+  }
+</style><style>html,body{margin:0;padding:0;background:#fff}.slide{box-shadow:none;border-radius:0;margin:0}</style></head><body><section class="slide">
+    <div class="kicker"><span class="dot"></span>Инфографика 4 · Как это работает</div>
+    <h1 class="title">Путь урока: от описания до сценария</h1>
+    <p class="subtitle">Несколько минут — и готов сценарий, по которому можно идти снимать.</p>
+
+    <div class="stairs">
+      <div class="stair">
+        <div class="stair__n">1</div>
+        <div class="stair__icowrap"><svg class="ico" viewBox="0 0 24 24"><path d="M6 2h8l4 4v16H6z"/><path d="M14 2v4h4"/></svg></div>
+        <div class="stair__t">Описание бизнеса</div>
+        <div class="stair__d">Загружаем файл в проект</div>
+      </div>
+      <div class="stair">
+        <div class="stair__n">2</div>
+        <div class="stair__icowrap"><svg class="ico" viewBox="0 0 24 24"><path d="M9 18h6M10 21h4M12 2a7 7 0 0 0-4 12.7V16h8v-1.3A7 7 0 0 0 12 2z"/></svg></div>
+        <div class="stair__t">10 идей</div>
+        <div class="stair__d">Промпт на идеи роликов</div>
+      </div>
+      <div class="stair">
+        <div class="stair__n">3</div>
+        <div class="stair__icowrap"><svg class="ico" viewBox="0 0 24 24"><path d="M12 3l2.3 5 5.7.6-4.3 3.8 1.3 5.6L12 16.9 6.9 20l1.3-5.6L4 10.6l5.7-.6z"/></svg></div>
+        <div class="stair__t">Топ-3</div>
+        <div class="stair__d">Нейросеть выделяет лучшие</div>
+      </div>
+      <div class="stair">
+        <div class="stair__n">4</div>
+        <div class="stair__icowrap"><svg class="ico" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg></div>
+        <div class="stair__t">Выбор идеи</div>
+        <div class="stair__d">Берём одну под задачу</div>
+      </div>
+      <div class="stair">
+        <div class="stair__n">5</div>
+        <div class="stair__icowrap"><svg class="ico" viewBox="0 0 24 24"><path d="M4 4h12l4 4v12H4z"/><path d="M8 12h8M8 16h6"/></svg></div>
+        <div class="stair__t">ТЗ для команды</div>
+        <div class="stair__d">SMM и контент-мейкер</div>
+      </div>
+      <div class="stair">
+        <div class="stair__n">6</div>
+        <div class="stair__icowrap"><svg class="ico" viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 3-6.7M3 4v4h4"/></svg></div>
+        <div class="stair__t">Доработка</div>
+        <div class="stair__d">Обратная связь нейросети</div>
+      </div>
+    </div>
+
+    <div class="foot">
+      <div class="wordmark"><span class="glyph"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round"><path d="M4 16 9 7l4 6 3-4 4 7"/></svg></span>Sharapilov AI</div>
+      <div class="meta">Урок 1 · Регистрация в ChatGPT и сценарий ролика</div>
+    </div>
+  </section></body></html>

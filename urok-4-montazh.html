@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Урок 4 — монтаж · Штаб маркетинга в ChatGPT</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Commissioner:wght@300;400;500;600;700&family=Unbounded:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg-0:#FFFFFF;--bg-1:#FAFAFB;--bg-2:#F2F2F4;--bg-3:#E8E8EC;
+    --ink-100:#0E0E11;--ink-80:rgba(14,14,17,.78);--ink-60:rgba(14,14,17,.58);
+    --ink-40:rgba(14,14,17,.38);--ink-20:rgba(14,14,17,.16);--ink-08:rgba(14,14,17,.08);
+    --accent:#6C4DF2;--accent-bg:#EEEAFE;
+    --inf:#D9892B;--inf-bg:#FBEFDD;
+    --scr:#6C4DF2;--scr-bg:#EEEAFE;
+    --ava:#0E0E11;--ava-bg:#F2F2F4;
+    --ok:#16A34A;--ok-bg:#ECFAEF;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Commissioner',sans-serif;color:var(--ink-100);background:var(--bg-1);line-height:1.5;padding-bottom:80px}
+  .wrap{max-width:980px;margin:0 auto;padding:0 22px}
+  a{color:var(--accent);text-decoration:none}
+  a:hover{text-decoration:underline}
+
+  .hero{background:linear-gradient(135deg,#fff 0%,var(--accent-bg) 100%);border-bottom:1px solid var(--ink-08);padding:46px 0 38px}
+  .crumb{font-size:13px;color:var(--ink-60);margin-bottom:14px}
+  .crumb a{color:var(--ink-60)}
+  .tag{display:inline-block;font-size:12px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--accent);background:#fff;border:1px solid var(--ink-08);padding:5px 11px;border-radius:20px;margin-bottom:16px}
+  h1{font-family:'Unbounded',sans-serif;font-weight:600;font-size:33px;line-height:1.12;letter-spacing:-.01em}
+  .lede{font-size:16.5px;color:var(--ink-80);margin-top:14px;max-width:760px}
+  .meta-row{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px}
+  .pill{display:inline-flex;align-items:center;gap:7px;font-size:13px;font-weight:500;background:#fff;border:1px solid var(--ink-08);border-radius:10px;padding:8px 13px;color:var(--ink-80)}
+  .pill b{font-weight:600;color:var(--ink-100)}
+
+  section.block{margin-top:42px}
+  h2{font-family:'Unbounded',sans-serif;font-weight:500;font-size:21px;letter-spacing:-.01em;margin-bottom:6px;display:flex;align-items:center;gap:10px}
+  h2 .num{font-size:13px;color:var(--ink-40);font-weight:400}
+  .sub{font-size:14.5px;color:var(--ink-60);margin-bottom:18px;max-width:760px}
+
+  .legend{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px}
+  .chip{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:600;border-radius:9px;padding:7px 12px;border:1px solid transparent}
+  .chip--ava{color:var(--ava);background:var(--ava-bg)}
+  .chip--scr{color:var(--scr);background:var(--scr-bg)}
+  .chip--inf{color:var(--inf);background:var(--inf-bg)}
+  .chip .dot{width:8px;height:8px;border-radius:50%;background:currentColor}
+
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px}
+  .card{background:var(--bg-0);border:1px solid var(--ink-08);border-radius:14px;overflow:hidden;display:flex;flex-direction:column}
+  .card img{width:100%;display:block;border-bottom:1px solid var(--ink-08);background:var(--bg-2)}
+  .card__b{padding:13px 15px 15px;display:flex;flex-direction:column;gap:10px;flex:1}
+  .card__t{font-weight:600;font-size:14.5px}
+  .card__t span{display:block;font-size:12px;color:var(--ink-60);font-weight:400;margin-top:2px}
+  .card__act{display:flex;gap:8px;margin-top:auto}
+  .btn{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:600;border-radius:9px;padding:8px 12px;border:1px solid var(--ink-20);background:#fff;color:var(--ink-100);transition:.12s}
+  .btn:hover{background:var(--bg-2);text-decoration:none}
+  .btn--p{background:var(--accent);border-color:var(--accent);color:#fff}
+  .btn--p:hover{background:#5a3fd0;color:#fff}
+  .btn svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+
+  .rec{display:flex;align-items:center;gap:14px;background:var(--bg-0);border:1px solid var(--ink-08);border-radius:12px;padding:13px 16px;margin-bottom:10px}
+  .rec__n{flex:0 0 auto;font-family:'Unbounded',sans-serif;font-weight:500;font-size:13px;color:var(--accent);background:var(--accent-bg);border-radius:8px;padding:6px 10px;white-space:nowrap}
+  .rec__t{flex:1;font-weight:500;font-size:14.5px}
+  .rec__t span{display:block;font-size:12.5px;color:var(--ink-60);font-weight:400;margin-top:1px}
+
+  .mats{display:flex;flex-wrap:wrap;gap:10px}
+
+  .tl-group{margin-top:26px}
+  .tl-head{display:flex;align-items:center;gap:12px;margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--ink-08)}
+  .tl-head h3{font-family:'Unbounded',sans-serif;font-weight:500;font-size:16px}
+  .tl-head .src{margin-left:auto;font-size:12.5px}
+  .seg{display:flex;gap:0;margin-bottom:12px;background:var(--bg-0);border:1px solid var(--ink-08);border-radius:13px;overflow:hidden}
+  .seg__rail{flex:0 0 64px;display:flex;flex-direction:column;align-items:center;padding:15px 0;background:var(--bg-1);border-right:1px solid var(--ink-08)}
+  .seg__num{font-family:'Unbounded',sans-serif;font-weight:600;font-size:18px;color:var(--ink-100)}
+  .seg__num span{display:block;font-size:9px;font-weight:400;color:var(--ink-40);letter-spacing:.08em;text-transform:uppercase;margin-top:2px}
+  .seg__body{flex:1;padding:14px 18px 16px;min-width:0}
+  .seg__top{display:flex;flex-wrap:wrap;align-items:center;gap:9px;margin-bottom:9px}
+  .seg__t{font-weight:600;font-size:15px}
+  .badge{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;font-weight:600;border-radius:7px;padding:4px 9px}
+  .badge--ava{color:var(--ava);background:var(--ava-bg)}
+  .badge--scr{color:var(--scr);background:var(--scr-bg)}
+  .badge--inf{color:var(--inf);background:var(--inf-bg)}
+  .badge .dot{width:7px;height:7px;border-radius:50%;background:currentColor}
+  .seg__txt{font-size:14px;color:var(--ink-80);white-space:pre-line}
+  .seg__asset{margin-top:11px;display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+  .seg__asset .lbl{font-size:12px;color:var(--ink-60)}
+  .pause{display:flex;align-items:center;gap:9px;font-size:12.5px;color:var(--ink-40);margin:2px 0 14px 76px}
+  .pause::before{content:"";flex:0 0 22px;height:1px;background:var(--ink-20)}
+  .pause b{color:var(--inf);font-weight:600}
+
+  details.lk{background:var(--bg-0);border:1px solid var(--ink-08);border-radius:12px;padding:0;margin-bottom:10px;overflow:hidden}
+  details.lk>summary{cursor:pointer;padding:14px 18px;font-weight:600;font-size:14.5px;list-style:none;display:flex;align-items:center;gap:10px}
+  details.lk>summary::-webkit-details-marker{display:none}
+  details.lk>summary::before{content:"+";font-family:'Unbounded';color:var(--accent);font-size:16px;width:16px}
+  details.lk[open]>summary::before{content:"–"}
+  details.lk .lk__b{padding:0 18px 18px;font-size:13.5px;color:var(--ink-80);line-height:1.6}
+  details.lk .lk__b h4{font-family:'Unbounded';font-weight:500;font-size:14px;margin:14px 0 6px;color:var(--ink-100)}
+  details.lk .lk__b ul{margin:6px 0 6px 18px}
+  details.lk .lk__b li{margin-bottom:4px}
+  details.lk .lk__b code{background:var(--bg-2);padding:1px 5px;border-radius:4px;font-size:12.5px}
+
+  .foot{margin-top:50px;padding-top:22px;border-top:1px solid var(--ink-08);font-size:13px;color:var(--ink-60);text-align:center}
+  .note{font-size:12px;color:var(--ink-40);margin-top:8px}
+  @media(max-width:560px){h1{font-size:25px}.seg__rail{flex-basis:50px}}
+
+  #gate{position:fixed;inset:0;z-index:1000;background:linear-gradient(135deg,#fff 0%,var(--accent-bg) 100%);display:flex;align-items:center;justify-content:center;padding:22px}
+  #gate .box{width:100%;max-width:360px;background:#fff;border:1px solid var(--ink-08);border-radius:18px;padding:30px 28px;box-shadow:0 20px 60px rgba(14,14,17,.10)}
+  #gate .wm{font-family:'Unbounded',sans-serif;font-weight:600;font-size:17px;letter-spacing:-.01em}
+  #gate .ttl{font-family:'Unbounded',sans-serif;font-weight:500;font-size:16px;margin-top:18px}
+  #gate .sub{font-size:13.5px;color:var(--ink-60);line-height:1.6;margin-top:8px}
+  #gate form{display:flex;flex-direction:column;gap:11px;margin-top:18px}
+  #gate input{font-family:inherit;font-size:15px;padding:12px 14px;border:1px solid var(--ink-20);border-radius:10px;outline:none}
+  #gate input:focus{border-color:var(--ink-100)}
+  #gate button{font-family:inherit;font-size:15px;font-weight:600;padding:12px;border:none;border-radius:10px;background:var(--ink-100);color:#fff;cursor:pointer}
+  #gate button:hover{opacity:.88}
+  #gate .err{font-size:13px;color:#DC2626;min-height:18px}
+  #gate .help{font-size:12.5px;color:var(--ink-60);line-height:1.6;margin-top:14px;padding-top:14px;border-top:1px solid var(--ink-08)}
+  body.locked{overflow:hidden}
+</style>
+</head>
+<body class="locked">
+
+<!-- ============= ГЕЙТ ДОСТУПА ============= -->
+<div id="gate">
+  <div class="box">
+    <div class="wm">МБ ИИ 3.0 · команда</div>
+    <div class="ttl">Урок 4 — монтаж</div>
+    <div class="sub">Введите код доступа от Марка — тот же, что и для рабочего контура команды.</div>
+    <form id="gateForm" onsubmit="return doGate(event)">
+      <input type="password" id="gatePwd" placeholder="Код доступа" autocomplete="off" required autofocus>
+      <button type="submit">Войти</button>
+      <div class="err" id="gateErr"></div>
+    </form>
+    <div class="help">Нет кода? Напишите Марку.</div>
+  </div>
+</div>
+
+<div class="hero">
+  <div class="wrap">
+    <div class="crumb"><a href="index.html">← Рабочий контур команды</a> · Урок 4</div>
+    <div class="tag">Монтаж · для Али (A05)</div>
+    <h1>Урок 4 — Штаб маркетинга в&nbsp;ChatGPT</h1>
+    <p class="lede">Всё для монтажа в одном месте: запись скринкаста, инфографика для скачивания, текст озвучки аватара по сегментам и тексты для публикации в личном кабинете.</p>
+    <div class="meta-row">
+      <span class="pill"><b>Аватар:</b> Сераж</span>
+      <span class="pill"><b>Скринкаст:</b> Mark</span>
+      <span class="pill"><b>Сегментов:</b> 12</span>
+      <span class="pill"><b>Запись экрана:</b> 1</span>
+      <span class="pill"><b>Публикация в ЛК:</b> к 28.06</span>
+    </div>
+    <div class="legend">
+      <span class="chip chip--ava"><span class="dot"></span>Аватар в кадре</span>
+      <span class="chip chip--scr"><span class="dot"></span>Озвучка поверх скринкаста</span>
+      <span class="chip chip--inf"><span class="dot"></span>Озвучка поверх инфографики</span>
+    </div>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <!-- Инфографика -->
+  <section class="block">
+    <h2>Инфографика <span class="num">— 5 слайдов 16:9, 2560×1440 PNG</span></h2>
+    <p class="sub">Готовые слайды для наложения в видео (теория + результат + чек-лист). PNG — для монтажа, HTML — если нужно поправить текст и перерендерить.</p>
+    <div class="grid" id="inf-grid"></div>
+    <div style="margin-top:14px">
+      <a class="btn" href="urok-4/infografika/infografika-teoriya-vse-5.html" target="_blank">
+        <svg viewBox="0 0 24 24"><path d="M4 5h16v14H4zM4 9h16"/></svg>Открыть все 5 слайдов одной страницей
+      </a>
+    </div>
+  </section>
+
+  <!-- Запись -->
+  <section class="block">
+    <h2>Запись скринкаста <span class="num">— Google Диск</span></h2>
+    <p class="sub">Один непрерывный скринкаст по всему практическому блоку (сегменты 4–11). Открывается и скачивается с Google Диска.</p>
+    <div id="rec-list"></div>
+  </section>
+
+  <!-- Материалы -->
+  <section class="block">
+    <h2>Материалы урока <span class="num">— промпты и раздатка</span></h2>
+    <p class="sub">Таблица промптов (та, что видно на экране в записи) и раздаточный PDF для учеников.</p>
+    <div class="mats">
+      <a class="btn btn--p" href="https://drive.google.com/drive/folders/1fyqjIFnsheR_Te_9CTX95ffvaI2nEPR1" target="_blank"><svg viewBox="0 0 24 24"><path d="M4 4h6l2 2h8v12H4z"/></svg>Папка урока на Google Диске (скринкаст + таблица)</a>
+      <a class="btn" href="urok-4/urok-4-prompty.xlsx" download><svg viewBox="0 0 24 24"><path d="M4 4h12l4 4v12H4z"/><path d="M8 12h8M8 16h8"/></svg>Промпты (Excel)</a>
+      <a class="btn" href="urok-4/urok-4-razdatka.pdf" target="_blank"><svg viewBox="0 0 24 24"><path d="M7 3h7l4 4v14H7z"/><path d="M14 3v4h4"/></svg>Раздатка (PDF)</a>
+    </div>
+  </section>
+
+  <!-- Таймлайн -->
+  <section class="block">
+    <h2>Раскадровка озвучки <span class="num">— 12 сегментов</span></h2>
+    <p class="sub">Текст аватара по сегментам. У каждого — что на экране (аватар / скринкаст / инфографика). Между сегментами ⏸ — точка склейки, тут аватар держит паузу 2–3 сек.</p>
+    <div id="timeline"></div>
+  </section>
+
+  <!-- Тексты для ЛК -->
+  <section class="block">
+    <h2>Тексты для публикации в ЛК <span class="num">— название, описание, ДЗ</span></h2>
+    <p class="sub">Готовые тексты для карточки урока в личном кабинете — раскройте и скопируйте.</p>
+    <div id="lk"></div>
+  </section>
+
+  <div class="foot">
+    Урок 4 «Штаб маркетинга в ChatGPT» · МБ ИИ 3.0 · оформление инфографики — Sharapilov AI
+    <div class="note">* Instagram принадлежит компании Meta, признанной экстремистской и запрещённой на территории РФ.</div>
+  </div>
+</div>
+
+<script>
+// ============= ГЕЙТ ДОСТУПА (те же коды, что в рабочем контуре) =============
+const PLAIN_PASSWORDS = {
+  'mark-mb-2026':'mark','serj-mb-2026':'serj','ali-mb-2026':'ali','magomed-mb-2026':'magomed',
+  'kurban-mb-2026':'kurban','eva-mb-2026':'eva','ilya-mb-2026':'ilya','ruslan-mb-2026':'ruslan'
+};
+const ROLES = new Set(Object.values(PLAIN_PASSWORDS));
+function unlock(){document.getElementById('gate').style.display='none';document.body.classList.remove('locked');}
+function doGate(e){
+  e&&e.preventDefault();
+  const pwd=document.getElementById('gatePwd').value.trim();
+  const role=PLAIN_PASSWORDS[pwd];
+  if(!role){document.getElementById('gateErr').textContent='Код не подходит. Проверьте у Марка.';return false;}
+  sessionStorage.setItem('mb-role',role);unlock();return false;
+}
+(function(){const role=sessionStorage.getItem('mb-role');if(role&&ROLES.has(role))unlock();})();
+
+const INF = [
+  {n:1,t:'Штаб маркетинга в ChatGPT',s:'Сегмент 1 · вступление'},
+  {n:2,t:'SOSTAC — 6 шагов',s:'Сегмент 2 · теория'},
+  {n:3,t:'Цикл недели',s:'Сегмент 3 · теория'},
+  {n:4,t:'Результат в рублях',s:'Сегмент 12 · финал'},
+  {n:5,t:'Чек-лист штаба',s:'Сегмент 12 · финал'},
+];
+const REC = [
+  {n:'Скринкаст',t:'Штаб маркетинга в ChatGPT',s:'весь практический блок · сегменты 4–11',u:'https://drive.google.com/drive/folders/1fyqjIFnsheR_Te_9CTX95ffvaI2nEPR1'},
+];
+
+const GROUPS = [
+  {head:'Вступление', src:'Аватар + Инфографика №1', segs:[
+    {n:1,kind:'ava',t:'Вступление',txt:'Привет, коллеги! За прошлые уроки мы научились делать много всего по отдельности: тексты, видео, картинки, воронку. Но есть проблема, с которой сталкивается каждый: всё это делается разово, по настроению, и нигде не хранится. Сделал — забыл. Никакой системы.\n\nСегодня мы построим систему. Точнее — штаб. Это будет одно место прямо внутри ChatGPT, где живёт стратегия вашего бизнеса. Настраиваем мы его один раз, а дальше он работает с вами каждую неделю.\n\nChatGPT станет хранителем вашей стратегии. Каждую неделю вы печатаете простой бланк, от руки ставите галочки и цифры, фотографируете и кидаете фото обратно в ChatGPT — а он сам считывает цифры, считает деньги и говорит, что делать дальше. И всё это мы мерим не в лайках, а в рублях. Поехали строить штаб!',pauseAfter:'Вывести Инфографику №2'},
+  ]},
+  {head:'Теория', src:'Инфографика №2–3', segs:[
+    {n:2,kind:'inf',inf:2,t:'Что такое SOSTAC',txt:'Сначала — из чего состоит стратегия, которую мы положим в наш штаб. Маркетологи используют простую схему из шести шагов, называется SOSTAC. Буквы запоминать не надо, важен смысл — это просто шесть вопросов к бизнесу.\n\nСитуация — где я сейчас. Цели — чего хочу, в цифрах и в деньгах. Стратегия — как добьюсь в общих чертах. Тактика — чем именно, какими инструментами. Действия — что делаю на этой неделе. Контроль — по каким цифрам пойму, что работает.\n\nШесть вопросов — и стратегия готова. А отвечать на них поможет ChatGPT, и он же будет эту стратегию хранить.',pauseAfter:'Сменить на Инфографику №3'},
+    {n:3,kind:'inf',inf:3,t:'Непрерывный цикл недели',txt:'А теперь — главная идея урока. Обычно человек составил план и забросил. У нас будет по-другому — живой цикл, который повторяется каждую неделю.\n\nChatGPT даёт вам план. В конце недели берёте бланк, который он распечатал, и от руки отмечаете: что сделали, сколько гостей, сколько денег. Фотографируете листок и кидаете фото обратно. Он считывает цифры, заносит в таблицу, сравнивает с планом — и выдаёт обновлённый план. И так по кругу.\n\nChatGPT — это не разовый помощник, а постоянный штаб. Вот это мы сейчас и соберём.',pauseAfter:'Переход к скринкасту: открываем ChatGPT'},
+  ]},
+  {head:'Практика — Штаб в ChatGPT', src:'rec:0', segs:[
+    {n:4,kind:'scr',rec:0,t:'Проект и стратегия',txt:'Приступим к практике. Слева в ChatGPT есть раздел «Проекты» — нажимаем и жмём «Создать». Проект — это папка для одного дела со своей памятью: обычный чат всё забывает, а проект помнит. Называю «Маркетинг кофейня Зерно».\n\nТеперь готовим главный документ — стратегию. Берём из таблицы первый промт «Стратегия». У меня он заточен под кофейню; вы подставляете свой бизнес. ChatGPT собирает стратегию по SOSTAC и тем же запросом оформляет PDF. Под файлом нажимаю иконку с папкой — документ добавляется в источники проекта.',pauseAfter:'Следующий промт'},
+    {n:5,kind:'scr',rec:0,t:'Системный промт в инструкции',txt:'Теперь зададим штабу правила работы. Берём нулевой промт — «Подготовка». Но вставляю не как есть — прошу ChatGPT адаптировать его под наш проект по файлу стратегии. Отправляю, жду.\n\nОн подготовил готовый системный промт под наш бизнес. Копирую. Открываю проект, справа вверху три точки, настройки проекта, вставляю промт в поле инструкций. Сохраняю. Теперь ChatGPT знает весь порядок работы наперёд.',pauseAfter:'Следующий промт'},
+    {n:6,kind:'scr',rec:0,t:'Считаем деньги',txt:'Возвращаемся в диалог и просим посчитать результат в деньгах — чтобы понимать не на абстрактных цифрах, а реально в рублях, насколько стратегия повлияет на оборот и прибыль.\n\nChatGPT считает: тридцать гостей по четыреста рублей, каждый вернётся пару раз — это под двадцать четыре тысячи в месяц. И называет рычаги: средний чек, возвраты, превращение подписчиков в гостей. Вот ради чего всё — ради денег, на которые можно влиять.',pauseAfter:'Следующий промт'},
+    {n:7,kind:'scr',rec:0,t:'Печатный бланк',txt:'Просим ChatGPT подготовить печатный бланк — отправляем промт «Бланк». Он генерирует PDF. Скачиваем через иконку справа вверху и распечатываем на принтере.\n\nВот такой бланк. Его удобно повесить у кассы и всю неделю от руки вписывать результаты: галочки по дням, сколько гостей, сколько денег.',pauseAfter:'Следующий промт'},
+    {n:8,kind:'scr',rec:0,t:'Недельный цикл по фото',txt:'Теперь делаем из этого непрерывный процесс. Прошла неделя, бланк заполнен. Заходим в проект, берём промт «Цикл недели», вставляем и прикрепляем фото заполненного бланка.\n\nChatGPT берёт фотографию и сам считывает все цифры, заносит в таблицу результатов проекта, сравнивает с планом и даёт обновлённый план на следующую неделю. Вы только сфоткали листок — а штаб всё посчитал.',pauseAfter:'Следующий промт'},
+    {n:9,kind:'scr',rec:0,t:'Итог месяца',txt:'Промт «Итог месяца» подводит итоги. ChatGPT смотрит на все результаты за месяц, корректирует стратегию и обновляет главный документ. Дал обновлённую стратегию по SOSTAC — скачиваем.\n\nОткрываем проект, переключаемся с чата на источники, удаляем старую стратегию, через «добавить источники» загружаем новую. Штаб начал новый месяц — но уже умнее, с учётом прошлого.',pauseAfter:'Следующий промт'},
+    {n:10,kind:'scr',rec:0,t:'Новый бланк, замыкаем цикл',txt:'Снова берём промт «Бланк» — чтобы ChatGPT подготовил новый еженедельный бланк уже на этот месяц. Вставляем, отправляем.\n\nНовый бланк готов, его можно использовать каждую неделю. Тем самым мы замыкаем цикл: месяц — итог — новая стратегия — новый бланк, и по кругу.',pauseAfter:'Следующий промт'},
+    {n:11,kind:'scr',rec:0,t:'ChatGPT-хранитель',txt:'И последнее, самое полезное. Раз стратегия и результаты лежат в штабе, мы в любой момент можем задать ChatGPT любой вопрос про бизнес. Берём промт «Хранитель», отправляем.\n\nChatGPT проанализировал данные проекта и дал краткую сводку: какие результаты на сейчас, что улучшить, какие планы на неделю. Это как живой маркетолог, который всегда с вами. На этом всё.',pauseAfter:'Аватар возвращается в кадр'},
+  ]},
+  {head:'Финал', src:'Инфографика №4–5 + аватар', segs:[
+    {n:12,kind:'inf',inf:4,t:'Заключение и домашнее задание',txt:'Сегодня мы не просто составили план — мы построили штаб, который живёт. ChatGPT хранит стратегию, каждую неделю принимает фото бланка, считает деньги и обновляет план, а раз в месяц сам обновляет главный документ. Настроили один раз — дальше крутится само.\n\nГлавное: смысл всего этого — деньги. Не лайки, а конкретные рубли в кассе. Мы считаем результат в деньгах и видим, какой рычаг на эту сумму влияет.\n\nДомашнее задание: создайте свой проект, соберите стратегию по SOSTAC, посчитайте результат в рублях и сделайте печатный бланк. А через неделю — загрузите фото заполненного листка. Подробное задание — под уроком в личном кабинете. Удачи, и до встречи на следующем уроке!',pauseAfter:'Конец урока'},
+  ]},
+];
+
+const LK = [
+  {t:'Название и подзаголовок', html:`<h4>Название</h4><p><b>Урок 4. Штаб маркетинга в ChatGPT: стратегия, которая живёт и считает деньги</b></p><p><i>Подзаголовок:</i> Собираем по схеме SOSTAC единый маркетинг-проект в ChatGPT, который ведёт стратегию, считает результат в рублях и сам обновляется каждую неделю.</p>`},
+  {t:'Краткое описание (карточка урока)', html:`<p>В прошлых уроках вы научились делать отдельные вещи: тексты, визуал, видео, воронку. В этом уроке мы соединяем всё в одну систему — штаб маркетинга прямо внутри ChatGPT.</p><p>Вы один раз создаёте Проект в ChatGPT, кладёте туда стратегию по простой схеме маркетологов SOSTAC — и дальше это работает само. Каждую неделю вы печатаете бланк, от руки отмечаете результаты, фотографируете и загружаете фото обратно — а ChatGPT считывает цифры, ведёт таблицу, считает ваши деньги и обновляет план. Раз в месяц штаб сам подводит итог и обновляет стратегию.</p><p>Главное — всё измеряется в рублях, а не в лайках.</p>`},
+  {t:'Что вы освоите', html:`<ul><li>Что такое схема SOSTAC и как по ней за 15 минут собрать стратегию</li><li>Как создать Проект в ChatGPT и сделать его «хранителем» стратегии с памятью</li><li>Как задать проекту правила работы (системную инструкцию)</li><li>Как посчитать результат маркетинга в деньгах и понять, на что влиять</li><li>Как сделать печатный бланк-трекер прямо в ChatGPT</li><li>Как замкнуть непрерывный цикл: фото бланка → ChatGPT обновляет план</li><li>Как раз в месяц обновлять стратегию по факту</li></ul><p><i>Формат:</i> видеоурок + раздаточный PDF. <i>Сложность:</i> для новичков. <i>Время:</i> ~1 час.</p>`},
+  {t:'Домашнее задание', html:`<p>Соберите свой штаб маркетинга в ChatGPT под реальный бизнес и запустите первый недельный цикл:</p><ul><li>Создайте Проект в ChatGPT</li><li>Соберите стратегию по SOSTAC (промт «Стратегия»), сохраните PDF в источники</li><li>Задайте системный промт в инструкции проекта (промт «Подготовка»)</li><li>Посчитайте результат в рублях (промт «Деньги»)</li><li>Сделайте и распечатайте бланк (промт «Бланк»)</li><li>Через неделю — фото заполненного бланка в проект (промт «Цикл недели»)</li></ul><p>Время: 30–40 минут на настройку + пара минут в конце недели.</p>`},
+];
+
+const dl = '<svg viewBox="0 0 24 24"><path d="M12 3v12M7 11l5 5 5-5M4 20h16"/></svg>';
+const ext = '<svg viewBox="0 0 24 24"><path d="M14 4h6v6M20 4l-9 9M19 14v5H5V5h5"/></svg>';
+const play = '<svg viewBox="0 0 24 24"><path d="M5 3l14 9-14 9z"/></svg>';
+
+document.getElementById('inf-grid').innerHTML = INF.map(i=>`
+  <div class="card">
+    <img src="urok-4/infografika/inf-${i.n}.png" alt="Инфографика №${i.n}" loading="lazy">
+    <div class="card__b">
+      <div class="card__t">№${i.n} · ${i.t}<span>${i.s}</span></div>
+      <div class="card__act">
+        <a class="btn btn--p" href="urok-4/infografika/inf-${i.n}.png" download>${dl}PNG</a>
+        <a class="btn" href="urok-4/infografika/inf-${i.n}.html" target="_blank">${ext}HTML</a>
+      </div>
+    </div>
+  </div>`).join('');
+
+document.getElementById('rec-list').innerHTML = REC.map(r=>`
+  <div class="rec">
+    <span class="rec__n">${r.n}</span>
+    <div class="rec__t">${r.t}<span>${r.s}</span></div>
+    <a class="btn btn--p" href="${r.u}" target="_blank">${play}Смотреть / скачать</a>
+  </div>`).join('');
+
+const badge = (k)=>({
+  ava:'<span class="badge badge--ava"><span class="dot"></span>Аватар в кадре</span>',
+  scr:'<span class="badge badge--scr"><span class="dot"></span>Скринкаст</span>',
+  inf:'<span class="badge badge--inf"><span class="dot"></span>Инфографика</span>',
+}[k]);
+
+document.getElementById('timeline').innerHTML = GROUPS.map(g=>{
+  let srcHtml = '';
+  if(g.src && g.src.startsWith('rec:')){
+    const r = REC[+g.src.slice(4)];
+    srcHtml = `<span class="src"><a href="${r.u}" target="_blank">${r.n} · смотреть запись →</a></span>`;
+  } else if(g.src){
+    srcHtml = `<span class="src" style="color:var(--ink-40)">${g.src}</span>`;
+  }
+  const segs = g.segs.map(s=>{
+    let asset = '';
+    if(s.kind==='inf'){
+      asset = `<div class="seg__asset"><span class="lbl">На экране:</span>
+        <a class="btn btn--p" href="urok-4/infografika/inf-${s.inf}.png" download>${dl}Инфографика №${s.inf} (PNG)</a>
+        <a class="btn" href="urok-4/infografika/inf-${s.inf}.html" target="_blank">${ext}HTML</a></div>`;
+    } else if(s.kind==='scr'){
+      const r = REC[s.rec];
+      asset = `<div class="seg__asset"><span class="lbl">На экране:</span>
+        <a class="btn" href="${r.u}" target="_blank">${play}${r.t} — смотреть</a></div>`;
+    } else {
+      asset = `<div class="seg__asset"><span class="lbl">На экране: аватар в кадре, без скринкаста</span></div>`;
+    }
+    const pause = s.pauseAfter ? `<div class="pause"><b>⏸ Пауза 2–3 сек.</b> · ${s.pauseAfter}</div>` : '';
+    return `<div class="seg">
+      <div class="seg__rail"><div class="seg__num">${s.n}<span>сег.</span></div></div>
+      <div class="seg__body">
+        <div class="seg__top">${badge(s.kind)}<span class="seg__t">${s.t}</span></div>
+        <div class="seg__txt">${s.txt}</div>
+        ${asset}
+      </div>
+    </div>${pause}`;
+  }).join('');
+  return `<div class="tl-group">
+    <div class="tl-head"><h3>${g.head}</h3>${srcHtml}</div>
+    ${segs}
+  </div>`;
+}).join('');
+
+document.getElementById('lk').innerHTML = LK.map(x=>`
+  <details class="lk"><summary>${x.t}</summary><div class="lk__b">${x.html}</div></details>`).join('');
+</script>
+</body>
+</html>

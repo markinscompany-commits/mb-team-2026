@@ -1,0 +1,86 @@
+<!DOCTYPE html><html lang="ru"><head><meta charset="UTF-8"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"><style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --accent:#6C4DF2; --accent-soft:#EEEAFE; --accent-line:#D9CFFB;
+  --ink:#14131A; --muted:#6B6A78; --line:#E7E6EE;
+  --bg:#FFFFFF; --bg-soft:#F6F5FB; --ok:#18A957; --gold:#D9892B; --gold-soft:#FBEFDD;
+}
+html,body{margin:0;padding:0;background:#fff}
+body{font-family:'Inter',sans-serif;color:var(--ink);-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.slide{width:1280px;height:720px;background:var(--bg);position:relative;overflow:hidden;
+  padding:62px 70px 74px;display:flex;flex-direction:column}
+.display{font-family:'Space Grotesk',sans-serif}
+.kicker{display:inline-flex;align-items:center;gap:9px;font-weight:600;font-size:14px;
+  letter-spacing:.14em;text-transform:uppercase;color:var(--accent)}
+.kicker .dot{width:8px;height:8px;border-radius:50%;background:var(--accent)}
+h1.title{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:44px;
+  line-height:1.08;margin-top:13px;letter-spacing:-.01em}
+.subtitle{font-size:18px;color:var(--muted);margin-top:11px;max-width:900px;line-height:1.4}
+.foot{position:absolute;left:70px;right:70px;bottom:28px;display:flex;align-items:center;
+  justify-content:space-between;border-top:1px solid var(--line);padding-top:15px}
+.wordmark{font-family:'Space Grotesk';font-weight:700;font-size:16px;display:flex;align-items:center;gap:9px}
+.wordmark .glyph{width:26px;height:26px;border-radius:7px;background:var(--accent);display:inline-flex;align-items:center;justify-content:center}
+.foot .meta{font-size:13px;color:var(--muted);font-weight:500}
+
+/* cycle (slide 1 & 3) */
+.cycle{display:flex;align-items:center;justify-content:center;gap:0;margin:auto 0}
+.cnode{background:var(--bg-soft);border:1px solid var(--line);border-radius:16px;padding:20px 16px;width:172px;height:150px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:11px;text-align:center}
+.cnode.accent{background:var(--accent-soft);border-color:var(--accent-line)}
+.cnode.gold{background:var(--gold-soft);border-color:#EBD3AE}
+.cnode__ic{width:50px;height:50px;border-radius:13px;background:#fff;border:1px solid var(--line);display:flex;align-items:center;justify-content:center}
+.cnode__ic svg{width:26px;height:26px;stroke:var(--accent);fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.cnode.gold .cnode__ic svg{stroke:var(--gold)}
+.cnode__t{font-weight:700;font-size:15px;line-height:1.18}
+.carr{flex:0 0 36px;display:flex;align-items:center;justify-content:center}
+.carr svg{width:30px;height:30px;stroke:var(--muted);stroke-width:2.2;fill:none}
+
+/* sostac (slide 2) */
+.grid6{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:auto 0}
+.cell{background:var(--bg-soft);border:1px solid var(--line);border-radius:16px;padding:20px 20px;display:flex;flex-direction:column;gap:8px;position:relative}
+.cell__l{width:42px;height:42px;border-radius:11px;background:var(--accent);color:#fff;font-family:'Space Grotesk';font-weight:700;font-size:21px;display:flex;align-items:center;justify-content:center}
+.cell__t{font-weight:700;font-size:18px}
+.cell__q{font-size:13px;color:var(--accent);font-weight:600}
+.cell__d{font-size:13.5px;color:var(--muted);line-height:1.38}
+
+/* money (slide 4) */
+.money{display:flex;flex-direction:column;gap:24px;margin:auto 0}
+.formula{display:flex;align-items:stretch;justify-content:center;gap:14px}
+.fbox{background:var(--bg-soft);border:1px solid var(--line);border-radius:16px;padding:20px 22px;text-align:center;min-width:170px;display:flex;flex-direction:column;gap:6px;justify-content:center}
+.fbox__v{font-family:'Space Grotesk';font-weight:700;font-size:30px}
+.fbox__l{font-size:14px;color:var(--muted)}
+.fbox.res{background:var(--accent);border-color:var(--accent)}
+.fbox.res .fbox__v,.fbox.res .fbox__l{color:#fff}
+.fop{display:flex;align-items:center;font-family:'Space Grotesk';font-weight:700;font-size:30px;color:var(--accent)}
+.levers{display:flex;gap:14px;justify-content:center}
+.lever{flex:1;max-width:330px;background:var(--gold-soft);border:1px solid #EBD3AE;border-radius:14px;padding:16px 18px;display:flex;gap:12px;align-items:center}
+.lever__ic{width:40px;height:40px;border-radius:10px;background:#fff;border:1px solid #EBD3AE;display:flex;align-items:center;justify-content:center;flex:0 0 40px}
+.lever__ic svg{width:22px;height:22px;stroke:var(--gold);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.lever__t{font-size:14.5px;font-weight:600;line-height:1.25}
+
+/* checklist (slide 5) */
+.checks{display:flex;flex-direction:column;gap:13px;margin:auto 0}
+.check{display:flex;align-items:center;gap:18px;background:var(--bg-soft);border:1px solid var(--line);border-radius:14px;padding:16px 22px}
+.check__box{flex:0 0 28px;width:28px;height:28px;border-radius:8px;border:2px solid var(--accent);background:#fff;display:flex;align-items:center;justify-content:center}
+.check__box svg{width:18px;height:18px;stroke:var(--accent);fill:none;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+.check__t{font-size:18px;font-weight:500}
+.check__t b{font-weight:700}
+.check__n{font-family:'Space Grotesk';font-weight:700;color:var(--accent);font-size:16px;flex:0 0 24px}
+
+.slide{box-shadow:none;border-radius:0;margin:0}</style></head><body><section class="slide">
+  <div class="kicker"><span class="dot"></span>Инфографика 3 · Непрерывный процесс</div>
+  <h1 class="title">Цикл недели: штаб сам себя крутит</h1>
+  <p class="subtitle">Каждую неделю одни и те же 5 шагов. Фото бланка — и ChatGPT всё считает за вас.</p>
+  <div class="cycle">
+    <div class="cnode accent"><div class="cnode__ic"><svg viewBox="0 0 24 24"><path d="M7 3h7l4 4v14H7z"/><path d="M14 3v4h4"/><path d="M9 13h7M9 17h5"/></svg></div><div class="cnode__t">1. План<br>от ChatGPT</div></div>
+    <div class="carr"><svg viewBox="0 0 24 24"><path d="M4 12h16M14 6l6 6-6 6"/></svg></div>
+    <div class="cnode"><div class="cnode__ic"><svg viewBox="0 0 24 24"><path d="M7 9V3h10v6"/><rect x="4" y="9" width="16" height="8" rx="2"/><path d="M7 17h10v4H7z"/></svg></div><div class="cnode__t">2. Печатаешь<br>бланк</div></div>
+    <div class="carr"><svg viewBox="0 0 24 24"><path d="M4 12h16M14 6l6 6-6 6"/></svg></div>
+    <div class="cnode"><div class="cnode__ic"><svg viewBox="0 0 24 24"><path d="M4 20h16"/><path d="M14 4l6 6L9 21l-6 1 1-6z"/></svg></div><div class="cnode__t">3. Заполнил<br>от руки</div></div>
+    <div class="carr"><svg viewBox="0 0 24 24"><path d="M4 12h16M14 6l6 6-6 6"/></svg></div>
+    <div class="cnode"><div class="cnode__ic"><svg viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="13" rx="3"/><circle cx="12" cy="13.5" r="3.5"/><path d="M8 7l1.5-2h5L16 7"/></svg></div><div class="cnode__t">4. Фото<br>в ChatGPT</div></div>
+    <div class="carr"><svg viewBox="0 0 24 24"><path d="M4 12h16M14 6l6 6-6 6"/></svg></div>
+    <div class="cnode gold"><div class="cnode__ic"><svg viewBox="0 0 24 24"><path d="M17 2l4 4-4 4"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><path d="M7 22l-4-4 4-4"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg></div><div class="cnode__t">5. Новый план<br>и по кругу</div></div>
+  </div>
+  <div class="foot"><div class="wordmark"><span class="glyph"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round"><path d="M4 16 9 7l4 6 3-4 4 7"/></svg></span>Sharapilov AI</div><div class="meta">Курс «МБ ИИ 3.0» · Урок 4</div></div>
+</section></body></html>

@@ -93,6 +93,17 @@
   .pause::before{content:"";flex:0 0 22px;height:1px;background:var(--ink-20)}
   .pause b{color:var(--inf);font-weight:600}
 
+  details.lk{background:var(--bg-0);border:1px solid var(--ink-08);border-radius:12px;padding:0;margin-bottom:10px;overflow:hidden}
+  details.lk>summary{cursor:pointer;padding:14px 18px;font-weight:600;font-size:14.5px;list-style:none;display:flex;align-items:center;gap:10px}
+  details.lk>summary::-webkit-details-marker{display:none}
+  details.lk>summary::before{content:"+";font-family:'Unbounded';color:var(--accent);font-size:16px;width:16px}
+  details.lk[open]>summary::before{content:"–"}
+  details.lk .lk__b{padding:0 18px 18px;font-size:13.5px;color:var(--ink-80);line-height:1.6}
+  details.lk .lk__b h4{font-family:'Unbounded';font-weight:500;font-size:14px;margin:14px 0 6px;color:var(--ink-100)}
+  details.lk .lk__b ul{margin:6px 0 6px 18px}
+  details.lk .lk__b li{margin-bottom:4px}
+  details.lk .lk__b code{background:var(--bg-2);padding:1px 5px;border-radius:4px;font-size:12.5px}
+
   .foot{margin-top:50px;padding-top:22px;border-top:1px solid var(--ink-08);font-size:13px;color:var(--ink-60);text-align:center}
   .note{font-size:12px;color:var(--ink-40);margin-top:8px}
   @media(max-width:560px){h1{font-size:26px}.seg__rail{flex-basis:50px}}
@@ -177,6 +188,13 @@
     <h2>Раскадровка озвучки <span class="num">— 21 сегмент</span></h2>
     <p class="sub">Текст аватара по сегментам. У каждого сегмента — что ставить на экран (аватар / скринкаст / инфографика) и кнопка нужного материала. Между сегментами ⏸ — точка склейки, тут аватар держит паузу 2–3 сек.</p>
     <div id="timeline"></div>
+  </section>
+
+  <!-- Тексты для ЛК -->
+  <section class="block">
+    <h2>Тексты для публикации в ЛК <span class="num">— название, описание, ДЗ</span></h2>
+    <p class="sub">Готовые тексты для карточки урока в личном кабинете — раскройте и скопируйте.</p>
+    <div id="lk"></div>
   </section>
 
   <div class="foot">
@@ -269,6 +287,13 @@ const dl = '<svg viewBox="0 0 24 24"><path d="M12 3v12M7 11l5 5 5-5M4 20h16"/></
 const ext = '<svg viewBox="0 0 24 24"><path d="M14 4h6v6M20 4l-9 9M19 14v5H5V5h5"/></svg>';
 const play = '<svg viewBox="0 0 24 24"><path d="M5 3l14 9-14 9z"/></svg>';
 
+const LK = [
+  {t:'Название и подзаголовок', html:`<h4>Название</h4><p><b>Урок 3. Автоворонка в директе: как ИИ продаёт за вас 24/7</b></p><p><i>Подзаголовок:</i> Автоматизируем общение с клиентами в Instagram* и Telegram с помощью ИИ-агента.</p>`},
+  {t:'Краткое описание (карточка урока)', html:`<p>Самый «денежный» урок курса. Вы научитесь делать так, чтобы с клиентами в переписке общались не вы руками по ночам, а умный ИИ-бот — автоматически, круглосуточно.</p><p>Мы по шагам соберём настоящую автоворонку: человек пишет кодовое слово в комментариях под вашим постом → бот сам пишет ему в личку → выдаёт обещанный материал за подписку → переводит в Telegram, где его встречает ИИ-агент. Этот агент понимает живую речь, отвечает по-человечески, выясняет, что нужно клиенту, прогревает и передаёт вам уже горячего, готового к покупке человека.</p><p>Всё — без программирования и без дорогих специалистов. То, за что ещё недавно платили десятки тысяч рублей, вы сможете настроить сами примерно за час.</p>`},
+  {t:'Что вы освоите', html:`<ul><li>Как устроена воронка продаж в директе и из каких 5 ступеней она состоит</li><li>В чём разница между обычным «кнопочным» ботом и умным ИИ-агентом</li><li>Как зарегистрироваться в сервисе ChatPlace и при необходимости оплатить нужный тариф</li><li>Как создать Telegram-бота и подключить Instagram*</li><li>Как собрать воронку-«мост»: из комментариев Instagram* в Telegram</li><li>Как собрать такую же воронку прямо в Telegram и выдавать материал ссылкой с Google Диска</li><li>Как настроить ИИ-агента: рассказать ему о бизнесе своими словами — он обучится сам, а вы поправите его «правилами по темам» и протестируете</li></ul><p><i>Формат:</i> видеоурок + раздаточный PDF (чек-лист, шаблоны воронок, банк промптов). <i>Сложность:</i> для новичков. <i>Время:</i> 1–2 часа.</p>`},
+  {t:'Домашнее задание', html:`<p>Настройте свою рабочую ИИ-воронку под реальный бизнес — не выдуманный, а настоящий, где вам и правда нужны клиенты — и проверьте её по чек-листу от кодового слова в комментарии до живого диалога с ИИ-агентом в Telegram:</p><ul><li>Выберите бизнес, придумайте лид-магнит (гайд / чек-лист / скидку) и кодовое слово (ГАЙД, ХОЧУ, ЦЕНА)</li><li>Зарегистрируйтесь в ChatPlace, включите 7-дневный триал Pro + опцию «ChatPlace ИИ»</li><li>Создайте Telegram-бота через @BotFather и подключите каналы (Telegram + Instagram*)</li><li>Соберите воронку-«мост»: триггер по слову → сообщение в Директ → проверка подписки → лид-магнит + ссылка на Telegram-бот</li><li>Заполните базу знаний (прайс, частые вопросы, услуги) и опишите роль ИИ-агента</li><li>Проверьте весь путь глазами клиента и почините то, что отвалилось</li></ul><p>Подробный разбор каждого шага — в видеоуроке и раздаточном PDF.</p>`},
+];
+
 // Инфографика-грид
 document.getElementById('inf-grid').innerHTML = INF.map(i=>`
   <div class="card">
@@ -333,6 +358,10 @@ document.getElementById('timeline').innerHTML = GROUPS.map(g=>{
     ${segs}
   </div>`;
 }).join('');
+
+// Тексты для ЛК
+document.getElementById('lk').innerHTML = LK.map(x=>`
+  <details class="lk"><summary>${x.t}</summary><div class="lk__b">${x.html}</div></details>`).join('');
 </script>
 </body>
 </html>

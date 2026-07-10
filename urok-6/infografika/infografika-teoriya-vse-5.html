@@ -1,0 +1,174 @@
+<!DOCTYPE html><html lang="ru"><head><meta charset="UTF-8"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"><style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --accent:#6C4DF2; --accent-soft:#EEEAFE; --accent-line:#D9CFFB;
+  --ink:#14131A; --muted:#6B6A78; --line:#E7E6EE;
+  --bg:#FFFFFF; --bg-soft:#F6F5FB; --ok:#18A957; --gold:#D9892B; --gold-soft:#FBEFDD;
+}
+html,body{margin:0;padding:0;background:#fff}
+body{font-family:'Inter',sans-serif;color:var(--ink);-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.slide{width:1280px;height:720px;background:var(--bg);position:relative;overflow:hidden;
+  padding:62px 70px 74px;display:flex;flex-direction:column}
+.display{font-family:'Space Grotesk',sans-serif}
+.kicker{display:inline-flex;align-items:center;gap:9px;font-weight:600;font-size:14px;
+  letter-spacing:.14em;text-transform:uppercase;color:var(--accent)}
+.kicker .dot{width:8px;height:8px;border-radius:50%;background:var(--accent)}
+h1.title{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:44px;
+  line-height:1.08;margin-top:13px;letter-spacing:-.01em}
+.subtitle{font-size:18px;color:var(--muted);margin-top:11px;max-width:900px;line-height:1.4}
+.foot{position:absolute;left:70px;right:70px;bottom:28px;display:flex;align-items:center;
+  justify-content:space-between;border-top:1px solid var(--line);padding-top:15px}
+.wordmark{font-family:'Space Grotesk';font-weight:700;font-size:16px;display:flex;align-items:center;gap:9px}
+.wordmark .glyph{width:26px;height:26px;border-radius:7px;background:var(--accent);display:inline-flex;align-items:center;justify-content:center}
+.foot .meta{font-size:13px;color:var(--muted);font-weight:500}
+
+/* flow (slide 1) */
+.cycle{display:flex;align-items:center;justify-content:center;gap:0;margin:auto 0}
+.zonecol{display:flex;flex-direction:column;gap:12px}
+.znode{background:var(--bg-soft);border:1px solid var(--line);border-radius:13px;padding:13px 18px;width:230px;
+  display:flex;align-items:center;gap:13px}
+.znode__ic{width:40px;height:40px;border-radius:10px;background:#fff;border:1px solid var(--line);display:flex;align-items:center;justify-content:center;flex:0 0 40px}
+.znode__ic svg{width:22px;height:22px;stroke:var(--accent);fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.znode__t{font-weight:700;font-size:16px}
+.carr{flex:0 0 74px;display:flex;align-items:center;justify-content:center}
+.carr svg{width:40px;height:40px;stroke:var(--muted);stroke-width:2.2;fill:none}
+.hub{background:var(--accent-soft);border:1px solid var(--accent-line);border-radius:20px;padding:30px 26px;width:250px;height:200px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;text-align:center}
+.hub__ic{width:66px;height:66px;border-radius:16px;background:var(--accent);display:flex;align-items:center;justify-content:center}
+.hub__ic svg{width:36px;height:36px;stroke:#fff;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.hub__t{font-family:'Space Grotesk';font-weight:700;font-size:22px}
+.hub__s{font-size:14px;color:var(--muted);line-height:1.3}
+
+/* grid4 (slide 2) */
+.grid4{display:grid;grid-template-columns:repeat(2,1fr);gap:18px;margin:auto 0}
+.cell{background:var(--bg-soft);border:1px solid var(--line);border-radius:16px;padding:22px 24px;display:flex;gap:16px;align-items:flex-start}
+.cell__ic{width:50px;height:50px;border-radius:13px;background:#fff;border:1px solid var(--accent-line);display:flex;align-items:center;justify-content:center;flex:0 0 50px}
+.cell__ic svg{width:26px;height:26px;stroke:var(--accent);fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.cell__t{font-weight:700;font-size:20px;margin-bottom:5px}
+.cell__d{font-size:14.5px;color:var(--muted);line-height:1.4}
+
+/* split (slide 3) */
+.split{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin:auto 0}
+.panel{border-radius:18px;padding:26px 28px;border:1px solid var(--line)}
+.panel.give{background:var(--accent-soft);border-color:var(--accent-line)}
+.panel.keep{background:var(--gold-soft);border-color:#EBD3AE}
+.panel__h{display:flex;align-items:center;gap:12px;margin-bottom:16px}
+.panel__ic{width:44px;height:44px;border-radius:12px;background:#fff;display:flex;align-items:center;justify-content:center;flex:0 0 44px}
+.panel.give .panel__ic svg{stroke:var(--accent)}
+.panel.keep .panel__ic svg{stroke:var(--gold)}
+.panel__ic svg{width:24px;height:24px;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.panel__ttl{font-family:'Space Grotesk';font-weight:700;font-size:22px}
+.panel__ttl span{display:block;font-family:'Inter';font-weight:500;font-size:13.5px;color:var(--muted);margin-top:2px}
+.plist{list-style:none;display:flex;flex-direction:column;gap:11px}
+.plist li{display:flex;gap:11px;font-size:15.5px;line-height:1.32;align-items:flex-start}
+.plist li::before{content:"";flex:0 0 8px;width:8px;height:8px;border-radius:50%;margin-top:7px}
+.panel.give .plist li::before{background:var(--accent)}
+.panel.keep .plist li::before{background:var(--gold)}
+
+/* deeds (slide 4) */
+.checks{display:flex;flex-direction:column;gap:12px;margin:auto 0}
+.check{display:flex;align-items:center;gap:18px;background:var(--bg-soft);border:1px solid var(--line);border-radius:14px;padding:15px 22px}
+.check__box{flex:0 0 28px;width:28px;height:28px;border-radius:8px;border:2px solid var(--accent);background:#fff;display:flex;align-items:center;justify-content:center}
+.check__box svg{width:18px;height:18px;stroke:var(--accent);fill:none;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+.check__t{font-size:17px;font-weight:500}
+.check__t b{font-weight:700}
+.check__n{font-family:'Space Grotesk';font-weight:700;color:var(--accent);font-size:16px;flex:0 0 78px}
+.check.now{background:var(--accent-soft);border-color:var(--accent-line)}
+
+body{background:#D9D8E2;padding:30px 0}.deck{display:flex;flex-direction:column;align-items:center;gap:26px}.slide{border-radius:20px;box-shadow:0 14px 50px rgba(20,19,26,.18)}@media print{body{background:#fff;padding:0}.deck{gap:0}.slide{box-shadow:none;border-radius:0;page-break-after:always}@page{size:landscape;margin:0}}
+</style></head><body><div class="deck">
+
+<!-- ===== СЛАЙД 1 ===== -->
+<section class="slide">
+  <div class="kicker"><span class="dot"></span>Инфографика 1 · О чём урок</div>
+  <h1 class="title">Личный ассистент в ChatGPT</h1>
+  <p class="subtitle">Настрой один раз — и он разгружает тебя каждый день. Четыре зоны рутины отдаём ИИ, себе оставляем решения.</p>
+  <div class="cycle">
+    <div class="zonecol">
+      <div class="znode"><div class="znode__ic"><svg viewBox="0 0 24 24"><path d="M9 5h9M9 12h9M9 19h9"/><path d="M4 4.5l1.5 1.5L8 3.5M4 11.5l1.5 1.5L8 10.5M4 18.5l1.5 1.5L8 17.5"/></svg></div><div class="znode__t">Дела</div></div>
+      <div class="znode"><div class="znode__ic"><svg viewBox="0 0 24 24"><path d="M7 3h7l4 4v14H7z"/><path d="M14 3v4h4"/><path d="M10 13h5M10 17h5"/></svg></div><div class="znode__t">Документы</div></div>
+      <div class="znode"><div class="znode__ic"><svg viewBox="0 0 24 24"><path d="M4 5h16v11H9l-4 3z"/><path d="M8 9h8M8 12h5"/></svg></div><div class="znode__t">Переписка</div></div>
+      <div class="znode"><div class="znode__ic"><svg viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg></div><div class="znode__t">Цифры</div></div>
+    </div>
+    <div class="carr"><svg viewBox="0 0 24 24"><path d="M4 12h16M14 6l6 6-6 6"/></svg></div>
+    <div class="hub">
+      <div class="hub__ic"><svg viewBox="0 0 24 24"><path d="M12 3a4 4 0 0 1 4 4 4 4 0 0 1 0 8 4 4 0 0 1-8 0 4 4 0 0 1 0-8 4 4 0 0 1 4-4z"/><path d="M12 8v8M8.5 10.5l7 3M15.5 10.5l-7 3"/></svg></div>
+      <div class="hub__t">ChatGPT</div>
+      <div class="hub__s">ваш личный ассистент<br>на каждый день</div>
+    </div>
+  </div>
+  <div class="foot"><div class="wordmark"><span class="glyph"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round"><path d="M4 16 9 7l4 6 3-4 4 7"/></svg></span>Sharapilov AI</div><div class="meta">Курс «МБ ИИ 3.0» · Урок 6</div></div>
+</section>
+
+<!-- ===== СЛАЙД 2 ===== -->
+<section class="slide">
+  <div class="kicker"><span class="dot"></span>Инфографика 2 · Что делегируем</div>
+  <h1 class="title">4 зоны рутины, которые крадут день</h1>
+  <div class="grid4">
+    <div class="cell"><div class="cell__ic"><svg viewBox="0 0 24 24"><path d="M9 5h9M9 12h9M9 19h9"/><path d="M4 4.5l1.5 1.5L8 3.5M4 11.5l1.5 1.5L8 10.5M4 18.5l1.5 1.5L8 17.5"/></svg></div><div><div class="cell__t">Дела и планы</div><div class="cell__d">Свалить всё из головы → ИИ раскладывает по приоритетам и даёт план дня.</div></div></div>
+    <div class="cell"><div class="cell__ic"><svg viewBox="0 0 24 24"><path d="M7 3h7l4 4v14H7z"/><path d="M14 3v4h4"/><path d="M10 13h5M10 17h5"/></svg></div><div><div class="cell__t">Документы</div><div class="cell__d">Составить письмо, договор, КП — и разобрать входящий документ по фото.</div></div></div>
+    <div class="cell"><div class="cell__ic"><svg viewBox="0 0 24 24"><path d="M4 5h16v11H9l-4 3z"/><path d="M8 9h8M8 12h5"/></svg></div><div><div class="cell__t">Переписка</div><div class="cell__d">Ответить клиенту, поставщику, на отзыв — в нужном тоне, без нервов.</div></div></div>
+    <div class="cell"><div class="cell__ic"><svg viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg></div><div><div class="cell__t">Цифры и отчёты</div><div class="cell__d">Свести выручку, средний чек, лучший день → готовый мини-отчёт по фото.</div></div></div>
+  </div>
+  <div class="foot"><div class="wordmark"><span class="glyph"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round"><path d="M4 16 9 7l4 6 3-4 4 7"/></svg></span>Sharapilov AI</div><div class="meta">Курс «МБ ИИ 3.0» · Урок 6</div></div>
+</section>
+
+<!-- ===== СЛАЙД 3 ===== -->
+<section class="slide">
+  <div class="kicker"><span class="dot"></span>Инфографика 3 · Главный принцип</div>
+  <h1 class="title">Отдай ИИ рутину — оставь себе решения</h1>
+  <div class="split">
+    <div class="panel give">
+      <div class="panel__h"><div class="panel__ic"><svg viewBox="0 0 24 24"><path d="M17 2l4 4-4 4"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><path d="M7 22l-4-4 4-4"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg></div><div class="panel__ttl">Рутину — ИИ<span>механика по образцу</span></div></div>
+      <ul class="plist">
+        <li>Черновики писем и документов</li>
+        <li>Разбор договоров и отчётов</li>
+        <li>Вежливые формулировки ответов</li>
+        <li>Свод и подсчёт цифр</li>
+      </ul>
+    </div>
+    <div class="panel keep">
+      <div class="panel__h"><div class="panel__ic"><svg viewBox="0 0 24 24"><path d="M12 3l2.5 5 5.5.8-4 3.9 1 5.5-5-2.7-5 2.7 1-5.5-4-3.9 5.5-.8z"/></svg></div><div class="panel__ttl">Решения — вам<span>где нужен человек</span></div></div>
+      <ul class="plist">
+        <li>Подписывать договор или нет</li>
+        <li>Какую цену поставить</li>
+        <li>Кого нанять, кого отпустить</li>
+        <li>Куда развивать бизнес</li>
+      </ul>
+    </div>
+  </div>
+  <p class="subtitle" style="margin-top:20px">ИИ забирает скучную механику и возвращает вам время. Вы не безработный — вы разгруженный.</p>
+  <div class="foot"><div class="wordmark"><span class="glyph"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round"><path d="M4 16 9 7l4 6 3-4 4 7"/></svg></span>Sharapilov AI</div><div class="meta">Курс «МБ ИИ 3.0» · Урок 6</div></div>
+</section>
+
+<!-- ===== СЛАЙД 4 ===== -->
+<section class="slide">
+  <div class="kicker"><span class="dot"></span>Инфографика 4 · Итог курса</div>
+  <h1 class="title">Что теперь делает за вас ИИ</h1>
+  <div class="checks">
+    <div class="check"><div class="check__box"><svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 6"/></svg></div><div class="check__n">Урок 1</div><div class="check__t"><b>Тексты и ролики</b> — контент и сценарии</div></div>
+    <div class="check"><div class="check__box"><svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 6"/></svg></div><div class="check__n">Урок 2</div><div class="check__t"><b>Визуал и видео</b> для соцсетей</div></div>
+    <div class="check"><div class="check__box"><svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 6"/></svg></div><div class="check__n">Урок 3</div><div class="check__t"><b>Воронка</b> — бот продаёт за вас в директе</div></div>
+    <div class="check"><div class="check__box"><svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 6"/></svg></div><div class="check__n">Урок 4</div><div class="check__t"><b>Стратегия и деньги</b> — штаб маркетинга</div></div>
+    <div class="check"><div class="check__box"><svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 6"/></svg></div><div class="check__n">Урок 5</div><div class="check__t"><b>Дизайн и креативы</b></div></div>
+    <div class="check now"><div class="check__box"><svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 6"/></svg></div><div class="check__n">Урок 6</div><div class="check__t"><b>Ежедневная рутина</b> — личный ассистент ← сегодня</div></div>
+  </div>
+  <div class="foot"><div class="wordmark"><span class="glyph"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round"><path d="M4 16 9 7l4 6 3-4 4 7"/></svg></span>Sharapilov AI</div><div class="meta">Курс «МБ ИИ 3.0» · Урок 6</div></div>
+</section>
+
+<!-- ===== СЛАЙД 5 ===== -->
+<section class="slide">
+  <div class="kicker"><span class="dot"></span>Инфографика 5 · Чек-лист</div>
+  <h1 class="title">Ваш ассистент готов, если…</h1>
+  <div class="checks">
+    <div class="check"><div class="check__box"><svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 6"/></svg></div><div class="check__n">1</div><div class="check__t">Из свалки дел ChatGPT собрал <b>план на день</b></div></div>
+    <div class="check"><div class="check__box"><svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 6"/></svg></div><div class="check__n">2</div><div class="check__t"><b>Письмо составлено</b> в нужном тоне и формате</div></div>
+    <div class="check"><div class="check__box"><svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 6"/></svg></div><div class="check__n">3</div><div class="check__t"><b>Входящий документ разобран</b> по фото — риски видны</div></div>
+    <div class="check"><div class="check__box"><svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 6"/></svg></div><div class="check__n">4</div><div class="check__t"><b>Ответ на отзыв</b> — вежливо, с решением</div></div>
+    <div class="check"><div class="check__box"><svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 6"/></svg></div><div class="check__n">5</div><div class="check__t"><b>Цифры сведены</b> в мини-отчёт по фото</div></div>
+    <div class="check now"><div class="check__box"><svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 6"/></svg></div><div class="check__n">6</div><div class="check__t">ChatGPT <b>настроен под себя</b> + включена память</div></div>
+  </div>
+  <div class="foot"><div class="wordmark"><span class="glyph"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round"><path d="M4 16 9 7l4 6 3-4 4 7"/></svg></span>Sharapilov AI</div><div class="meta">Курс «МБ ИИ 3.0» · Урок 6</div></div>
+</section>
+
+</div></body></html>

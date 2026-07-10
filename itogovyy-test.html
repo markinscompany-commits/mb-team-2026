@@ -1,0 +1,260 @@
+<!DOCTYPE html><html lang="ru"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Итоговый тест по курсу · МБ ИИ 3.0</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--accent:#6C4DF2;--accent-soft:#EEEAFE;--accent-line:#D9CFFB;--ink:#14131A;--muted:#6B6A78;--line:#E7E6EE;--bg:#FAFAFB;--bg-soft:#F6F5FB;--ok:#16A34A;--ok-soft:#ECFAEF;--err:#DC2626;--err-soft:#FDECEC;--gold:#D9892B}
+body{font-family:'Inter',sans-serif;color:var(--ink);background:var(--bg);line-height:1.5;padding-bottom:70px}
+.display{font-family:'Space Grotesk',sans-serif}
+.wrap{max-width:760px;margin:0 auto;padding:0 20px}
+.hero{background:linear-gradient(135deg,#fff 0%,var(--accent-soft) 100%);border-bottom:1px solid var(--line);padding:42px 0 34px}
+.wordmark{font-family:'Space Grotesk';font-weight:700;font-size:15px;display:inline-flex;align-items:center;gap:9px;color:var(--ink)}
+.wordmark .glyph{width:24px;height:24px;border-radius:7px;background:var(--accent);display:inline-flex;align-items:center;justify-content:center}
+h1{font-family:'Space Grotesk';font-weight:700;font-size:32px;line-height:1.12;letter-spacing:-.01em;margin-top:16px}
+.lede{font-size:16px;color:var(--muted);margin-top:12px;max-width:600px}
+.meta{display:flex;flex-wrap:wrap;gap:9px;margin-top:20px}
+.pill{font-size:13px;font-weight:500;background:#fff;border:1px solid var(--line);border-radius:9px;padding:7px 12px;color:var(--muted)}
+.pill b{color:var(--ink);font-weight:600}
+
+.bar{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);padding:12px 0}
+.bar .wrap{display:flex;align-items:center;gap:14px}
+.prog{flex:1;height:8px;background:var(--bg-soft);border-radius:20px;overflow:hidden}
+.prog i{display:block;height:100%;width:0;background:var(--accent);border-radius:20px;transition:width .25s}
+.prog-txt{font-size:13px;font-weight:600;color:var(--muted);white-space:nowrap}
+
+.q{background:#fff;border:1px solid var(--line);border-radius:16px;padding:22px 24px;margin-top:18px}
+.q__top{display:flex;align-items:center;gap:10px;margin-bottom:13px}
+.q__n{font-family:'Space Grotesk';font-weight:700;font-size:15px;color:#fff;background:var(--accent);width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex:0 0 30px}
+.q__badge{font-size:11.5px;font-weight:600;color:var(--accent);background:var(--accent-soft);border:1px solid var(--accent-line);border-radius:20px;padding:3px 11px}
+.q__text{font-size:17.5px;font-weight:600;line-height:1.35;margin-bottom:15px}
+.opts{display:flex;flex-direction:column;gap:9px}
+.opt{display:flex;align-items:flex-start;gap:12px;border:1.5px solid var(--line);border-radius:12px;padding:13px 15px;cursor:pointer;transition:.12s;font-size:15px}
+.opt:hover{border-color:var(--accent-line);background:var(--bg-soft)}
+.opt input{display:none}
+.opt .mark{flex:0 0 22px;width:22px;height:22px;border-radius:50%;border:2px solid var(--muted);margin-top:1px;display:flex;align-items:center;justify-content:center;transition:.12s}
+.opt.sel{border-color:var(--accent);background:var(--accent-soft)}
+.opt.sel .mark{border-color:var(--accent);background:var(--accent)}
+.opt.sel .mark::after{content:"";width:8px;height:8px;border-radius:50%;background:#fff}
+/* результаты */
+.opt.correct{border-color:var(--ok);background:var(--ok-soft)}
+.opt.correct .mark{border-color:var(--ok);background:var(--ok)}
+.opt.wrong{border-color:var(--err);background:var(--err-soft)}
+.opt.wrong .mark{border-color:var(--err);background:var(--err)}
+.opt .mark svg{width:13px;height:13px;stroke:#fff;fill:none;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+.locked .opt{cursor:default}
+.locked .opt:hover{background:inherit;border-color:var(--line)}
+.locked .opt.sel:hover{border-color:var(--accent)}
+.locked .opt.correct:hover{border-color:var(--ok);background:var(--ok-soft)}
+.locked .opt.wrong:hover{border-color:var(--err);background:var(--err-soft)}
+.expl{margin-top:12px;font-size:14px;color:var(--muted);background:var(--bg-soft);border-left:3px solid var(--accent);border-radius:8px;padding:11px 14px;display:none}
+.expl.show{display:block}
+.expl b{color:var(--ink)}
+
+.actions{margin-top:26px;display:flex;flex-direction:column;align-items:center;gap:12px}
+.submit{font-family:'Space Grotesk';font-weight:700;font-size:17px;color:#fff;background:var(--accent);border:none;border-radius:12px;padding:16px 40px;cursor:pointer;transition:.12s;box-shadow:0 8px 22px rgba(108,77,242,.28)}
+.submit:hover{background:#5a3fd0}
+.submit:disabled{background:var(--line);color:var(--muted);box-shadow:none;cursor:not-allowed}
+.hint{font-size:13px;color:var(--muted)}
+
+.result{background:#fff;border:1px solid var(--line);border-radius:18px;padding:30px 28px;margin-top:22px;text-align:center;display:none}
+.result.show{display:block}
+.result.pass{border-color:var(--ok);background:var(--ok-soft)}
+.result.fail{border-color:var(--gold);background:#FBEFDD}
+.score{font-family:'Space Grotesk';font-weight:700;font-size:46px;line-height:1}
+.result.pass .score{color:var(--ok)}
+.result.fail .score{color:var(--gold)}
+.score small{font-size:24px;color:var(--muted);font-weight:600}
+.result h2{font-family:'Space Grotesk';font-size:23px;margin-top:12px}
+.result p{font-size:15.5px;color:var(--muted);margin-top:8px}
+.retry{margin-top:18px;font-family:'Space Grotesk';font-weight:600;font-size:15px;color:var(--accent);background:#fff;border:1.5px solid var(--accent);border-radius:11px;padding:12px 26px;cursor:pointer}
+.retry:hover{background:var(--accent-soft)}
+.foot{margin-top:40px;text-align:center;font-size:12px;color:var(--muted)}
+@media(max-width:560px){h1{font-size:25px}.q__text{font-size:16px}}
+</style></head>
+<body>
+
+<div class="hero"><div class="wrap">
+  <span class="wordmark"><span class="glyph"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round"><path d="M4 16 9 7l4 6 3-4 4 7"/></svg></span>Sharapilov AI</span>
+  <h1>Итоговый тест по курсу</h1>
+  <p class="lede">Проверьте, что усвоили за 6 уроков курса «Простые решения сложных задач 3.0». Выберите один верный вариант в каждом вопросе.</p>
+  <div class="meta">
+    <span class="pill"><b>10</b> вопросов</span>
+    <span class="pill">4 варианта ответа</span>
+    <span class="pill">Проходной балл — <b>7 из 10</b></span>
+    <span class="pill">≈ 10 минут</span>
+  </div>
+</div></div>
+
+<div class="bar"><div class="wrap">
+  <div class="prog"><i id="progBar"></i></div>
+  <div class="prog-txt" id="progTxt">Отвечено 0 / 10</div>
+</div></div>
+
+<div class="wrap">
+  <div id="quiz"></div>
+
+  <div class="actions">
+    <button class="submit" id="submitBtn" disabled>Узнать результат</button>
+    <div class="hint" id="hint">Ответьте на все 10 вопросов, чтобы проверить результат</div>
+  </div>
+
+  <div class="result" id="result">
+    <div class="score"><span id="scoreNum">0</span><small> / 10</small></div>
+    <h2 id="resTitle"></h2>
+    <p id="resText"></p>
+    <button class="retry" id="retryBtn">Пройти заново</button>
+  </div>
+
+  <div class="foot">Курс «МБ ИИ 3.0» · итоговое тестирование · Sharapilov AI</div>
+</div>
+
+<script>
+const QUESTIONS = [
+  {l:'Урок 1', q:'Что такое ChatGPT?', o:[
+    'Поисковик наподобие Яндекса',
+    'Нейросеть, которая понимает ваши запросы и генерирует ответ',
+    'Программа для монтажа видео',
+    'Мессенджер для переписки'],
+    a:1, e:'ChatGPT — это нейросеть, с которой вы общаетесь в диалоге: пишете запрос — получаете готовый текст, идею или решение.'},
+  {l:'Урок 1', q:'Что такое «промпт»?', o:[
+    'Название вашего аккаунта',
+    'Тариф подписки',
+    'Запрос-задание, которое вы даёте нейросети',
+    'Кнопка «Отправить»'],
+    a:2, e:'Промпт — это текстовая инструкция нейросети. Чем точнее и подробнее промпт, тем лучше результат.'},
+  {l:'Урок 2', q:'С чего правильно начинать создание визуала для соцсетей?', o:[
+    'Сразу опубликовать пост',
+    'Купить дорогую камеру',
+    'Сначала придумать идею и сценарий визуала в ChatGPT, потом генерировать',
+    'Скопировать пост у конкурента'],
+    a:2, e:'Сначала ChatGPT помогает придумать идею и расписать сценарий визуала по слайдам, и только потом идёт генерация картинок и видео.'},
+  {l:'Урок 3', q:'Что делает автоворонка в директе?', o:[
+    'Удаляет негативные комментарии',
+    'Автоматически ведёт клиента от комментария до готовности купить — без вашего участия',
+    'Считает налоги',
+    'Монтирует ролики'],
+    a:1, e:'Автоворонка сама проводит клиента по шагам: комментарий → директ → материал → продажа, работая круглосуточно без вас.'},
+  {l:'Урок 3', q:'Чем ИИ-агент лучше обычного «кнопочного» бота?', o:[
+    'Он всегда бесплатный',
+    'Работает без интернета',
+    'Понимает живую речь и отвечает по-человечески',
+    'Не требует никакой настройки'],
+    a:2, e:'Кнопочный бот теряется на любой шаг в сторону, а ИИ-агент понимает смысл сообщений и отвечает как живой менеджер.'},
+  {l:'Урок 4', q:'Что такое SOSTAC?', o:[
+    'Название нейросети',
+    'Схема стратегии из 6 шагов: ситуация, цели, стратегия, тактика, действия, контроль',
+    'Вид рекламы в соцсетях',
+    'Программа лояльности'],
+    a:1, e:'SOSTAC — простая схема из шести вопросов к бизнесу, по которой ChatGPT собирает вам маркетинг-стратегию.'},
+  {l:'Урок 4', q:'В чём правильнее всего измерять результат маркетинга?', o:[
+    'В лайках и подписчиках',
+    'В количестве постов',
+    'В рублях — в деньгах, которые приходят в кассу',
+    'В часах, потраченных на работу'],
+    a:2, e:'Лайки в кассу не кладутся. Результат считаем в деньгах и смотрим, какой рычаг на эту сумму влияет.'},
+  {l:'Урок 5', q:'Что из перечисленного можно создать с помощью ИИ в дизайне?', o:[
+    'Только простой текст',
+    'Только таблицы',
+    'Лендинг, баннер и рекламный креатив — всё перечисленное',
+    'Ничего из этого'],
+    a:2, e:'ИИ помогает делать веб-дизайн, лендинги, баннеры и рекламные креативы — без дизайнера с нуля.'},
+  {l:'Урок 6', q:'Какой главный принцип работы с ИИ в ежедневной рутине?', o:[
+    'Отдать ИИ вообще все решения',
+    'Отдай ИИ рутину — оставь себе решения',
+    'Делать всё вручную, как раньше',
+    'Не доверять ИИ ничего'],
+    a:1, e:'ИИ забирает скучную механику (черновики, подсчёты, разбор документов), а важные решения всегда остаются за вами.'},
+  {l:'Урок 6', q:'Как настроить ChatGPT под себя, чтобы он помогал каждый день?', o:[
+    'Каждый раз заново объяснять, кто вы и чем занимаетесь',
+    'Купить второй аккаунт',
+    'Вписать информацию о себе в Настройки → Персонализация и включить «Память»',
+    'Это невозможно сделать'],
+    a:2, e:'Один раз задаёте в персонализации, кто вы и как отвечать, включаете память — и дальше ассистент помнит вас сам.'},
+];
+
+const answers = new Array(QUESTIONS.length).fill(null);
+let locked = false;
+const quizEl = document.getElementById('quiz');
+
+function render(){
+  quizEl.innerHTML = QUESTIONS.map((it,qi)=>`
+    <div class="q ${locked?'locked':''}" id="q${qi}">
+      <div class="q__top"><div class="q__n">${qi+1}</div><span class="q__badge">${it.l}</span></div>
+      <div class="q__text">${it.q}</div>
+      <div class="opts">
+        ${it.o.map((op,oi)=>`
+          <label class="opt" data-q="${qi}" data-o="${oi}">
+            <span class="mark"></span><span>${op}</span>
+          </label>`).join('')}
+      </div>
+      <div class="expl" id="e${qi}"><b>Пояснение:</b> ${it.e}</div>
+    </div>`).join('');
+  bind();
+  paint();
+}
+
+function bind(){
+  document.querySelectorAll('.opt').forEach(el=>{
+    el.addEventListener('click',()=>{
+      if(locked) return;
+      const q=+el.dataset.q, o=+el.dataset.o;
+      answers[q]=o; paint();
+    });
+  });
+}
+
+function paint(){
+  document.querySelectorAll('.opt').forEach(el=>{
+    const q=+el.dataset.q, o=+el.dataset.o;
+    el.classList.remove('sel','correct','wrong');
+    if(!locked){
+      if(answers[q]===o) el.classList.add('sel');
+    } else {
+      if(o===QUESTIONS[q].a) el.classList.add('correct');
+      else if(answers[q]===o) el.classList.add('wrong');
+    }
+  });
+  const done = answers.filter(a=>a!==null).length;
+  document.getElementById('progBar').style.width = (done/QUESTIONS.length*100)+'%';
+  document.getElementById('progTxt').textContent = `Отвечено ${done} / ${QUESTIONS.length}`;
+  const btn=document.getElementById('submitBtn');
+  const hint=document.getElementById('hint');
+  if(!locked){
+    btn.disabled = done<QUESTIONS.length;
+    hint.textContent = done<QUESTIONS.length ? `Осталось ответить: ${QUESTIONS.length-done}` : 'Готово! Можно проверять результат';
+  }
+}
+
+document.getElementById('submitBtn').addEventListener('click',()=>{
+  if(answers.some(a=>a===null)) return;
+  locked=true;
+  let score=0; answers.forEach((a,i)=>{ if(a===QUESTIONS[i].a) score++; });
+  render();
+  document.querySelectorAll('.expl').forEach(e=>e.classList.add('show'));
+  document.getElementById('submitBtn').style.display='none';
+  document.getElementById('hint').style.display='none';
+  const res=document.getElementById('result');
+  const pass = score>=7;
+  res.className = 'result show '+(pass?'pass':'fail');
+  document.getElementById('scoreNum').textContent=score;
+  document.getElementById('resTitle').textContent = pass ? 'Поздравляем, курс пройден!' : 'Почти получилось!';
+  document.getElementById('resText').textContent = pass
+    ? 'Вы усвоили материал курса. Теперь применяйте ИИ в своём деле каждый день.'
+    : 'Для прохождения нужно 7 правильных ответов. Пересмотрите отмеченные вопросы и попробуйте снова.';
+  res.scrollIntoView({behavior:'smooth',block:'center'});
+});
+
+document.getElementById('retryBtn').addEventListener('click',()=>{
+  locked=false; answers.fill(null);
+  document.getElementById('result').className='result';
+  document.getElementById('submitBtn').style.display='';
+  document.getElementById('hint').style.display='';
+  render();
+  window.scrollTo({top:0,behavior:'smooth'});
+});
+
+render();
+</script>
+</body></html>
